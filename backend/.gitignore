@@ -1,0 +1,15 @@
+backend/__pycache__/
+backend/*.py[cod]
+backend/*$py.class
+backend/.pytest_cache/
+backend/.venv/
+backend/venv/
+backend/env/
+backend/build/
+backend/dist/
+backend/*.egg-info/
+
+# --- Database ---
+# Dockerのボリュームで永続化するため、ローカルのDBファイル等は除外
+*.db
+*.sqlite3
