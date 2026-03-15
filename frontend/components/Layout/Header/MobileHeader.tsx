@@ -18,7 +18,7 @@ export const MobileHeader: FC = () => {
   }, []);
 
   return (
-    <header className="flex justify-between items-center w-full bg-background px-3 py-2">
+    <header className="fixed top-0 flex justify-between items-center w-full bg-background px-3 py-2">
       <h1 className="text-md font-bold">TODO Manager</h1>
       <Link href="/inbox">
         <div className="flex flex-col justify-center items-center">
