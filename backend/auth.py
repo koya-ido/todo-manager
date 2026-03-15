@@ -1,0 +1,39 @@
+from datetime import datetime, timedelta, timezone
+from typing import Optional
+from jose import jwt
+from passlib.context import CryptContext
+from fastapi.security import OAuth2PasswordBearer
+import os
+
+# 本来は環境変数から取得
+SECRET_KEY = os.getenv("SECRET_KEY", "your-fallback-key")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """パスワードを検証"""
+    return pwd_context.verify(plain_password, hashed_password)
+
+def get_password_hash(password: str) -> str:
+    """パスワードをハッシュ化"""
+    return pwd_context.hash(password)
+
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
+    """アクセストークンを生成
+    
+    Args:
+        data: トークンに含めるデータ
+        expires_delta: カスタム有効期限（指定ない場合はACCESS_TOKEN_EXPIRE_MINUTESを使用）
+    
+    Returns:
+        JWT トークン文字列
+    """
+    to_encode = data.copy()
+    if expires_delta is None:
+        expires_delta = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.now(timezone.utc) + expires_delta
+    to_encode.update({"exp": expire})
+    return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
