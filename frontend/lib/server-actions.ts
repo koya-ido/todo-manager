@@ -16,3 +16,20 @@ export async function setLocale(locale: string) {
   // すべてのページをリバリデート
   revalidatePath("/", "layout");
 }
+
+/**
+ * JWTアクセストークンをクッキーに保存
+ */
+export async function setAccessToken(token: string) {
+  const cookieStore = await cookies();
+  cookieStore.set("access_token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    maxAge: 60 * 60 * 24, // 24時間
+    path: "/",
+  });
+
+  // すべてのページをリバリデート
+  revalidatePath("/", "layout");
+}

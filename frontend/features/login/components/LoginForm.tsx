@@ -6,11 +6,17 @@ import { InputField } from "@/components/forms/FieldWrapper/components/InputFiel
 import { PasswordField } from "@/components/forms/FieldWrapper/components/PasswordField";
 import { Card } from "@/components/Layout/Card";
 import { useLogin } from "@/features/login/hooks/useLogin";
+import { setAccessToken } from "@/lib/server-actions";
 import { useRouter } from "next/navigation";
 import { SubmitEvent, useContext, useState } from "react";
 
 type LoginFormProps = {
   messages: Record<string, string>;
+};
+
+type LoginResponse = {
+  access_token: string;
+  token_type: string;
 };
 
 export const LoginForm = ({ messages }: LoginFormProps) => {
@@ -24,7 +30,14 @@ export const LoginForm = ({ messages }: LoginFormProps) => {
   const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
     try {
-      await handleLogin(userId, password);
+      const response = await handleLogin(userId, password);
+
+      // レスポンスからアクセストークンを取得
+      const loginResponse = response as LoginResponse;
+      if (loginResponse.access_token) {
+        // Server Actionでクッキーにトークンを保存
+        await setAccessToken(loginResponse.access_token);
+      }
     } catch (error: unknown) {
       return setErrorResponse(error);
     }

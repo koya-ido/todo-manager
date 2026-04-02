@@ -23,6 +23,7 @@ export const useFetchApi = async <T = unknown>({
         ...headers,
       },
       body,
+      credentials: "include", // クッキーを自動的に送信・受信
     });
 
     if (!response.ok) {
