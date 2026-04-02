@@ -1,0 +1,44 @@
+<svg
+  width="40"
+  height="40"
+  viewBox="0 0 40 40"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <rect width="40" height="40" rx="4" fill="#262626" />
+  <path
+    d="M21 13H29"
+    stroke="white"
+    stroke-width="2"
+    stroke-linecap="square"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M21 20H29"
+    stroke="white"
+    stroke-width="2"
+    stroke-linecap="square"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M21 27H29"
+    stroke="white"
+    stroke-width="2"
+    stroke-linecap="square"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M11 25L13 27L17 23"
+    stroke="white"
+    stroke-width="2"
+    stroke-linecap="square"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M11 15L13 17L17 13"
+    stroke="white"
+    stroke-width="2"
+    stroke-linecap="square"
+    stroke-linejoin="round"
+  />
+</svg>
