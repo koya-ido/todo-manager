@@ -1,0 +1,8 @@
+{
+  "INVALID_CREDENTIALS": "IDまたはパスワードが正しくありません",
+  "login.heading": "ログイン情報を入力してください。",
+  "login.password": "パスワード",
+  "login.sign-up.sentence": "アカウントをお持ちでないですか？",
+  "login.sign-up.link": "アカウントを作成する",
+  "login.sign-in": "サインイン"
+}

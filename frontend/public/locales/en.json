@@ -1,0 +1,8 @@
+{
+  "INVALID_CREDENTIALS": "Invalid ID or password",
+  "login.heading": "Please enter your login information.",
+  "login.password": "Password",
+  "login.sign-up.sentence": "Don't have an account?",
+  "login.sign-up.link": "Create an account",
+  "login.sign-in": "Sign In"
+}
