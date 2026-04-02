@@ -21,8 +21,12 @@ export const ErrorContext = createContext<{
 });
 
 export const ErrorProvider = ({ messages, children }: ErrorProviderProps) => {
-  const { setInlineErrors, parsedErrorResponse, getFieldErrorMessage } =
-    useError({ messages });
+  const {
+    setInlineErrors,
+    clearInlineErrors,
+    parsedErrorResponse,
+    getFieldErrorMessage,
+  } = useError({ messages });
 
   const handleInlineError = (fieldName: string) =>
     getFieldErrorMessage(fieldName);
@@ -64,13 +68,6 @@ export const ErrorProvider = ({ messages, children }: ErrorProviderProps) => {
     },
     [parsedErrorResponse, messages],
   );
-
-  /**
-   * Inline エラーをクリア
-   */
-  const clearInlineErrors = useCallback(() => {
-    setInlineErrors([]);
-  }, []);
 
   const errorContextValue = {
     getInlineError: handleInlineError,
