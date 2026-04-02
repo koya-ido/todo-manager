@@ -76,16 +76,24 @@ def login(request: LoginRequest, db: Session = Depends(get_db)):
         raise APIException(
             status_code=401,
             title="認証エラー",
-            detail="ユーザー名またはパスワードが正しくありません",
-            code="INVALID_CREDENTIALS"
+            detail="IDまたはパスワードが正しくありません",
+            code="INVALID_CREDENTIALS",
+            errors=[{
+                "code": "INVALID_CREDENTIALS",
+                "pointer": "login-form",
+            }]
         )
 
     if not verify_password(request.password, user.password):
         raise APIException(
             status_code=401,
             title="認証エラー",
-            detail="ユーザー名またはパスワードが正しくありません",
-            code="INVALID_CREDENTIALS"
+            detail="IDまたはパスワードが正しくありません",
+            code="INVALID_CREDENTIALS",
+            errors=[{
+                "code": "INVALID_CREDENTIALS",
+                "pointer": "login-form",
+            }]
         )
     
     # アクセストークンを生成
