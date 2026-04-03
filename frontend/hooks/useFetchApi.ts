@@ -5,11 +5,23 @@ export type FetchApiArgs = {
   body?: BodyInit | null;
 };
 
+const notifyAuthError = (error: unknown) => {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.dispatchEvent(
+    new CustomEvent("auth:error", {
+      detail: error,
+    }),
+  );
+};
+
 /**
  * ベース API 通信関数
  * @template T - レスポンスの型
  */
-export const useFetchApi = async <T = unknown>({
+export const fetchApi = async <T = unknown>({
   url,
   method,
   headers = {},
@@ -27,7 +39,11 @@ export const useFetchApi = async <T = unknown>({
     });
 
     if (!response.ok) {
-      throw await response.json();
+      const errorResponse = await response.json();
+      if (response.status === 401) {
+        notifyAuthError(errorResponse);
+      }
+      throw errorResponse;
     }
 
     return await response.json();
@@ -44,7 +60,7 @@ export const apiGet = async <T = unknown>(
   url: string,
   options?: Omit<FetchApiArgs, "url" | "method">,
 ): Promise<T> => {
-  return useFetchApi<T>({
+  return fetchApi<T>({
     url,
     method: "GET",
     ...options,
@@ -55,12 +71,12 @@ export const apiGet = async <T = unknown>(
  * POST リクエスト用関数
  * @template T - レスポンスの型
  */
-export const apiPost = async <T = any>(
+export const apiPost = async <T = unknown>(
   url: string,
   body?: BodyInit | null,
   options?: Omit<FetchApiArgs, "url" | "method" | "body">,
 ): Promise<T> => {
-  return useFetchApi<T>({
+  return fetchApi<T>({
     url,
     method: "POST",
     body,
@@ -72,12 +88,12 @@ export const apiPost = async <T = any>(
  * PUT リクエスト用関数
  * @template T - レスポンスの型
  */
-export const apiPut = async <T = any>(
+export const apiPut = async <T = unknown>(
   url: string,
   body?: BodyInit | null,
   options?: Omit<FetchApiArgs, "url" | "method" | "body">,
 ): Promise<T> => {
-  return useFetchApi<T>({
+  return fetchApi<T>({
     url,
     method: "PUT",
     body,
@@ -89,11 +105,11 @@ export const apiPut = async <T = any>(
  * DELETE リクエスト用関数
  * @template T - レスポンスの型
  */
-export const apiDelete = async <T = any>(
+export const apiDelete = async <T = unknown>(
   url: string,
   options?: Omit<FetchApiArgs, "url" | "method">,
 ): Promise<T> => {
-  return useFetchApi<T>({
+  return fetchApi<T>({
     url,
     method: "DELETE",
     ...options,

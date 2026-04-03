@@ -8,7 +8,7 @@ type Locale = "ja" | "en";
 const DEFAULT_LOCALE: Locale = "ja";
 const SUPPORTED_LOCALES: Locale[] = ["ja", "en"];
 
-let cachedMessages: Record<string, LocaleMessages> = {};
+const cachedMessages: Record<string, LocaleMessages> = {};
 
 async function loadMessages(locale: string): Promise<LocaleMessages> {
   if (cachedMessages[locale]) {

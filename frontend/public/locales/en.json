@@ -1,5 +1,9 @@
 {
   "INVALID_CREDENTIALS": "Invalid ID or password",
+  "AUTHENTICATION_REQUIRED": "Authentication is required. Please log in again.",
+  "INVALID_TOKEN": "Your authentication is invalid. Please log in again.",
+  "TOKEN_EXPIRED": "Your session has expired. Please log in again.",
+  "TOKEN_REVOKED": "Your login session is no longer valid. Please log in again.",
   "login.heading": "Please enter your login information.",
   "login.password": "Password",
   "login.sign-up.sentence": "Don't have an account?",
