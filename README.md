@@ -60,3 +60,7 @@
 #### DB
 
 - postgreSQL
+
+#### 起動手順
+
+- 詳細は [backend/README.md](todo-manager/backend/README.md) を参照
