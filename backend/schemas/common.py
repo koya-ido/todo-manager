@@ -19,3 +19,12 @@ class ErrorResponse(BaseModel):
     detail: str
     code: str
     errors: Optional[List[FieldError]] = None
+
+
+class CurrentUserResponse(BaseModel):
+    display_user_id: str
+    user_name: str
+
+
+class LogoutResponse(BaseModel):
+    success: bool = True
