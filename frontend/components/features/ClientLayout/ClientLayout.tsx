@@ -1,9 +1,10 @@
 "use client";
 
+import { AuthSessionProvider } from "@/components/features/AuthSessionProvider";
 import { ErrorProvider } from "@/components/features/ErrorProvider";
 import { Toaster } from "@/components/Layout/Toaster";
 import { FC, ReactNode } from "react";
-import { LocaleSwitcher } from "../LocaleSwitcher/LocaleSwitcher";
+import { LocaleSwitcher } from "@/components/features/LocaleSwitcher";
 
 interface ClientLayoutProps {
   messages: Record<string, string>;
@@ -17,10 +18,12 @@ export const ClientLayout: FC<ClientLayoutProps> = ({
   children,
 }) => {
   return (
-    <ErrorProvider messages={messages}>
-      <LocaleSwitcher currentLocale={locale} />
-      {children}
-      <Toaster />
-    </ErrorProvider>
+    <AuthSessionProvider messages={messages}>
+      <ErrorProvider messages={messages}>
+        <LocaleSwitcher currentLocale={locale} />
+        {children}
+        <Toaster />
+      </ErrorProvider>
+    </AuthSessionProvider>
   );
 };

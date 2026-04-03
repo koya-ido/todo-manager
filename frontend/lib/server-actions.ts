@@ -26,10 +26,16 @@ export async function setAccessToken(token: string) {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
-    maxAge: 60 * 60 * 24, // 24時間
+    maxAge: 60 * 15, // 15分
     path: "/",
   });
 
   // すべてのページをリバリデート
+  revalidatePath("/", "layout");
+}
+
+export async function clearAccessToken() {
+  const cookieStore = await cookies();
+  cookieStore.delete("access_token");
   revalidatePath("/", "layout");
 }
