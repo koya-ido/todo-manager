@@ -1,18 +1,15 @@
 import logging
 from typing import Optional, List
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
-from database import get_db, engine
-from models import Base, User
-from auth import verify_password, create_access_token, get_password_hash
+from database import get_db
+from models import User
+from auth import verify_password, create_access_token
 from schemas import LoginRequest, LoginResponse, ErrorResponse, FieldError
 
 logger = logging.getLogger(__name__)
-
-# テーブル作成
-Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
