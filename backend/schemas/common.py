@@ -28,3 +28,9 @@ class CurrentUserResponse(BaseModel):
 
 class LogoutResponse(BaseModel):
     success: bool = True
+
+
+class DeleteUserResponse(BaseModel):
+    success: bool = True
+    display_id: str
+    deletion_mode: str
