@@ -69,8 +69,8 @@ export const LoginForm = ({ messages }: LoginFormProps) => {
           />
           <div className="pb-3.75" />
           <PasswordField
-            label={messages["login.password"]}
-            placeholder={messages["login.password"]}
+            label={messages["common.label.password"]}
+            placeholder={messages["common.label.password"]}
             type="password"
             required
             className="h-6.25 bg-background"
