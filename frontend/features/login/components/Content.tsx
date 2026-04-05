@@ -2,12 +2,9 @@
 
 import { Heading } from "@/components/typography/Heading";
 import { LoginForm } from "@/features/login/components/LoginForm";
+import { ContentProps } from "@/types/contentTypes";
 import Link from "next/link";
 import { FC } from "react";
-
-type ContentProps = {
-  messages: Record<string, string>;
-};
 
 export const Content: FC<ContentProps> = ({ messages }) => {
   return (
@@ -25,7 +22,7 @@ export const Content: FC<ContentProps> = ({ messages }) => {
       <section className="flex flex-col items-center gap-2">
         <p>{messages["login.sign-up.sentence"]}</p>
         <Link
-          href="/signup"
+          href="/sign-up"
           className="text-sm text-primary font-bold underline"
         >
           {messages["login.sign-up.link"]}
