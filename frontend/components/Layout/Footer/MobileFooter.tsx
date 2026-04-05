@@ -1,7 +1,8 @@
 "use client";
 
-import { IconPrivate } from "@/components/Layout/Footer/assets/IconPrivate";
-import { IconTeam } from "@/components/Layout/Footer/assets/IconTeam";
+import { IconHome } from "@/components/Layout/Footer/assets/IconHome";
+import { IconStash } from "@/components/Layout/Footer/assets/IconStash";
+import { IconTodo } from "@/components/Layout/Footer/assets/IconTodo";
 import { IconUser } from "@/components/Layout/Footer/assets/IconUser";
 import { FooterItem } from "@/components/Layout/Footer/FooterItem";
 import { usePathname } from "next/navigation";
@@ -21,9 +22,22 @@ export const MobileFooter: FC = () => {
   return (
     <footer className="fixed bottom-0 flex justify-around items-center w-full bg-background h-16">
       <FooterItem
+        href="/home"
+        icon={
+          <IconHome
+            size={24}
+            color={
+              isActive("/home") ? "var(--background)" : "var(--foreground)"
+            }
+          />
+        }
+        label="home"
+        isActive={isActive("/home")}
+      />
+      <FooterItem
         href="/private"
         icon={
-          <IconPrivate
+          <IconTodo
             size={24}
             color={
               isActive("/private") ? "var(--background)" : "var(--foreground)"
@@ -34,17 +48,19 @@ export const MobileFooter: FC = () => {
         isActive={isActive("/private")}
       />
       <FooterItem
-        href="/team"
+        href="/private?mode=stash"
         icon={
-          <IconTeam
+          <IconStash
             size={24}
             color={
-              isActive("/team") ? "var(--background)" : "var(--foreground)"
+              isActive("/private?mode=stash")
+                ? "var(--background)"
+                : "var(--foreground)"
             }
           />
         }
-        label="team"
-        isActive={isActive("/team")}
+        label="stash"
+        isActive={isActive("/private?mode=stash")}
       />
       <FooterItem
         href="/user"
