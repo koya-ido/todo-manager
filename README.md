@@ -64,3 +64,23 @@
 #### 起動手順
 
 - 詳細は [backend/README.md](todo-manager/backend/README.md) を参照
+
+#### 実装運用
+
+バックエンドは `main.py` に処理を増やさず、責務ごとに分割して実装する方針です。
+
+- `backend/main.py`
+  - FastAPI アプリ生成、ミドルウェア設定、例外ハンドラ登録、router 登録のみを置く
+- `backend/routers/`
+  - エンドポイント定義を置く
+  - `auth.py` はログイン、サインアップ、ログアウト、`me` など認証系
+  - `user.py` はユーザー削除などユーザー系
+- `backend/services/`
+  - DB 更新を含む業務ロジックを置く
+  - router から直接長い処理を書かず、service 関数を呼ぶ
+- `backend/dependencies/`
+  - `get_current_user` のような FastAPI dependency を置く
+- `backend/exceptions.py`
+  - API 共通の例外定義と例外ハンドラを置く
+
+新しい API を追加する場合は、まず対応する router を選び、必要な処理を service に切り出してから router から呼ぶようにしてください。
