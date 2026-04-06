@@ -1,6 +1,5 @@
 "use client";
 
-import { AuthSessionProvider } from "@/components/features/AuthSessionProvider";
 import { ErrorProvider } from "@/components/features/ErrorProvider";
 import { Toaster } from "@/components/Layout/Toaster";
 import { FC, ReactNode } from "react";
@@ -18,12 +17,10 @@ export const ClientLayout: FC<ClientLayoutProps> = ({
   children,
 }) => {
   return (
-    <AuthSessionProvider messages={messages}>
-      <ErrorProvider messages={messages}>
-        <LocaleSwitcher currentLocale={locale} />
-        {children}
-        <Toaster />
-      </ErrorProvider>
-    </AuthSessionProvider>
+    <ErrorProvider messages={messages}>
+      <LocaleSwitcher currentLocale={locale} />
+      {children}
+      <Toaster />
+    </ErrorProvider>
   );
 };

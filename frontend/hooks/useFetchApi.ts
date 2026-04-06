@@ -1,20 +1,10 @@
+import { notifyAuthSessionError } from "@/components/features/AuthSessionProvider/authSessionStore";
+
 export type FetchApiArgs = {
   url: string;
   method: "GET" | "POST" | "PUT" | "DELETE";
   headers?: HeadersInit;
   body?: BodyInit | null;
-};
-
-const notifyAuthError = (error: unknown) => {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  window.dispatchEvent(
-    new CustomEvent("auth:error", {
-      detail: error,
-    }),
-  );
 };
 
 /**
@@ -41,7 +31,7 @@ export const fetchApi = async <T = unknown>({
     if (!response.ok) {
       const errorResponse = await response.json();
       if (response.status === 401) {
-        notifyAuthError(errorResponse);
+        void notifyAuthSessionError(errorResponse);
       }
       throw errorResponse;
     }

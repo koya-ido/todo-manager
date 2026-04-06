@@ -17,6 +17,7 @@ import { useSignUp } from "@/features/signUp/hooks/useSignUp";
 import { SignUpResponse } from "@/features/signUp/types";
 import { ContentProps } from "@/types/contentTypes";
 import { Circle, CircleCheck, Copy } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { FC, SubmitEvent, useContext, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -119,7 +120,17 @@ export const Content: FC<ContentProps> = ({ messages }) => {
       isPasswordIncludesSymbol &&
       isConfirmPasswordMatchesPassword
     );
-  }, [userName, password, confirmPassword]);
+  }, [
+    isConfirmPasswordMatchesPassword,
+    isPassword8CharactersOrMore,
+    isPasswordIncludesLowercaseLetter,
+    isPasswordIncludesNumber,
+    isPasswordIncludesSymbol,
+    isPasswordIncludesUppercaseLetter,
+    isPasswordOnlyHalfWidth,
+    isUserName5CharactersOrMoreAnd30CharactersOrLess,
+    isUserNameOnlyHalfWidthAlphanumericAndUnderscore,
+  ]);
 
   const handleSubmit = async (event: SubmitEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -152,7 +163,12 @@ export const Content: FC<ContentProps> = ({ messages }) => {
 
   return (
     <div className="flex flex-col justify-center items-center gap-5">
-      <img src="/assets/icons/ApplicationLogo.svg" alt="アプリケーションロゴ" />
+      <Image
+        src="/assets/icons/ApplicationLogo.svg"
+        alt="アプリケーションロゴ"
+        width={40}
+        height={40}
+      />
       <Heading level={1}>{messages["sign-up.heading"]}</Heading>
       <div className="text-center">
         <Heading level={2}>{messages["sign-up.description"]}</Heading>

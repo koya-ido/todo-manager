@@ -1,9 +1,22 @@
 "use client";
 
+import Link from "next/link";
+import { TriangleAlert } from "lucide-react";
+import { usePathname } from "next/navigation";
 import { clearAccessToken } from "@/lib/server-actions";
+import {
+  registerAuthSessionErrorHandler,
+  unregisterAuthSessionErrorHandler,
+} from "@/components/features/AuthSessionProvider/authSessionStore";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/Layout/Dialog";
+import { apiGet } from "@/hooks/useFetchApi";
 import { isErrorResponse } from "@/hooks/useError/errorUtils";
-import { usePathname, useRouter } from "next/navigation";
-import { ReactNode, useEffect, useRef } from "react";
+import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 
 type AuthSessionProviderProps = {
   messages: Record<string, string>;
@@ -21,52 +34,97 @@ export const AuthSessionProvider = ({
   messages,
   children,
 }: AuthSessionProviderProps) => {
-  const router = useRouter();
   const pathname = usePathname();
   const isHandlingRef = useRef(false);
+  const [isSessionExpired, setIsSessionExpired] = useState(false);
+  const [isSessionValidated, setIsSessionValidated] = useState(false);
+
+  const handleSessionError = useCallback(async (errorResponse: unknown) => {
+    if (!isErrorResponse(errorResponse)) {
+      return;
+    }
+
+    if (!SESSION_ERROR_CODES.has(errorResponse.code) || isHandlingRef.current) {
+      return;
+    }
+
+    isHandlingRef.current = true;
+    await clearAccessToken();
+    setIsSessionValidated(false);
+    setIsSessionExpired(true);
+    isHandlingRef.current = false;
+  }, []);
 
   useEffect(() => {
-    const handleAuthError = async (event: Event) => {
-      const customEvent = event as CustomEvent<unknown>;
-      const errorResponse = customEvent.detail;
-
-      if (!isErrorResponse(errorResponse)) {
-        return;
-      }
-
-      if (
-        !SESSION_ERROR_CODES.has(errorResponse.code) ||
-        isHandlingRef.current
-      ) {
-        return;
-      }
-
-      isHandlingRef.current = true;
-
-      const message =
-        messages[errorResponse.code] ??
-        errorResponse.detail ??
-        "Session expired. Please log in again.";
-
-      window.alert(message);
-      await clearAccessToken();
-
-      if (pathname !== "/login") {
-        router.push("/login");
-      }
-
-      router.refresh();
-      isHandlingRef.current = false;
-    };
-
-    window.addEventListener("auth:error", handleAuthError as EventListener);
+    registerAuthSessionErrorHandler(handleSessionError);
     return () => {
-      window.removeEventListener(
-        "auth:error",
-        handleAuthError as EventListener,
-      );
+      unregisterAuthSessionErrorHandler();
     };
-  }, [messages, pathname, router]);
+  }, [handleSessionError]);
 
-  return children;
+  useEffect(() => {
+    let isMounted = true;
+
+    const validateSession = async () => {
+      setIsSessionValidated(false);
+
+      try {
+        await apiGet("/me");
+        if (isMounted) {
+          setIsSessionValidated(true);
+        }
+      } catch (error) {
+        if (!isMounted) {
+          return;
+        }
+
+        if (isErrorResponse(error) && SESSION_ERROR_CODES.has(error.code)) {
+          await handleSessionError(error);
+          return;
+        }
+
+        if (isMounted) {
+          setIsSessionValidated(true);
+        }
+      }
+    };
+
+    void validateSession();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [handleSessionError, pathname]);
+
+  return (
+    <>
+      {isSessionValidated ? children : null}
+      <Dialog open={isSessionExpired}>
+        <DialogContent
+          showCloseButton={false}
+          onEscapeKeyDown={(event) => event.preventDefault()}
+          onPointerDownOutside={(event) => event.preventDefault()}
+          className="flex flex-col items-center gap-6"
+        >
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2 text-chart-4">
+              <TriangleAlert size={16} color="var(--chart-4)" />
+              {messages["session-expired-dialog.title"]}
+            </DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col items-center gap-4">
+            <p className="text-center">
+              {messages["session-expired-dialog.description"]}
+            </p>
+            <Link
+              href="/login"
+              className="text-sm text-primary font-bold underline"
+            >
+              {messages["session-expired-dialog.confirm"]}
+            </Link>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
 };
