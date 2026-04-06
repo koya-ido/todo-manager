@@ -3,13 +3,13 @@
 import { Heading } from "@/components/typography/Heading";
 import { LoginForm } from "@/features/login/components/LoginForm";
 import { ContentProps } from "@/types/contentTypes";
+import Image from "next/image";
 import Link from "next/link";
 import { FC } from "react";
-import Image from "next/image";
 
 export const Content: FC<ContentProps> = ({ messages }) => {
   return (
-    <div className="flex flex-col w-full items-center justify-center gap-6">
+    <div className="flex flex-col h-full w-full items-center justify-center gap-6">
       <Image
         src="/assets/icons/ApplicationLogo.svg"
         alt="アプリケーションロゴ"

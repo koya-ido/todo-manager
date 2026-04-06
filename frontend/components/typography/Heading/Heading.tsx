@@ -13,7 +13,7 @@ export const Heading: FC<{
         "font-bold leading-tight tracking-tighter",
         {
           "text-2xl md:text-5xl": level === 1,
-          "text-1xl md:text-4xl": level === 2,
+          "text-xs md:text-[4xl]": level === 2,
           "text-1 md:text-3xl": level === 3,
         },
         className,

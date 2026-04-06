@@ -1,15 +1,15 @@
 "use client";
 
 import { ErrorProvider } from "@/components/features/ErrorProvider";
+import { LocaleProvider } from "@/components/features/LocaleProvider";
 import { Toaster } from "@/components/Layout/Toaster";
 import { FC, ReactNode } from "react";
-import { LocaleSwitcher } from "@/components/features/LocaleSwitcher";
 
-interface ClientLayoutProps {
+type ClientLayoutProps = {
   messages: Record<string, string>;
   locale: string;
   children: ReactNode;
-}
+};
 
 export const ClientLayout: FC<ClientLayoutProps> = ({
   messages,
@@ -17,10 +17,11 @@ export const ClientLayout: FC<ClientLayoutProps> = ({
   children,
 }) => {
   return (
-    <ErrorProvider messages={messages}>
-      <LocaleSwitcher currentLocale={locale} />
-      {children}
-      <Toaster />
-    </ErrorProvider>
+    <LocaleProvider locale={locale}>
+      <ErrorProvider messages={messages}>
+        {children}
+        <Toaster />
+      </ErrorProvider>
+    </LocaleProvider>
   );
 };

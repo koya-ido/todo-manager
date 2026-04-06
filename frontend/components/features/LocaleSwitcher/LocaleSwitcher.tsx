@@ -21,7 +21,6 @@ export const LocaleSwitcher: FC<LocaleSwitcherProps> = ({ currentLocale }) => {
 
   return (
     <ToggleGroup
-      className="absolute top-4 right-4"
       type="single"
       value={currentLocale}
       onValueChange={handleLocaleChange}
