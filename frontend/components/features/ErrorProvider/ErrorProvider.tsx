@@ -57,6 +57,7 @@ export const ErrorProvider = ({ messages, children }: ErrorProviderProps) => {
         style: {
           backgroundColor: "var(--destructive)",
           color: "var(--background)",
+          fontWeight: "bold",
         },
       });
     });
