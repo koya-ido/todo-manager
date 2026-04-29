@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from exceptions import APIException, api_exception_handler
-from routers import auth_router, user_router
+from routers import auth_router, user_router, tag_router
 
 app = FastAPI()
 
@@ -27,3 +27,4 @@ def read_root():
 
 app.include_router(auth_router)
 app.include_router(user_router)
+app.include_router(tag_router)

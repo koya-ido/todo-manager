@@ -1,8 +1,10 @@
 from .auth import LoginRequest, LoginResponse, SignupRequest, SignupResponse
 from .common import CurrentUserResponse, DeleteUserResponse, ErrorResponse, FieldError, LogoutResponse
 from .inbox import InboxCreate, InboxResponse
+from .tag import TagRequest, TagResponse, TagUpdate
 from .todo import TodoCreate, TodoResponse, TodoUpdate
 from .user import UserCreate, UserResponse
+
 
 __all__ = [
     "CurrentUserResponse",
@@ -16,6 +18,9 @@ __all__ = [
     "LogoutResponse",
     "SignupRequest",
     "SignupResponse",
+    "TagRequest",
+    "TagResponse",
+    "TagUpdate",
     "TodoCreate",
     "TodoResponse",
     "TodoUpdate",
