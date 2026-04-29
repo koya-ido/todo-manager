@@ -1,7 +1,5 @@
 "use client";
 
-import { LocaleContext } from "@/components/features/LocaleProvider/LocaleProvider";
-import { LocaleSwitcher } from "@/components/features/LocaleSwitcher";
 import { Button } from "@/components/forms/Button";
 import {
   Card,
@@ -19,14 +17,19 @@ import {
 } from "@/components/Layout/Dialog";
 import { Heading } from "@/components/typography/Heading";
 import { useUser } from "@/features/user/hooks/useUser";
+import { apiPost } from "@/hooks/useFetchApi";
+import { clearAccessToken } from "@/lib/server-actions";
 import { ContentProps } from "@/types/contentTypes";
 import { Check, Copy, TriangleAlert } from "lucide-react";
-import { FC, useContext, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { FC, useState } from "react";
 import { toast } from "sonner";
 
 export const Content: FC<ContentProps> = ({ messages }) => {
+  const router = useRouter();
+
   const { userId, userName } = useUser();
-  const { locale } = useContext(LocaleContext);
   const [isOpenDialog, setIsOpenDialog] = useState<boolean>(false);
 
   const handleCopyClick = async () => {
@@ -39,6 +42,18 @@ export const Content: FC<ContentProps> = ({ messages }) => {
     } catch (error) {
       console.error("ユーザIDのコピーに失敗しました:", error);
     }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await apiPost("/logout");
+    } catch {
+      // Cookie削除を優先するため、API失敗時もフロント側のログアウトは継続する。
+    }
+
+    await clearAccessToken();
+    router.push("/");
+    router.refresh();
   };
 
   return (
@@ -72,12 +87,18 @@ export const Content: FC<ContentProps> = ({ messages }) => {
         <Heading level={3}>{messages["user.action"]}</Heading>
         <div className="w-full flex flex-col gap-3">
           <Button variant="outline" className="w-full">
-            {messages["user.action.edit"]}
+            <Link href="/user/edit">{messages["user.action.edit"]}</Link>
           </Button>
           <Button variant="outline" className="w-full">
-            {messages["user.action.configure"]}
+            <Link href="/user/setting">
+              {messages["user.action.configure"]}
+            </Link>
           </Button>
-          <Button variant="outline" className="w-full">
+          <Button
+            variant="outline"
+            onClick={() => handleLogout()}
+            className="w-full"
+          >
             {messages["user.action.logout"]}
           </Button>
         </div>
@@ -104,7 +125,6 @@ export const Content: FC<ContentProps> = ({ messages }) => {
             </div>
           </CardContent>
         </Card>
-        <LocaleSwitcher currentLocale={locale} />
         <DialogContent showCloseButton={false}>
           <DialogHeader>
             <DialogTitle className="text-destructive flex items-center justify-center gap-2">
