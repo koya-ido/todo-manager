@@ -1,4 +1,5 @@
 import { ClientLayout } from "@/components/features/ClientLayout/ClientLayout";
+import { ThemeProvider } from "@/components/features/ThemeProvider";
 import { getLocaleFromCookie, getMessages } from "@/lib/server-i18n";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -28,15 +29,17 @@ export default async function RootLayout({
   const messages = await getMessages(locale);
 
   return (
-    <html lang={locale}>
+    <html lang={locale} suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-main`}
       >
-        <main className="px-6 pt-14 pb-16 mb-5 min-h-screen flex justify-center items-start">
-          <ClientLayout locale={locale} messages={messages}>
-            {children}
-          </ClientLayout>
-        </main>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <main className="px-6 pt-14 pb-16 mb-5 min-h-screen flex justify-center items-start">
+            <ClientLayout locale={locale} messages={messages}>
+              {children}
+            </ClientLayout>
+          </main>
+        </ThemeProvider>
       </body>
     </html>
   );

@@ -1,6 +1,5 @@
 import { IconBellActive } from "@/components/Layout/Header/assets/IconBellActive";
 import { IconBellInactive } from "@/components/Layout/Header/assets/IconBellInactive";
-import { LogoutButton } from "@/components/features/LogoutButton";
 import Link from "next/link";
 import { FC, useState } from "react";
 
@@ -24,12 +23,13 @@ export const MobileHeader: FC = () => {
             ) : (
               <IconBellInactive size={24} color="var(--foreground)" />
             )}
-            <span className={`${labelClass} ${isBellActive ? "font-bold" : ""}`}>
+            <span
+              className={`${labelClass} ${isBellActive ? "font-bold" : ""}`}
+            >
               Inbox
             </span>
           </div>
         </Link>
-        <LogoutButton />
       </div>
     </header>
   );
