@@ -151,5 +151,21 @@
   "common.register": "Register",
   "common.unit": "items",
   "validate.required": "This field is required",
-  "validate.maxLength": "Please enter no more than {max} characters"
+  "validate.maxLength": "Please enter no more than {max} characters",
+  "breadcrumb.home": "Home",
+  "breadcrumb.inbox": "Notifications",
+  "breadcrumb.todo-list.private": "TODO List",
+  "breadcrumb.todo-list.team": "Team TODO List",
+  "breadcrumb.todo.detail": "Details",
+  "breadcrumb.todo.create": "Create",
+  "breadcrumb.todo.edit": "Edit",
+  "breadcrumb.todo.deleted": "Deleted TODO List",
+  "breadcrumb.team-list": "Team List",
+  "breadcrumb.team.create": "Create",
+  "breadcrumb.team.edit": "Edit",
+  "breadcrumb.user": "User",
+  "breadcrumb.user.edit": "Edit User Info",
+  "breadcrumb.user.setting": "Settings",
+  "breadcrumb.not-found": "404",
+  "breadcrumb.error": "Error"
 }
