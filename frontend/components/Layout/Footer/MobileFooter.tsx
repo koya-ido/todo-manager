@@ -1,11 +1,11 @@
 "use client";
 
 import { IconHome } from "@/components/Layout/Footer/assets/IconHome";
-import { IconStash } from "@/components/Layout/Footer/assets/IconStash";
+import { IconTeam } from "@/components/Layout/Footer/assets/IconTeam";
 import { IconTodo } from "@/components/Layout/Footer/assets/IconTodo";
 import { IconUser } from "@/components/Layout/Footer/assets/IconUser";
 import { FooterItem } from "@/components/Layout/Footer/FooterItem";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { FC } from "react";
 
 /**
@@ -15,12 +15,34 @@ import { FC } from "react";
 export const MobileFooter: FC = () => {
   /** 現在のページ */
   const currentPath = usePathname();
+  const searchParams = useSearchParams();
 
-  /** currentPathが引数と一致したらtrueを返す */
-  const isActive = (path: string) => currentPath === path;
+  /** pathと現在のURLが一致しているか判定する */
+  const isActive = (path: string) => {
+    const [targetPathname, targetQueryStr] = path.split("?");
+
+    // パス部分のチェック
+    if (currentPath !== targetPathname) {
+      return false;
+    }
+
+    // クエリパラメータのチェック
+    if (targetQueryStr) {
+      const targetParams = new URLSearchParams(targetQueryStr);
+      for (const [key, value] of targetParams.entries()) {
+        const currentValue =
+          searchParams.get(key) || (key === "mode" ? "private" : null);
+        if (currentValue !== value) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  };
 
   return (
-    <footer className="fixed bottom-0 flex justify-around items-center w-full bg-background h-16">
+    <footer className="fixed bottom-0 flex justify-around items-center w-full bg-background h-16 z-[100]">
       <FooterItem
         href="/home"
         icon={
@@ -35,32 +57,32 @@ export const MobileFooter: FC = () => {
         isActive={isActive("/home")}
       />
       <FooterItem
-        href="/private"
+        href="/todo?mode=private"
         icon={
           <IconTodo
             size={24}
             color={
-              isActive("/private") ? "var(--background)" : "var(--foreground)"
+              isActive("/todo?mode=private") ? "var(--background)" : "var(--foreground)"
             }
           />
         }
         label="private"
-        isActive={isActive("/private")}
+        isActive={isActive("/todo?mode=private")}
       />
       <FooterItem
-        href="/private?mode=stash"
+        href="/todo?mode=team"
         icon={
-          <IconStash
+          <IconTeam
             size={24}
             color={
-              isActive("/private?mode=stash")
+              isActive("/todo?mode=team")
                 ? "var(--background)"
                 : "var(--foreground)"
             }
           />
         }
-        label="stash"
-        isActive={isActive("/private?mode=stash")}
+        label="team"
+        isActive={isActive("/todo?mode=team")}
       />
       <FooterItem
         href="/user"

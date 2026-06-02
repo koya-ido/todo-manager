@@ -151,5 +151,21 @@
   "common.register": "登録",
   "common.unit": "件",
   "validate.required": "この項目は必須です",
-  "validate.maxLength": "{max} 文字以内で入力してください"
+  "validate.maxLength": "{max} 文字以内で入力してください",
+  "breadcrumb.home": "ホーム",
+  "breadcrumb.inbox": "お知らせ",
+  "breadcrumb.todo-list.private": "TODO一覧",
+  "breadcrumb.todo-list.team": "チームTODO一覧",
+  "breadcrumb.todo.detail": "詳細",
+  "breadcrumb.todo.create": "新規作成",
+  "breadcrumb.todo.edit": "編集",
+  "breadcrumb.todo.deleted": "削除済みTODO一覧",
+  "breadcrumb.team-list": "チーム一覧",
+  "breadcrumb.team.create": "新規作成",
+  "breadcrumb.team.edit": "編集",
+  "breadcrumb.user": "ユーザ",
+  "breadcrumb.user.edit": "ユーザ情報編集",
+  "breadcrumb.user.setting": "設定",
+  "breadcrumb.not-found": "404",
+  "breadcrumb.error": "エラー"
 }
