@@ -1,6 +1,6 @@
+import { Input } from "@/components/forms/Input";
 import { Label } from "@/components/forms/Label";
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
-import { Input } from "../Input";
 
 const meta = {
   title: "Forms/Label",
