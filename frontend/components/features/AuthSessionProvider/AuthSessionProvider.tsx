@@ -1,9 +1,5 @@
 "use client";
 
-import Link from "next/link";
-import { TriangleAlert } from "lucide-react";
-import { usePathname } from "next/navigation";
-import { clearAccessToken } from "@/lib/server-actions";
 import {
   registerAuthSessionErrorHandler,
   unregisterAuthSessionErrorHandler,
@@ -14,8 +10,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/Layout/Dialog";
-import { apiGet } from "@/hooks/useFetchApi";
 import { isErrorResponse } from "@/hooks/useError/errorUtils";
+import { apiGet } from "@/hooks/useFetchApi";
+import { clearAccessToken } from "@/lib/server-actions";
+import { TriangleAlert } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ReactNode, useCallback, useEffect, useRef, useState } from "react";
 
 type AuthSessionProviderProps = {
@@ -107,8 +107,8 @@ export const AuthSessionProvider = ({
           className="flex flex-col items-center gap-6"
         >
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2 text-chart-4">
-              <TriangleAlert size={16} color="var(--chart-4)" />
+            <DialogTitle className="flex items-center gap-2 text-chart-3">
+              <TriangleAlert size={16} color="var(--chart-3)" />
               {messages["session-expired-dialog.title"]}
             </DialogTitle>
           </DialogHeader>

@@ -16,7 +16,7 @@ export const LogoutButton = () => {
     }
 
     await clearAccessToken();
-    router.push("/");
+    router.push("/login");
     router.refresh();
   };
 
