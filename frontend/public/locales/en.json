@@ -53,6 +53,7 @@
   "todo-list.unregistered": "No registered TODOs",
   "todo-list.last-label": "You've confirmed all TODOs",
   "todo-list.no-match": "No TODOs match the criteria",
+  "todo-list.search-button": "Search",
   "todo-detail.heading": "Details",
   "todo-detail.description": "Check the TODO content and mark tasks as complete.",
   "todo-detail.edit": "Edit",

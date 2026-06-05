@@ -53,6 +53,7 @@
   "todo-list.unregistered": "登録されたTODOはありません",
   "todo-list.last-label": "TODOをすべて確認しました",
   "todo-list.no-match": "条件に一致するTODOはありません",
+  "todo-list.search-button": "検索",
   "todo-detail.heading": "詳細",
   "todo-detail.description": "TODOの内容を確認し、実行したタスクからチェックをつけていきましょう。",
   "todo-detail.edit": "編集する",
