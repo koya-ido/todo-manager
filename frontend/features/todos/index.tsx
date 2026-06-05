@@ -238,11 +238,10 @@ export const Content: FC<TodosProps> = ({ mode = "private", isDeleteOnly = false
         onClick={scrollToTop}
         variant="default"
         size="icon"
-        className={`fixed bottom-6 right-6 z-50 rounded-full shadow-lg transition-all duration-300 ease-in-out ${
-          showScrollButton
-            ? "opacity-100 translate-y-0 scale-100"
-            : "opacity-0 translate-y-4 scale-75 pointer-events-none"
-        }`}
+        className={`fixed bottom-20 right-6 z-50 rounded-full shadow-lg transition-all duration-300 ease-in-out ${showScrollButton
+          ? "opacity-100 translate-y-0 scale-100"
+          : "opacity-0 translate-y-4 scale-75 pointer-events-none"
+          }`}
         aria-label="Scroll to top"
       >
         <ArrowUp className="h-5 w-5" />
