@@ -52,7 +52,7 @@ export const Content: FC<ContentProps> = ({ messages }) => {
     }
 
     await clearAccessToken();
-    router.push("/");
+    router.push("/login");
     router.refresh();
   };
 

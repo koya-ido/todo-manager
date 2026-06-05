@@ -33,7 +33,7 @@ export const config = {
     "/login",
     "/home/:path*",
     "/inbox/:path*",
-    "/private/:path*",
+    "/todo/:path*",
     "/team/:path*",
     "/user/:path*",
   ],
