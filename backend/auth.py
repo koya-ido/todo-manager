@@ -9,7 +9,7 @@ import os
 # 本来は環境変数から取得
 SECRET_KEY = os.getenv("SECRET_KEY", "your-fallback-key")
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 10
+ACCESS_TOKEN_EXPIRE_MINUTES = 360
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

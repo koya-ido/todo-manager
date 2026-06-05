@@ -1,5 +1,8 @@
+from typing import Optional
+
 from fastapi import Depends, Request
 from sqlalchemy.orm import Session
+from fastapi.security import HTTPBearer
 
 from auth import (
     decode_token,
@@ -11,8 +14,10 @@ from database import get_db
 from exceptions import unauthorized_exception
 from models import RevokedToken, User
 
+auth_scheme = HTTPBearer(auto_error=False)
 
-def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:
+
+def get_current_user(request: Request, db: Session = Depends(get_db), _token_obj: Optional[object] = Depends(auth_scheme)) -> User:
     token = extract_token_from_request(request)
     if not token:
         raise unauthorized_exception(

@@ -6,6 +6,7 @@ from sqlalchemy import (
     DateTime,
     ForeignKey,
     Integer,
+    SmallInteger,
     String,
     Text,
     UniqueConstraint,
@@ -84,9 +85,9 @@ class Task(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     todo_id = Column(Integer, ForeignKey("todos.id", ondelete="CASCADE"), nullable=False, index=True)
-    position = Column(Integer, nullable=False)
-    title = Column(String(255), nullable=False)
-    content = Column(Text, nullable=True)
+    position = Column(SmallInteger, nullable=False)
+    title = Column(String(50), nullable=False)
+    content = Column(String(800), nullable=True)
     completion_flag = Column(Boolean, nullable=False, default=False, server_default="false")
 
     todo = relationship("Todo", back_populates="tasks")
