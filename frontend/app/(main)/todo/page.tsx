@@ -1,5 +1,5 @@
 import { Content } from "@/features/todos";
-import { TodoMode } from "@/features/todos/hooks/useTodos";
+import { TodoMode } from "@/types/todo";
 import { getLocaleFromCookie, getMessages } from "@/lib/server-i18n";
 
 type PageProps = {
