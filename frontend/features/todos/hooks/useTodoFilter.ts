@@ -1,9 +1,6 @@
-import {
-  TodoPriorityFilter,
-  TodoSort,
-  TodoStatusFilter,
-} from "@/features/todos/hooks/useTodos";
+import { TodoSort } from "@/features/todos/hooks/useTodos";
 import { getNextMultiSelectValue } from "@/features/todos/utils";
+import { TodoPriorityFilter, TodoStatusFilter } from "@/types/todo";
 import { useCallback, useMemo, useState } from "react";
 
 export const useTodoFilter = (messages: Record<string, string>) => {
@@ -73,7 +70,9 @@ export const useTodoFilter = (messages: Record<string, string>) => {
 
   const [appliedKeyword, setAppliedKeyword] = useState<string>("");
   const [appliedStatus, setAppliedStatus] = useState<TodoStatusFilter[]>([0]);
-  const [appliedPriority, setAppliedPriority] = useState<TodoPriorityFilter[]>([0]);
+  const [appliedPriority, setAppliedPriority] = useState<TodoPriorityFilter[]>([
+    0,
+  ]);
   const [appliedSort, setAppliedSort] = useState<TodoSort>("create-date-desc");
 
   const selectedStatusIds = useMemo(
@@ -138,7 +137,7 @@ export const useTodoFilter = (messages: Record<string, string>) => {
   );
 
   const handleClickSearch = useCallback(
-    (e: React.FormEvent<HTMLFormElement>) => {
+    (e: React.SubmitEvent<HTMLFormElement>) => {
       e.preventDefault();
       setAppliedKeyword(keyword);
       setAppliedStatus(selectedStatusIds);

@@ -1,6 +1,6 @@
 "use client";
 
-import { StatusType } from "@/features/todos/hooks/useTodos";
+import { StatusType } from "@/types/todo";
 import { cn } from "@/lib/utils";
 
 type ProgressCircleProps = {

@@ -1,5 +1,5 @@
 import { ContentProps } from "@/types/contentTypes";
-import { TodoMode } from "@/features/todos/hooks/useTodos";
+import { TodoMode } from "@/types/todo";
 
 export type TodosProps = ContentProps & {
   mode?: TodoMode;
