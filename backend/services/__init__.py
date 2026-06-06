@@ -7,7 +7,7 @@ from .tag_service import (
     validate_team_member,
 )
 from .todo_service import create_todo, get_todo, get_todos, update_todo
-from .user_service import create_user, delete_user_by_display_id
+from .user_service import create_user, delete_user_by_display_id, get_team_members
 
 __all__ = [
     "authenticate_user",
@@ -17,6 +17,8 @@ __all__ = [
     "delete_tag",
     "delete_user_by_display_id",
     "get_tags",
+    "get_team_members",
+
     "get_todo",
     "get_todos",
     "revoke_access_token",
