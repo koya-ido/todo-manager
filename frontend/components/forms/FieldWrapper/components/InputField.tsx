@@ -18,6 +18,7 @@ export const InputField: FC<
   placeholder,
   required,
   value,
+  className,
   onChange,
 }) => {
   return (
@@ -31,6 +32,7 @@ export const InputField: FC<
         type={type}
         placeholder={placeholder}
         value={value}
+        className={className}
         onChange={onChange}
       />
     </FieldWrapper>

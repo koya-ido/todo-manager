@@ -320,5 +320,6 @@ export {
   ComboboxSeparator,
   ComboboxTrigger,
   ComboboxValue,
-  useComboboxAnchor,
+  useComboboxAnchor
 };
+
