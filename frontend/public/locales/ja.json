@@ -71,6 +71,7 @@
   "todo-detail.comment.delete.success": "コメントを削除しました。",
   "todo-detail.comment.last-label": "コメントをすべて確認しました",
   "todo-detail.comment.no-comment": "コメントはまだ投稿されていません",
+  "todo-detail.comment.edited": "編集済み",
   "todo-edit.heading.edit": "編集",
   "todo-edit.heading.register": "新規作成",
   "todo-edit.description": "TODOの基本情報を設定し、完了のために必要なタスクを追加しましょう。",

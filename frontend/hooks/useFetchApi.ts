@@ -2,7 +2,7 @@ import { notifyAuthSessionError } from "@/components/features/AuthSessionProvide
 
 export type FetchApiArgs = {
   url: string;
-  method: "GET" | "POST" | "PUT" | "DELETE";
+  method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
   headers?: HeadersInit;
   body?: BodyInit | null;
 };
@@ -90,6 +90,24 @@ export const apiPut = async <T = unknown>(
     ...options,
   });
 };
+
+/**
+ * PATCH リクエスト用関数
+ * @template T - レスポンスの型
+ */
+export const apiPatch = async <T = unknown>(
+  url: string,
+  body?: BodyInit | null,
+  options?: Omit<FetchApiArgs, "url" | "method" | "body">,
+): Promise<T> => {
+  return fetchApi<T>({
+    url,
+    method: "PATCH",
+    body,
+    ...options,
+  });
+};
+
 
 /**
  * DELETE リクエスト用関数
