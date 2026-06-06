@@ -178,6 +178,7 @@ export const Content: FC<ContentProps> = ({ messages }) => {
           onSubmit={handleSubmit}
           suppressHydrationWarning
           className="w-full flex flex-col justify-center items-center gap-8"
+          noValidate
         >
           <div className="flex flex-col w-full gap-2 justify-center items-center">
             <InputField

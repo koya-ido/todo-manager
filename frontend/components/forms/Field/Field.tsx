@@ -248,6 +248,9 @@ const FieldError = ({
 }) => {
   const content = useMemo(() => {
     if (children) {
+      if (typeof children === "string") {
+        return `*${children}`;
+      }
       return children;
     }
 
@@ -260,14 +263,15 @@ const FieldError = ({
     ];
 
     if (uniqueErrors?.length == 1) {
-      return uniqueErrors[0]?.message;
+      const msg = uniqueErrors[0]?.message;
+      return msg ? `*${msg}` : null;
     }
 
     return (
       <ul className="ml-4 flex list-disc flex-col gap-1">
         {uniqueErrors.map(
           (error, index) =>
-            error?.message && <li key={index}>{error.message}</li>,
+            error?.message && <li key={index}>*{error.message}</li>,
         )}
       </ul>
     );
@@ -299,5 +303,6 @@ export {
   FieldLegend,
   FieldSeparator,
   FieldSet,
-  FieldTitle,
+  FieldTitle
 };
+

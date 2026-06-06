@@ -33,7 +33,7 @@ export const FieldWrapper: FC<FieldWrapperProps> = ({
     <Field className="gap-1">
       <FieldLabel
         className={cn(
-          "flex flex-col gap-1 items-start",
+          "flex flex-col gap-1 items-start w-full",
           errorText && "text-destructive",
         )}
       >
