@@ -4,6 +4,7 @@ from typing import Optional
 from pydantic import BaseModel, ConfigDict, Field
 
 from .tag import TagResponse
+from .user import UserResponse
 
 
 
@@ -34,6 +35,15 @@ class CommentResponse(BaseModel):
     created_at: datetime
     updated_at: datetime
     delete_flag: bool
+    user: Optional[UserResponse] = None
+
+
+class CommentCreate(BaseModel):
+    comment: str = Field(max_length=800)
+
+
+class TaskPatch(BaseModel):
+    completion_flag: bool
 
 
 class TodoBase(BaseModel):

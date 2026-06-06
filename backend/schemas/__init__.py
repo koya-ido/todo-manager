@@ -3,8 +3,10 @@ from .common import CurrentUserResponse, DeleteUserResponse, ErrorResponse, Fiel
 from .inbox import InboxCreate, InboxResponse
 from .tag import TagRequest, TagResponse, TagUpdate
 from .todo import (
+    CommentCreate,
     CommentResponse,
     TaskCreate,
+    TaskPatch,
     TaskResponse,
     TodoCreate,
     TodoResponse,
@@ -16,6 +18,7 @@ from .user import UserCreate, UserResponse
 
 __all__ = [
     "CurrentUserResponse",
+    "CommentCreate",
     "CommentResponse",
     "DeleteUserResponse",
     "ErrorResponse",
@@ -31,6 +34,7 @@ __all__ = [
     "TagResponse",
     "TagUpdate",
     "TaskCreate",
+    "TaskPatch",
     "TaskResponse",
     "TodoCreate",
     "TodoResponse",

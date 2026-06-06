@@ -73,7 +73,7 @@ class Todo(Base):
     manager = relationship("User", foreign_keys=[manager_id], back_populates="managed_todos")
     creator = relationship("User", foreign_keys=[created_by], back_populates="created_todos")
     updater = relationship("User", foreign_keys=[updated_by], back_populates="updated_todos")
-    tasks = relationship("Task", back_populates="todo", cascade="all, delete-orphan")
+    tasks = relationship("Task", back_populates="todo", order_by="Task.position", cascade="all, delete-orphan")
     comments = relationship("Comment", back_populates="todo", cascade="all, delete-orphan")
     inboxes = relationship("Inbox", back_populates="todo", cascade="all, delete-orphan")
     todo_tags = relationship("TodoTag", back_populates="todo", cascade="all, delete-orphan")
