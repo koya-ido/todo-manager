@@ -9,7 +9,7 @@ import {
   BreadcrumbSeparator,
 } from "@/components/Layout/Breadcrumb/Breadcrumb";
 import Link from "next/link";
-import { usePathname, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import React, { FC, Suspense } from "react";
 
 type BreadCrumbsProps = {
@@ -165,8 +165,17 @@ const getTrail = (
 
     // If we are at `/todo/edit`
     if (pathname === "/todo/edit") {
+      const id = searchParams.get("id");
       return [
         ...listParentItems,
+        ...(!isNew && id
+          ? [
+            {
+              label: messages["breadcrumb.todo.detail"],
+              href: `/todo/${id}?mode=${mode}`,
+            },
+          ]
+          : []),
         {
           label: isNew
             ? messages["breadcrumb.todo.create"]
@@ -216,6 +225,7 @@ const getTrail = (
 const BreadCrumbsContent: FC<BreadCrumbsProps> = ({ messages }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const router = useRouter();
 
   const trail = getTrail(pathname, searchParams, messages);
 
@@ -234,6 +244,16 @@ const BreadCrumbsContent: FC<BreadCrumbsProps> = ({ messages }) => {
               <BreadcrumbItem>
                 {isLast || !item.href ? (
                   <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                ) : item.href === "back" ? (
+                  <BreadcrumbLink asChild>
+                    <button
+                      type="button"
+                      onClick={() => router.back()}
+                      className="cursor-pointer"
+                    >
+                      {item.label}
+                    </button>
+                  </BreadcrumbLink>
                 ) : (
                   <BreadcrumbLink asChild>
                     <Link href={item.href}>{item.label}</Link>
