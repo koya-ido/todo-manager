@@ -6,8 +6,18 @@ from sqlalchemy.orm import Session
 from database import get_db
 from dependencies import get_current_user
 from models import User
-from schemas import TodoCreate, TodoResponse, TodoUpdate, TodosResponse
-from services import create_todo, get_todo, get_todos, update_todo
+from schemas import CommentCreate, CommentResponse, TaskPatch, TodoCreate, TodoResponse, TodoUpdate, TodosResponse
+from services import (
+    create_todo,
+    get_todo,
+    get_todos,
+    update_todo,
+    create_comment,
+    delete_comment,
+    update_task_completion,
+    delete_todo,
+    update_comment,
+)
 
 router = APIRouter(prefix="/api/todo")
 
@@ -66,3 +76,58 @@ def read_todo(
     current_user: User = Depends(get_current_user),
 ):
     return get_todo(db, todo_id, current_user.id)
+
+
+@router.post("/{todo_id}/comments", response_model=CommentResponse)
+def add_comment(
+    todo_id: int,
+    request: CommentCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return create_comment(db, todo_id, request.comment, current_user.id)
+
+
+@router.delete("/{todo_id}/comments/{comment_id}")
+def remove_comment(
+    todo_id: int,
+    comment_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    delete_comment(db, comment_id, current_user.id)
+    return {"success": True}
+
+
+@router.patch("/{todo_id}/tasks/{task_id}", response_model=TodoResponse)
+def patch_task(
+    todo_id: int,
+    task_id: int,
+    request: TaskPatch,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return update_task_completion(
+        db, todo_id, task_id, request.completion_flag, current_user.id
+    )
+
+
+@router.delete("/{todo_id}", response_model=TodoResponse)
+def remove_todo(
+    todo_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return delete_todo(db, todo_id, current_user.id)
+
+
+@router.put("/{todo_id}/comments/{comment_id}", response_model=CommentResponse)
+def modify_comment(
+    todo_id: int,
+    comment_id: int,
+    request: CommentCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return update_comment(db, comment_id, request.comment, current_user.id)
+

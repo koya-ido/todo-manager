@@ -378,3 +378,185 @@ def update_todo(
             detail="TODOの更新に失敗しました",
             code="TODO_UPDATE_FAILED",
         )
+
+
+def create_comment(db: Session, todo_id: int, comment_text: str, user_id: int) -> Comment:
+    # Verify todo accessibility
+    get_todo(db, todo_id, user_id)
+
+    if not comment_text.strip():
+        raise APIException(
+            status_code=400,
+            title="入力エラー",
+            detail="コメントを入力してください",
+            code="COMMENT_REQUIRED",
+        )
+
+    if len(comment_text) > 800:
+        raise APIException(
+            status_code=400,
+            title="入力エラー",
+            detail="コメントは800文字以内で入力してください",
+            code="COMMENT_TOO_LONG",
+        )
+
+    comment = Comment(
+        user_id=user_id,
+        todo_id=todo_id,
+        comment=comment_text.strip(),
+    )
+    db.add(comment)
+    try:
+        db.commit()
+        db.refresh(comment)
+        return comment
+    except Exception:
+        db.rollback()
+        raise APIException(
+            status_code=500,
+            title="登録エラー",
+            detail="コメントの登録に失敗しました",
+            code="COMMENT_CREATE_FAILED",
+        )
+
+
+def delete_comment(db: Session, comment_id: int, user_id: int) -> None:
+    comment = db.query(Comment).filter(Comment.id == comment_id).first()
+    if not comment:
+        raise APIException(
+            status_code=404,
+            title="削除エラー",
+            detail="指定されたコメントが存在しません",
+            code="COMMENT_NOT_FOUND",
+        )
+
+    if comment.user_id != user_id:
+        raise APIException(
+            status_code=403,
+            title="権限エラー",
+            detail="このコメントを削除する権限がありません",
+            code="COMMENT_DELETE_FORBIDDEN",
+        )
+
+    db.delete(comment)
+    try:
+        db.commit()
+    except Exception:
+        db.rollback()
+        raise APIException(
+            status_code=500,
+            title="削除エラー",
+            detail="コメントの削除に失敗しました",
+            code="COMMENT_DELETE_FAILED",
+        )
+
+
+def update_task_completion(
+    db: Session,
+    todo_id: int,
+    task_id: int,
+    completion_flag: bool,
+    user_id: int,
+) -> Todo:
+    todo = get_todo(db, todo_id, user_id)
+
+    task = db.query(Task).filter(Task.id == task_id, Task.todo_id == todo_id).first()
+    if not task:
+        raise APIException(
+            status_code=404,
+            title="更新エラー",
+            detail="指定されたタスクが存在しません",
+            code="TASK_NOT_FOUND",
+        )
+
+    task.completion_flag = completion_flag
+    todo.updated_by = user_id
+
+    if all(t.completion_flag for t in todo.tasks):
+        todo.status_id = 3
+
+    try:
+        db.commit()
+        db.refresh(todo)
+        return todo
+    except Exception:
+        db.rollback()
+        raise APIException(
+            status_code=500,
+            title="更新エラー",
+            detail="タスクの更新に失敗しました",
+            code="TASK_UPDATE_FAILED",
+        )
+
+
+def delete_todo(db: Session, todo_id: int, current_user_id: int) -> Todo:
+    todo = get_todo(db, todo_id, current_user_id)
+    todo.delete_flag = True
+    todo.updated_by = current_user_id
+    try:
+        db.commit()
+        db.refresh(todo)
+        return todo
+    except Exception:
+        db.rollback()
+        raise APIException(
+            status_code=500,
+            title="削除エラー",
+            detail="TODOの削除に失敗しました",
+            code="TODO_DELETE_FAILED",
+        )
+
+
+def update_comment(
+    db: Session,
+    comment_id: int,
+    comment_text: str,
+    user_id: int,
+) -> Comment:
+    comment = db.query(Comment).filter(Comment.id == comment_id).first()
+    if not comment:
+        raise APIException(
+            status_code=404,
+            title="更新エラー",
+            detail="指定されたコメントが存在しません",
+            code="COMMENT_NOT_FOUND",
+        )
+
+    if comment.user_id != user_id:
+        raise APIException(
+            status_code=403,
+            title="権限エラー",
+            detail="このコメントを編集する権限がありません",
+            code="COMMENT_UPDATE_FORBIDDEN",
+        )
+
+    if not comment_text.strip():
+        raise APIException(
+            status_code=400,
+            title="入力エラー",
+            detail="コメントを入力してください",
+            code="COMMENT_REQUIRED",
+        )
+
+    if len(comment_text) > 800:
+        raise APIException(
+            status_code=400,
+            title="入力エラー",
+            detail="コメントは800文字以内で入力してください",
+            code="COMMENT_TOO_LONG",
+        )
+
+    comment.comment = comment_text.strip()
+    try:
+        db.commit()
+        db.refresh(comment)
+        return comment
+    except Exception:
+        db.rollback()
+        raise APIException(
+            status_code=500,
+            title="更新エラー",
+            detail="コメントの更新に失敗しました",
+            code="COMMENT_UPDATE_FAILED",
+        )
+
