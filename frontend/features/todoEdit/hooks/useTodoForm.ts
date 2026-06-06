@@ -244,7 +244,7 @@ export const useTodoForm = ({
     setShowDiscardDialog,
     handleConfirmDiscard,
     handleCancelDiscard,
-  } = useNavigationGuard(isDirty, () => {
+  } = useNavigationGuard(isDirty && !isSubmitting, () => {
     setInitialState(null);
   });
 
@@ -440,6 +440,7 @@ export const useTodoForm = ({
           JSON.stringify(payload),
         );
         toast.success("TODOを登録しました");
+        setInitialState(null);
         router.push(`/todo/${response.id}?mode=${mode}`);
       } else {
         const response = await apiPut<TodoResponse>(
@@ -447,6 +448,7 @@ export const useTodoForm = ({
           JSON.stringify(payload),
         );
         toast.success("TODOを更新しました");
+        setInitialState(null);
         router.push(`/todo/${response.id}?mode=${mode}`);
       }
     } catch (error) {
