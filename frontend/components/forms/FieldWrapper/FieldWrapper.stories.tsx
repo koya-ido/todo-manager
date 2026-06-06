@@ -5,6 +5,8 @@ import { InputField } from "@/components/forms/FieldWrapper/components/InputFiel
 import { InputGroupField } from "@/components/forms/FieldWrapper/components/InputGroupField";
 import { PasswordField } from "@/components/forms/FieldWrapper/components/PasswordField";
 import { SelectField } from "@/components/forms/FieldWrapper/components/SelectField";
+import { DateField } from "@/components/forms/FieldWrapper/components/DateField";
+import { CheckboxField } from "@/components/forms/FieldWrapper/components/CheckboxField";
 import { Separator } from "@/components/Layout/Separator/Separator";
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
 import * as React from "react";
@@ -175,5 +177,82 @@ export const Select: Story = {
   },
   decorators: [
     () => <SelectFieldDemo />
+  ],
+};
+
+const DateFieldDemo = () => {
+  const [value, setValue] = React.useState("");
+
+  return (
+    <div className="flex flex-col gap-4 w-[300px]">
+      <DateField
+        label="Select Date"
+        value={value}
+        onChange={setValue}
+        placeholder="Pick a date..."
+      />
+      <Separator />
+      <DateField
+        label="Select Date with Description"
+        value={value}
+        onChange={setValue}
+        description={description}
+        placeholder="Pick a date..."
+      />
+      <Separator />
+      <DateField
+        label="With Error"
+        value={value}
+        onChange={setValue}
+        errorText="This field is required."
+        placeholder="Pick a date..."
+      />
+    </div>
+  );
+};
+
+export const DateFieldStory: Story = {
+  args: {
+    label: "Date",
+  },
+  decorators: [
+    () => <DateFieldDemo />
+  ],
+};
+
+const CheckboxFieldDemo = () => {
+  const [checked, setChecked] = React.useState<boolean | "indeterminate">(false);
+
+  return (
+    <div className="flex flex-col gap-4 w-[300px]">
+      <CheckboxField
+        label="Accept Terms"
+        checked={checked}
+        onCheckedChange={setChecked}
+      />
+      <Separator />
+      <CheckboxField
+        label="Accept Terms with Description"
+        checked={checked}
+        onCheckedChange={setChecked}
+        description={description}
+      />
+      <Separator />
+      <CheckboxField
+        label="With Error"
+        checked={checked}
+        onCheckedChange={setChecked}
+        errorText="You must accept the terms and conditions."
+      />
+    </div>
+  );
+};
+
+export const CheckboxFieldStory: Story = {
+  args: {
+    label: "Checkbox",
+  },
+  decorators: [
+    () => <CheckboxFieldDemo />
   ],
 };

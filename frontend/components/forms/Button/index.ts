@@ -1,3 +1,3 @@
-import { Button } from "@/components/forms/Button/Button";
+import { Button, buttonVariants } from "@/components/forms/Button/Button";
 
-export { Button };
+export { Button, buttonVariants };
