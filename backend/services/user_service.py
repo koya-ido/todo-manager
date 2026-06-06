@@ -162,3 +162,38 @@ def delete_user_by_display_id(db: Session, display_user_id: str) -> DeleteUserRe
     db.commit()
 
     return DeleteUserResponse(display_id=display_user_id, deletion_mode=deletion_mode)
+
+
+def get_team_members(db: Session, team_id: int, current_user_id: int) -> list[User]:
+    # 1. チームの存在確認
+    team_exists = db.query(Team.id).filter(Team.id == team_id).first()
+    if not team_exists:
+        raise APIException(
+            status_code=404,
+            title="取得エラー",
+            detail="指定されたチームが存在しません",
+            code="TEAM_NOT_FOUND",
+        )
+
+    # 2. 権限確認 (現在のユーザーがメンバーか)
+    membership_exists = db.query(TeamUser.id).filter(
+        TeamUser.team_id == team_id,
+        TeamUser.user_id == current_user_id,
+    ).first()
+    if not membership_exists:
+        raise APIException(
+            status_code=403,
+            title="権限エラー",
+            detail="指定されたチームの情報を操作・閲覧する権限がありません",
+            code="TEAM_FORBIDDEN",
+        )
+
+    # 3. メンバー一覧の取得
+    members = (
+        db.query(User)
+        .join(TeamUser, User.id == TeamUser.user_id)
+        .filter(TeamUser.team_id == team_id, User.delete_flag.is_(False))
+        .all()
+    )
+    return members
+

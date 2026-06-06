@@ -3,6 +3,9 @@ from typing import Optional
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from .tag import TagResponse
+
+
 
 class TaskBase(BaseModel):
     title: str = Field(max_length=50)
@@ -46,6 +49,7 @@ class TodoBase(BaseModel):
 
 class TodoCreate(TodoBase):
     tasks: list[TaskCreate] = Field(min_length=1)
+    tag_ids: Optional[list[int]] = None
 
 
 class TodoUpdate(BaseModel):
@@ -58,6 +62,7 @@ class TodoUpdate(BaseModel):
     remarks: Optional[str] = None
     delete_flag: Optional[bool] = None
     tasks: Optional[list[TaskCreate]] = None
+    tag_ids: Optional[list[int]] = None
 
 
 class TodoResponse(TodoBase):
@@ -70,6 +75,7 @@ class TodoResponse(TodoBase):
     updated_at: datetime
     tasks: list[TaskResponse] = Field(default_factory=list)
     comments: list[CommentResponse] = Field(default_factory=list)
+    tags: list[TagResponse] = Field(default_factory=list)
 
 
 class TodosResponse(BaseModel):

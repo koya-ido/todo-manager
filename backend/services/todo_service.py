@@ -3,7 +3,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from exceptions import APIException
-from models import Comment, Priority, Status, Task, Team, TeamUser, Todo, User
+from models import Comment, Priority, Status, Task, Team, TeamUser, Todo, User, TodoTag
 from schemas import TaskCreate, TodoCreate, TodoUpdate
 
 
@@ -290,6 +290,7 @@ def create_todo(db: Session, request: TodoCreate, current_user_id: int) -> Todo:
         remarks=request.remarks,
         delete_flag=request.delete_flag,
         tasks=create_task_models(tasks),
+        todo_tags=[TodoTag(tag_id=tag_id) for tag_id in request.tag_ids] if request.tag_ids else [],
     )
     db.add(todo)
     
@@ -320,6 +321,7 @@ def update_todo(
     update_data = request.model_dump(exclude_unset=True)
     task_requests = update_data.pop("tasks", None)
     tasks = None
+    tag_ids = update_data.pop("tag_ids", None)
 
     new_team_id = update_data.get("team_id", todo.team_id)
     validate_team_scope(db, new_team_id, current_user_id)
@@ -358,6 +360,11 @@ def update_todo(
         todo.tasks.clear()
         db.flush()
         todo.tasks.extend(create_task_models(tasks))
+
+    if tag_ids is not None:
+        todo.todo_tags.clear()
+        db.flush()
+        todo.todo_tags.extend([TodoTag(tag_id=tag_id) for tag_id in tag_ids])
 
     try:
         db.commit()
