@@ -1,0 +1,562 @@
+"use client";
+
+import { Button } from "@/components/forms/Button";
+import { Checkbox } from "@/components/forms/Checkbox";
+import { ToggleGroup, ToggleGroupItem } from "@/components/forms/ToggleGroup";
+import { Badge, PriorityBadge, StatusBadge } from "@/components/Layout/Badge";
+import { Card } from "@/components/Layout/Card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/Layout/Dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/Layout/Popover";
+import { Separator } from "@/components/Layout/Separator";
+import { Heading } from "@/components/typography/Heading";
+import { useTodoDetail } from "@/features/todoDetail/hooks/useTodoDetail";
+import { TodoDetailProps } from "@/features/todoDetail/types";
+import { cn } from "@/lib/utils";
+import { Priority, Status } from "@/types/todo";
+import { AlertCircle, MessageSquare, MoreVertical, Pencil, Trash2 } from "lucide-react";
+import Link from "next/link";
+import { FC, useState } from "react";
+
+
+
+export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", messages }) => {
+  const {
+    todo,
+    currentUser,
+    isLoading,
+    commentText,
+    setCommentText,
+    isSubmittingComment,
+    isUpdatingCommentId,
+    handleUpdateStatus,
+    handleToggleTask,
+    handleSendComment,
+    handleDeleteComment,
+    handleDeleteTodo,
+    handleUpdateComment,
+  } = useTodoDetail({ todoId, messages });
+
+  const statusItems = [
+    { value: "1", label: messages["common.status.not-started"], statusKey: "not-started" },
+    { value: "2", label: messages["common.status.in-progress"], statusKey: "in-progress" },
+    { value: "3", label: messages["common.status.done"], statusKey: "done" },
+    { value: "4", label: messages["common.status.pending"], statusKey: "pending" },
+  ];
+
+  // Comment delete dialog state
+  const [commentToDeleteId, setCommentToDeleteId] = useState<number | null>(null);
+
+  // Todo delete states
+  const [isDeleteTodoDialogOpen, setIsDeleteTodoDialogOpen] = useState<boolean>(false);
+  const [isDeletingTodo, setIsDeletingTodo] = useState<boolean>(false);
+
+  // Comment edit states
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+  const [editingCommentText, setEditingCommentText] = useState<string>("");
+
+  const handleStartEditComment = (commentId: number, currentText: string) => {
+    setEditingCommentId(commentId);
+    setEditingCommentText(currentText);
+  };
+
+  const handleCancelEditComment = () => {
+    setEditingCommentId(null);
+    setEditingCommentText("");
+  };
+
+  const handleSaveCommentEdit = async (commentId: number) => {
+    try {
+      await handleUpdateComment(commentId, editingCommentText);
+      setEditingCommentId(null);
+      setEditingCommentText("");
+    } catch {
+      // Error is handled in the hook
+    }
+  };
+
+
+  if (isLoading) {
+    return (
+      <div className="w-full flex justify-center items-center py-20">
+        <p className="text-muted-foreground">Loading...</p>
+      </div>
+    );
+  }
+
+  if (!todo) {
+    return (
+      <div className="w-full flex justify-center items-center py-20">
+        <p className="text-destructive font-semibold">TODOが見つかりませんでした。</p>
+      </div>
+    );
+  }
+
+  // Formatting dates
+  const formatDate = (dateStr: string | null) => {
+    if (!dateStr) return "yyyy/MM/dd";
+    const d = new Date(dateStr);
+    const pad = (num: number) => String(num).padStart(2, "0");
+    return `${d.getFullYear()}/${pad(d.getMonth() + 1)}/${pad(d.getDate())}`;
+  };
+
+  const formatDateTime = (dateStr: string) => {
+    if (!dateStr) return "";
+    const d = new Date(dateStr);
+    const pad = (num: number) => String(num).padStart(2, "0");
+    return `${d.getFullYear()}/${pad(d.getMonth() + 1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  };
+
+  // Progress calculation
+  const totalTasksCount = todo.tasks.length;
+  const completedTasksCount = todo.tasks.filter((t) => t.completion_flag).length;
+  const progress = totalTasksCount > 0 ? Math.round((completedTasksCount / totalTasksCount) * 100) : 0;
+
+  // Overdue check
+  const isOverdue =
+    todo.due_date &&
+    new Date(todo.due_date).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0) &&
+    todo.status_id !== 3; // Not "Done"
+
+  const todoStatusKey = Status[todo.status_id as keyof typeof Status] || "not-started";
+  const todoPriorityKey = Priority[todo.priority_id as keyof typeof Priority] || "medium";
+
+  return (
+    <div className="w-full pb-20 space-y-6">
+      {/* Title Header */}
+      <section className="space-y-1 py-2">
+        <Heading level={1} className="text-2xl font-bold">
+          {messages["todo-detail.heading"] || "詳細"}
+        </Heading>
+        <p className="text-sm text-muted-foreground">
+          {messages["todo-detail.description"] ||
+            "TODOの内容を確認し、実行したタスクからチェックをつけていきましょう。"}
+        </p>
+      </section>
+
+      {/* Main TODO Detail Card */}
+      <Card className="p-5 rounded-2xl border bg-card space-y-5 shadow-xs">
+        {/* Badges */}
+        <div className="flex gap-2">
+          <StatusBadge status={todoStatusKey} messages={messages} />
+          <PriorityBadge priority={todoPriorityKey} messages={messages} />
+        </div>
+
+        {/* Title */}
+        <h2 className="text-xl font-bold text-foreground break-words">{todo.name}</h2>
+
+        {/* Dates Info */}
+        <div className="grid grid-cols-2 gap-4 border-t border-gray-100 pt-3 text-sm">
+          <div>
+            <p className="text-xs text-muted-foreground font-semibold mb-0.5">
+              {messages["common.start-date"] || "開始日"}
+            </p>
+            <p className="font-bold text-foreground">{formatDate(todo.created_at)}</p>
+          </div>
+          <div>
+            <p className={cn("text-xs font-semibold mb-0.5", isOverdue ? "text-destructive" : "text-muted-foreground")}>
+              {messages["common.due-date"] || "期限日"}
+            </p>
+            <div className="flex items-center gap-1.5">
+              <p className={cn("font-bold", isOverdue ? "text-destructive" : "text-foreground")}>
+                {formatDate(todo.due_date)}
+              </p>
+              {isOverdue && <AlertCircle className="h-4 w-4 text-destructive fill-destructive/10 shrink-0" />}
+            </div>
+          </div>
+        </div>
+
+        {/* Progress Bar */}
+        <div className="space-y-1.5">
+          <div className="flex justify-between items-center text-xs">
+            <span className="text-muted-foreground font-semibold">進捗状況</span>
+            <span className="font-bold text-foreground">{progress}%</span>
+          </div>
+          <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+            <div
+              className="bg-foreground h-full rounded-full transition-all duration-300 ease-out"
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
+
+        {/* Status Toggle Control */}
+        <ToggleGroup
+          type="single"
+          value={String(todo.status_id)}
+          onValueChange={(val) => {
+            if (val) handleUpdateStatus(val);
+          }}
+          spacing={1}
+          className="flex border border-gray-200 rounded-lg bg-gray-50 p-1 w-full"
+        >
+          {statusItems.map((item) => (
+            <ToggleGroupItem
+              key={item.value}
+              value={item.value}
+              className={cn(
+                "flex-1 py-1.5 text-xs font-semibold rounded-md transition-all duration-150 cursor-pointer focus:outline-hidden text-center justify-center h-auto hover:bg-transparent text-gray-500 hover:text-gray-700 bg-transparent shadow-none border-0",
+                "data-[state=on]:bg-white data-[state=on]:text-foreground data-[state=on]:font-bold data-[state=on]:shadow-xs data-[state=on]:border data-[state=on]:border-gray-200/50"
+              )}
+            >
+              {messages[`common.status.${item.statusKey}`] || item.label}
+            </ToggleGroupItem>
+          ))}
+        </ToggleGroup>
+      </Card>
+
+      {/* Edit and Delete Actions */}
+      <div className="flex gap-3">
+        <Button
+          variant="secondary"
+          asChild
+          className="flex-1 bg-background border border-gray-200 hover:bg-gray-50 text-foreground font-bold py-3 shadow-xs flex items-center justify-center gap-2 text-sm"
+        >
+          <Link href={`/todo/edit?mode=${mode}&id=${todoId}`}>
+            <Pencil className="h-4 w-4" />
+            {messages["todo-detail.edit"] || "編集する"}
+          </Link>
+        </Button>
+        <Button
+          variant="destructive"
+          type="button"
+          onClick={() => setIsDeleteTodoDialogOpen(true)}
+          className="flex-1 text-sm font-bold py-3 shadow-xs flex items-center justify-center gap-2 cursor-pointer"
+        >
+          <Trash2 className="h-4 w-4" />
+          {messages["todo-detail.delete"] || "削除する"}
+        </Button>
+      </div>
+
+      {/* Tags Section */}
+      <section className="space-y-3 pt-2">
+        <div className="flex justify-between items-center">
+          <Heading level={2} className="text-lg font-bold">
+            {messages["todo-detail.tag"] || "タグ"}
+          </Heading>
+          <span className="text-sm text-muted-foreground font-medium">
+            {todo.tags.length}
+            {messages["common.unit"] || "件"}
+          </span>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {todo.tags.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              {messages["todo-detail.no-tag"] || "タグはありません"}
+            </p>
+          ) : (
+            todo.tags.map((tag) => (
+              <Badge
+                key={tag.id}
+                className="bg-[#D9D9D9] text-foreground flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
+              >
+                {tag.name}
+              </Badge>
+            ))
+          )}
+        </div>
+      </section>
+
+      {/* Tasks Section */}
+      <section className="space-y-3 pt-2">
+        <div className="flex justify-between items-center">
+          <Heading level={2} className="text-lg font-bold">
+            {messages["todo-detail.task"] || "タスク"}
+          </Heading>
+          <span className="text-sm text-muted-foreground font-medium">
+            {todo.tasks.length}
+            {messages["common.unit"] || "件"}
+          </span>
+        </div>
+        <div className="space-y-2.5">
+          {todo.tasks.length === 0 ? (
+            <p className="text-sm text-muted-foreground">タスクはありません</p>
+          ) : (
+            [...todo.tasks]
+              .sort((a, b) => a.position - b.position)
+              .map((task) => (
+                <div
+                  key={task.id}
+                  className="flex items-center gap-3 p-4 rounded-xl border border-gray-100 bg-card shadow-2xs"
+                >
+                  {/* Custom Checkbox */}
+                  <Checkbox
+                    checked={task.completion_flag}
+                    onCheckedChange={(checked) => {
+                      handleToggleTask(task.id, checked === true);
+                    }}
+                    className="mt-0.5 size-5 border-gray-300 data-[state=checked]:bg-foreground data-[state=checked]:border-foreground data-[state=checked]:text-background cursor-pointer"
+                  />
+                  {/* Task Content */}
+                  <div className="flex-1 min-w-0 space-y-0.5">
+                    <p className={cn("text-sm font-semibold break-words", task.completion_flag ? "text-muted-foreground line-through" : "text-foreground")}>
+                      {task.title}
+                    </p>
+                    {task.content && (
+                      <>
+                        <Separator />
+                        <p className={cn("text-xs whitespace-pre-wrap leading-relaxed break-words", task.completion_flag ? "text-muted-foreground/60" : "text-muted-foreground")}>
+                          {task.content}
+                        </p>
+                      </>
+                    )}
+                  </div>
+                </div>
+              ))
+          )}
+        </div>
+      </section>
+
+      {/* Comments Section */}
+      <section className="space-y-3 pt-2">
+        <div className="flex justify-between items-center">
+          <Heading level={2} className="text-lg font-bold">
+            {messages["todo-detail.comment"] || "コメント"}
+          </Heading>
+          <span className="text-sm text-muted-foreground font-medium">
+            {todo.comments.filter(c => !c.delete_flag).length}
+            {messages["common.unit"] || "件"}
+          </span>
+        </div>
+
+        {/* New Comment Input Form */}
+        <form onSubmit={handleSendComment} className="space-y-2">
+          <textarea
+            placeholder={messages["todo-detail.comment.placeholder"] || "コメントを入力してください..."}
+            value={commentText}
+            onChange={(e) => setCommentText(e.target.value)}
+            disabled={isSubmittingComment}
+            maxLength={800}
+            rows={3}
+            className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-hidden focus:border-foreground bg-white text-foreground placeholder:text-muted-foreground/50 resize-none font-sans"
+          />
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              disabled={isSubmittingComment || !commentText.trim()}
+              className="bg-foreground text-background hover:bg-foreground/90 font-bold px-5 py-2 text-sm rounded-lg flex items-center justify-center gap-1.5"
+            >
+              {messages["todo-detail.comment.send"] || "送信"}
+            </Button>
+          </div>
+        </form>
+
+        {/* Comment Items list */}
+        <div className="space-y-3 pt-2">
+          {todo.comments.filter(c => !c.delete_flag).length === 0 ? (
+            <div className="w-full py-8 flex flex-col justify-center items-center gap-2 text-muted-foreground/60">
+              <MessageSquare className="h-6 w-6 stroke-1" />
+              <p className="text-xs">
+                {messages["todo-detail.comment.no-comment"] || "コメントはまだ投稿されていません"}
+              </p>
+            </div>
+) : (
+            [...todo.comments]
+              .filter((comment) => !comment.delete_flag)
+              .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+              .map((comment) => {
+                const commentUser = comment.user;
+                const authorDisplay = commentUser ? commentUser.user_name : `user_${comment.user_id}`;
+                const authorDisplayId = commentUser ? commentUser.display_user_id : undefined;
+                const isAuthor =
+                  currentUser && commentUser && currentUser.display_user_id === commentUser.display_user_id;
+                const isEdited = new Date(comment.updated_at).getTime() > new Date(comment.created_at).getTime();
+
+                return (
+                  <div
+                    key={comment.id}
+                    className="p-4 rounded-xl border border-gray-100 bg-card space-y-1.5 shadow-2xs"
+                  >
+                    <div className="flex justify-between items-center text-xs">
+                      <div className="flex gap-2">
+
+                        <span className="font-bold text-foreground">{authorDisplay}</span>
+                        <span className="font-bold text-foreground/50">#{authorDisplayId}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-muted-foreground font-medium">
+                        <div className="flex items-center gap-1.5">
+                          <span>{formatDateTime(comment.created_at)}</span>
+                          {isEdited && (
+                            <span className="text-[10px] bg-gray-100 text-muted-foreground/85 px-1.5 py-0.5 rounded-sm font-bold select-none">
+                              {messages["todo-detail.comment.edited"] || "編集済み"}
+                            </span>
+                          )}
+                        </div>
+                        {isAuthor && (
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <Button
+                                type="button"
+                                variant="ghost"
+                                className="p-0 size-6 rounded-full flex items-center justify-center hover:bg-gray-100 cursor-pointer text-muted-foreground"
+                                title="操作"
+                              >
+                                <MoreVertical className="h-3.5 w-3.5" />
+                              </Button>
+                            </PopoverTrigger>
+                            <PopoverContent align="end" className="w-24 p-1 flex flex-col bg-white border border-gray-100 rounded-lg shadow-md">
+                              <button
+                                type="button"
+                                onClick={() => handleStartEditComment(comment.id, comment.comment)}
+                                className="w-full text-left px-3 py-1.5 text-xs font-semibold hover:bg-gray-50 text-foreground flex items-center gap-2 rounded-md cursor-pointer"
+                              >
+                                <Pencil className="h-3 w-3" />
+                                編集
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => setCommentToDeleteId(comment.id)}
+                                className="w-full text-left px-3 py-1.5 text-xs font-semibold hover:bg-gray-50 text-destructive flex items-center gap-2 rounded-md cursor-pointer"
+                              >
+                                <Trash2 className="h-3 w-3 text-destructive" />
+                                削除
+                              </button>
+                            </PopoverContent>
+                          </Popover>
+                        )}
+                      </div>
+                    </div>
+                    {editingCommentId === comment.id ? (
+                      <div className="space-y-2 pt-1">
+                        <textarea
+                          value={editingCommentText}
+                          onChange={(e) => setEditingCommentText(e.target.value)}
+                          disabled={isUpdatingCommentId === comment.id}
+                          maxLength={800}
+                          rows={3}
+                          className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-hidden focus:border-foreground bg-white text-foreground resize-none font-sans"
+                        />
+                        <div className="flex justify-end gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={handleCancelEditComment}
+                            disabled={isUpdatingCommentId === comment.id}
+                            className="px-3 py-1.5 text-xs font-bold rounded-lg cursor-pointer"
+                          >
+                            キャンセル
+                          </Button>
+                          <Button
+                            type="button"
+                            disabled={isUpdatingCommentId === comment.id || !editingCommentText.trim()}
+                            onClick={() => handleSaveCommentEdit(comment.id)}
+                            className="bg-foreground text-background hover:bg-foreground/90 font-bold px-3 py-1.5 text-xs rounded-lg cursor-pointer"
+                          >
+                            保存
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-sm text-foreground whitespace-pre-wrap leading-relaxed break-words">
+                        {comment.comment}
+                      </p>
+                    )}
+                  </div>
+                );
+              })
+          )}
+        </div>
+
+        {/* Bottom indicator */}
+        {todo.comments.filter(c => !c.delete_flag).length > 0 && (
+          <div className="w-full flex flex-col justify-center items-center gap-2 py-6 text-muted-foreground/50">
+            <MessageSquare className="h-5 w-5 stroke-1" />
+            <p className="text-xs">
+              {messages["todo-detail.comment.last-label"] || "コメントをすべて確認しました"}
+            </p>
+          </div>
+        )}
+      </section>
+
+      {/* Delete Comment Confirmation Dialog */}
+      <Dialog open={commentToDeleteId !== null} onOpenChange={(open) => !open && setCommentToDeleteId(null)}>
+        <DialogContent showCloseButton={false}>
+          <DialogHeader>
+            <DialogTitle className="text-destructive flex items-center justify-center gap-2 text-md">
+              <AlertCircle size={20} className="text-destructive" />
+              {messages["todo-detail.comment.delete"] || "コメントの削除"}
+            </DialogTitle>
+          </DialogHeader>
+          <DialogDescription className="text-center py-2 text-sm">
+            {messages["todo-detail.comment.confirm-delete"] || "本当にこのコメントを削除しますか？"}
+          </DialogDescription>
+          <DialogFooter>
+            <div className="w-full flex flex-col gap-2">
+              <Button
+                variant="destructive"
+                className="w-full text-sm font-semibold cursor-pointer"
+                onClick={async () => {
+                  if (commentToDeleteId !== null) {
+                    const id = commentToDeleteId;
+                    setCommentToDeleteId(null);
+                    await handleDeleteComment(id);
+                  }
+                }}
+              >
+                {messages["todo-detail.comment.delete"] || "削除"}
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full text-sm font-semibold cursor-pointer"
+                onClick={() => setCommentToDeleteId(null)}
+              >
+                キャンセル
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete TODO Confirmation Dialog */}
+      <Dialog open={isDeleteTodoDialogOpen} onOpenChange={(open) => !open && setIsDeleteTodoDialogOpen(false)}>
+        <DialogContent showCloseButton={false} className="w-full">
+          <DialogHeader>
+            <DialogTitle className="text-destructive flex items-center justify-center gap-2 text-md">
+              <AlertCircle size={20} className="text-destructive" />
+              {messages["todo-detail.delete.dialog.title"] || "TODOの削除"}
+            </DialogTitle>
+          </DialogHeader>
+          <DialogDescription className="text-center py-2 text-sm">
+            {messages["todo-detail.delete.dialog.confirm"] || "本当にこのTODOを削除しますか？\n削除したTODOは元に戻せません。"}
+          </DialogDescription>
+          <DialogFooter>
+            <div className="w-full flex flex-col gap-2">
+              <Button
+                variant="destructive"
+                className="w-full text-sm font-semibold cursor-pointer"
+                disabled={isDeletingTodo}
+                onClick={async () => {
+                  setIsDeletingTodo(true);
+                  try {
+                    await handleDeleteTodo(mode);
+                  } catch {
+                    // Handled in hook
+                  } finally {
+                    setIsDeletingTodo(false);
+                    setIsDeleteTodoDialogOpen(false);
+                  }
+                }}
+              >
+                {messages["todo-detail.delete"] || "削除"}
+              </Button>
+              <Button
+                variant="outline"
+                className="w-full text-sm font-semibold cursor-pointer"
+                disabled={isDeletingTodo}
+                onClick={() => setIsDeleteTodoDialogOpen(false)}
+              >
+                キャンセル
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};

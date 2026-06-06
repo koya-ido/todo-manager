@@ -71,6 +71,7 @@
   "todo-detail.comment.delete.success": "Comment deleted successfully.",
   "todo-detail.comment.last-label": "You've confirmed all comments",
   "todo-detail.comment.no-comment": "No comments posted yet",
+  "todo-detail.comment.edited": "Edited",
   "todo-edit.heading.edit": "Edit",
   "todo-edit.heading.register": "Register",
   "todo-edit.description": "Set basic TODO information and add necessary tasks to complete.",
