@@ -137,7 +137,13 @@ export const Content: FC<TodosProps> = ({ mode = "private", isDeleteOnly = false
     };
   }, [loadMore, hasMore]);
 
-  const handleClickTodo = (todoId: number): void => router.push(`/todo/${todoId}`);
+  const handleClickTodo = (todoId: number): void => {
+    if (mode === "team" && teamId) {
+      router.push(`/todo/${todoId}?mode=team&teamId=${teamId}`);
+    } else {
+      router.push(`/todo/${todoId}?mode=${mode}`);
+    }
+  };
 
   const activeStatuses = status.filter(Boolean);
   const activePriorities = priority.filter(Boolean);
