@@ -19,7 +19,7 @@ type PageProps = {
  * @param teamId チームのID
  * @returns TODO詳細画面
  */
-export default async function TodoListPage({ params, searchParams }: PageProps) {
+export default async function TodoDetailPage({ params, searchParams }: PageProps) {
   const locale = await getLocaleFromCookie();
   const messages = await getMessages(locale);
 
