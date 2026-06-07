@@ -141,7 +141,7 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
       </section>
 
       {/* Main TODO Detail Card */}
-      <Card className="p-5 rounded-2xl border bg-card space-y-5 shadow-xs">
+      <Card className="p-5 rounded-2xl border bg-card shadow-xs">
         {/* Badges */}
         <div className="flex gap-2">
           <StatusBadge status={todoStatusKey} messages={messages} />
@@ -151,8 +151,21 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
         {/* Title */}
         <h2 className="text-xl font-bold text-foreground break-words">{todo.name}</h2>
 
+        {mode === "team" && (
+          <div>
+            <p className="text-xs text-muted-foreground font-semibold mb-0.5">
+              {messages["todo-edit.manager"]}
+            </p>
+            <div className="flex items-center" title={todo.manager ? `${todo.manager.user_name} #${todo.manager.display_user_id}` : undefined}>
+              {todo.manager
+                ? <p className="flex gap-2 font-bold items-center">{todo.manager.user_name}<span className="text-foreground/60 text-xs">#{todo.manager.display_user_id}</span></p>
+                : (messages["todo-detail.unassigned"])}
+            </div>
+          </div>
+        )}
+
         {/* Dates Info */}
-        <div className="grid grid-cols-2 gap-4 border-t border-gray-100 pt-3 text-sm">
+        <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <p className="text-xs text-muted-foreground font-semibold mb-0.5">
               {messages["common.start-date"] || "開始日"}
@@ -356,7 +369,7 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
                 {messages["todo-detail.comment.no-comment"] || "コメントはまだ投稿されていません"}
               </p>
             </div>
-) : (
+          ) : (
             [...todo.comments]
               .filter((comment) => !comment.delete_flag)
               .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())

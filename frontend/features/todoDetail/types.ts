@@ -44,6 +44,7 @@ export type TodoDetail = {
   priority_id: number;
   team_id?: number | null;
   manager_id?: number | null;
+  manager?: UserObj | null;
   created_at: string | null;
   due_date: string | null;
   tags: Tag[];
