@@ -3,12 +3,13 @@ from sqlalchemy import func
 
 from auth import verify_password
 from exceptions import APIException
-from models import Team, TeamUser, User, TeamApplication
+from models import Team, TeamUser, User, TeamApplication, Todo, Tag
 from schemas import (
     TeamApplicantResponse,
     TeamApplyingResponse,
     TeamJoinedResponse,
     TeamSearchResponse,
+    TeamDetailResponse,
 )
 
 
@@ -47,6 +48,7 @@ def search_team_by_display_id(db: Session, display_teams_id: str, current_user_i
         created_user_display_id=owner_display_id,
         is_member=is_member,
         is_applying=is_applying,
+        accepting_applications=team.accepting_applications,
     )
 
 
@@ -152,7 +154,16 @@ def apply_to_team(db: Session, team_id: int, user_id: int, password: str) -> Non
             code="ALREADY_APPLYING",
         )
 
-    # 4. パスワード検証
+    # 4. 申請受付状態の確認
+    if not team.accepting_applications:
+        raise APIException(
+            status_code=400,
+            title="申請エラー",
+            detail="このチームは現在申請を受け付けていません",
+            code="TEAM_NOT_ACCEPTING_APPLICATIONS",
+        )
+
+    # 5. パスワード検証
     if not verify_password(password, team.password):
         raise APIException(
             status_code=400,
@@ -161,7 +172,7 @@ def apply_to_team(db: Session, team_id: int, user_id: int, password: str) -> Non
             code="INVALID_TEAM_PASSWORD",
         )
 
-    # 5. 申請を作成
+    # 6. 申請を作成
     app = TeamApplication(team_id=team_id, user_id=user_id)
     db.add(app)
     db.commit()
@@ -306,4 +317,141 @@ def reject_applicant(db: Session, team_id: int, user_id: int, current_user_id: i
 
     # 3. 申請を削除
     db.delete(app)
+    db.commit()
+
+
+def get_team_details(db: Session, team_id: int, current_user_id: int) -> TeamDetailResponse:
+    team = db.query(Team).filter(Team.id == team_id).first()
+    if not team:
+        raise APIException(
+            status_code=404,
+            title="取得エラー",
+            detail="指定されたチームが存在しません",
+            code="TEAM_NOT_FOUND",
+        )
+
+    # メンバーであるか、あるいは管理者(作成者)であるか確認
+    is_member = db.query(TeamUser.id).filter(
+        TeamUser.team_id == team_id,
+        TeamUser.user_id == current_user_id,
+    ).first() is not None
+
+    if not is_member and team.created_user_id != current_user_id:
+        raise APIException(
+            status_code=403,
+            title="権限エラー",
+            detail="指定されたチームの情報を閲覧する権限がありません",
+            code="TEAM_FORBIDDEN",
+        )
+
+    owner = db.query(User).filter(User.id == team.created_user_id).first()
+    owner_name = owner.user_name if owner else "Unknown"
+    owner_display_id = owner.display_user_id if owner else "------"
+    is_owner = team.created_user_id == current_user_id
+
+    return TeamDetailResponse(
+        id=team.id,
+        display_teams_id=team.display_teams_id,
+        name=team.name,
+        created_user_id=team.created_user_id,
+        created_user_name=owner_name,
+        created_user_display_id=owner_display_id,
+        is_owner=is_owner,
+        accepting_applications=team.accepting_applications,
+    )
+
+
+def update_accepting_applications(db: Session, team_id: int, accepting: bool, current_user_id: int) -> None:
+    team = db.query(Team).filter(Team.id == team_id).first()
+    if not team:
+        raise APIException(
+            status_code=404,
+            title="更新エラー",
+            detail="指定されたチームが存在しません",
+            code="TEAM_NOT_FOUND",
+        )
+
+    if team.created_user_id != current_user_id:
+        raise APIException(
+            status_code=403,
+            title="権限エラー",
+            detail="チーム管理者のみが申請受付状態を更新できます",
+            code="TEAM_FORBIDDEN",
+        )
+
+    team.accepting_applications = accepting
+    db.commit()
+
+
+def delete_team(db: Session, team_id: int, current_user_id: int) -> None:
+    team = db.query(Team).filter(Team.id == team_id).first()
+    if not team:
+        raise APIException(
+            status_code=404,
+            title="削除エラー",
+            detail="指定されたチームが存在しません",
+            code="TEAM_NOT_FOUND",
+        )
+
+    if team.created_user_id != current_user_id:
+        raise APIException(
+            status_code=403,
+            title="権限エラー",
+            detail="チーム管理者のみがチームを削除できます",
+            code="TEAM_FORBIDDEN",
+        )
+
+    # 1. チームに紐づくすべてのTODOを削除 (タスク、コメント、インボックス通知などもカスケード削除される)
+    todos = db.query(Todo).filter(Todo.team_id == team.id).all()
+    for todo in todos:
+        db.delete(todo)
+
+    # 2. チームのタグを削除
+    db.query(Tag).filter(Tag.team_id == team.id).delete(synchronize_session=False)
+
+    # 3. チーム自体を削除
+    db.delete(team)
+    db.commit()
+
+
+def kick_member(db: Session, team_id: int, member_user_id: int, current_user_id: int) -> None:
+    team = db.query(Team).filter(Team.id == team_id).first()
+    if not team:
+        raise APIException(
+            status_code=404,
+            title="退場エラー",
+            detail="指定されたチームが存在しません",
+            code="TEAM_NOT_FOUND",
+        )
+
+    if team.created_user_id != current_user_id:
+        raise APIException(
+            status_code=403,
+            title="権限エラー",
+            detail="チーム管理者のみがメンバーを退場させることができます",
+            code="TEAM_FORBIDDEN",
+        )
+
+    if member_user_id == current_user_id:
+        raise APIException(
+            status_code=400,
+            title="退場エラー",
+            detail="管理者は強制退場できません",
+            code="CANNOT_KICK_OWNER",
+        )
+
+    tu = db.query(TeamUser).filter(
+        TeamUser.team_id == team_id,
+        TeamUser.user_id == member_user_id,
+    ).first()
+
+    if not tu:
+        raise APIException(
+            status_code=404,
+            title="退場エラー",
+            detail="指定されたユーザーはチームメンバーではありません",
+            code="MEMBER_NOT_FOUND",
+        )
+
+    db.delete(tu)
     db.commit()

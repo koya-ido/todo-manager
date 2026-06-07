@@ -68,6 +68,7 @@ class Team(Base):
     display_teams_id = Column(String(20), unique=True, index=True, nullable=False)
     name = Column(String(255), nullable=False)
     password = Column(String(255), nullable=False)
+    accepting_applications = Column(Boolean, nullable=False, default=True, server_default="true")
     created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
     updated_at = Column(
         DateTime(timezone=True),

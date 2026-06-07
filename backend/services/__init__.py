@@ -27,6 +27,10 @@ from .team_service import (
     get_applicants,
     approve_applicant,
     reject_applicant,
+    get_team_details,
+    update_accepting_applications,
+    delete_team,
+    kick_member,
 )
 
 __all__ = [
@@ -57,4 +61,8 @@ __all__ = [
     "get_applicants",
     "approve_applicant",
     "reject_applicant",
+    "get_team_details",
+    "update_accepting_applications",
+    "delete_team",
+    "kick_member",
 ]
