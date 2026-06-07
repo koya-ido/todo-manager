@@ -7,7 +7,7 @@ from dependencies import get_current_user
 from exceptions import APIException
 from models import User
 from schemas import DeleteUserResponse, UserResponse
-from services import delete_user_by_display_id, get_team_members
+from services import delete_user_by_display_id, get_team_members, get_all_teams_members
 
 router = APIRouter(prefix="/api/user")
 
@@ -19,6 +19,14 @@ def read_team_members(
     current_user: User = Depends(get_current_user),
 ):
     return get_team_members(db, team_id, current_user.id)
+
+
+@router.get("/teams/members", response_model=List[UserResponse])
+def read_all_teams_members(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return get_all_teams_members(db, current_user.id)
 
 
 

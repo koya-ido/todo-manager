@@ -17,7 +17,7 @@ from .todo_service import (
     delete_todo,
     update_comment,
 )
-from .user_service import create_user, delete_user_by_display_id, get_team_members
+from .user_service import create_user, delete_user_by_display_id, get_team_members, get_all_teams_members
 from .team_service import (
     search_team_by_display_id,
     get_joined_teams,
@@ -47,6 +47,7 @@ __all__ = [
     "delete_todo",
     "get_tags",
     "get_team_members",
+    "get_all_teams_members",
     "get_todo",
     "get_todos",
     "revoke_access_token",

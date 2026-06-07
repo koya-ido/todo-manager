@@ -197,3 +197,23 @@ def get_team_members(db: Session, team_id: int, current_user_id: int) -> list[Us
     )
     return members
 
+
+def get_all_teams_members(db: Session, current_user_id: int) -> list[User]:
+    team_ids = [
+        team_id
+        for (team_id,) in db.query(TeamUser.team_id)
+        .filter(TeamUser.user_id == current_user_id)
+        .all()
+    ]
+    if not team_ids:
+        return db.query(User).filter(User.id == current_user_id, User.delete_flag.is_(False)).all()
+
+    members = (
+        db.query(User)
+        .join(TeamUser, User.id == TeamUser.user_id)
+        .filter(TeamUser.team_id.in_(team_ids), User.delete_flag.is_(False))
+        .distinct()
+        .all()
+    )
+    return members
+
