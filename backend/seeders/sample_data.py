@@ -49,6 +49,55 @@ def seed_sample_data(db: Session) -> None:
     for team_id, user_id in memberships - existing_memberships:
         db.add(models.TeamUser(team_id=team_id, user_id=user_id))
 
+    # Beta Team (Unjoined team for owner/member)
+    team_beta = db.query(models.Team).filter(models.Team.display_teams_id == "team-beta").first()
+    if not team_beta:
+        team_beta = models.Team(
+            created_user_id=guest.id,
+            display_teams_id="team-beta",
+            name="Beta Team",
+            password=auth.get_password_hash("Team-Password-456"),
+        )
+        db.add(team_beta)
+        db.flush()
+    else:
+        team_beta.created_user_id = guest.id
+        team_beta.name = "Beta Team"
+        team_beta.password = auth.get_password_hash("Team-Password-456")
+
+    # Gamma Team (Unjoined team for owner/member)
+    team_gamma = db.query(models.Team).filter(models.Team.display_teams_id == "team-gamma").first()
+    if not team_gamma:
+        team_gamma = models.Team(
+            created_user_id=guest.id,
+            display_teams_id="team-gamma",
+            name="Gamma Team",
+            password=auth.get_password_hash("Team-Password-789"),
+        )
+        db.add(team_gamma)
+        db.flush()
+    else:
+        team_gamma.created_user_id = guest.id
+        team_gamma.name = "Gamma Team"
+        team_gamma.password = auth.get_password_hash("Team-Password-789")
+
+    # Add creator guest to memberships for beta and gamma
+    beta_memberships = {(team_beta.id, guest.id)}
+    existing_beta_memberships = {
+        (item.team_id, item.user_id)
+        for item in db.query(models.TeamUser).filter(models.TeamUser.team_id == team_beta.id).all()
+    }
+    for team_id, user_id in beta_memberships - existing_beta_memberships:
+        db.add(models.TeamUser(team_id=team_id, user_id=user_id))
+
+    gamma_memberships = {(team_gamma.id, guest.id)}
+    existing_gamma_memberships = {
+        (item.team_id, item.user_id)
+        for item in db.query(models.TeamUser).filter(models.TeamUser.team_id == team_gamma.id).all()
+    }
+    for team_id, user_id in gamma_memberships - existing_gamma_memberships:
+        db.add(models.TeamUser(team_id=team_id, user_id=user_id))
+
     private_tag = db.query(models.Tag).filter(
         models.Tag.user_id == owner.id,
         models.Tag.name == "personal",

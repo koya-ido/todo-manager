@@ -18,6 +18,16 @@ from .todo_service import (
     update_comment,
 )
 from .user_service import create_user, delete_user_by_display_id, get_team_members
+from .team_service import (
+    search_team_by_display_id,
+    get_joined_teams,
+    get_applying_teams,
+    apply_to_team,
+    cancel_application,
+    get_applicants,
+    approve_applicant,
+    reject_applicant,
+)
 
 __all__ = [
     "authenticate_user",
@@ -39,4 +49,12 @@ __all__ = [
     "update_todo",
     "update_comment",
     "validate_team_member",
+    "search_team_by_display_id",
+    "get_joined_teams",
+    "get_applying_teams",
+    "apply_to_team",
+    "cancel_application",
+    "get_applicants",
+    "approve_applicant",
+    "reject_applicant",
 ]
