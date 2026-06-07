@@ -36,7 +36,13 @@ export const TodoItemCard: FC<TodoItemCardProps> = ({ todo, messages, onClick })
           />
         </div>
         <p className="text-md font-bold break-words">{todo.title}</p>
-        <div className="text-xs flex justify-between">
+        {todo.managerName && (
+          <div className="flex gap-1">
+            <p className="text-xs font-bold">{messages["todo-edit.manager"]}:</p>
+            <p className="text-xs">{todo.managerName}</p>
+          </div>
+        )}
+        <div className="text-xs flex justify-between items-end">
           <div>
             <p className="font-bold">
               {messages["common.start-date"]}

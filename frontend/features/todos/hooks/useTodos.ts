@@ -2,9 +2,16 @@
 
 import { ErrorContext } from "@/components/features/ErrorProvider";
 import { apiGet } from "@/hooks/useFetchApi";
-import { Priority, PriorityType, Status, StatusType, TodoMode, TodoPriorityFilter, TodoStatusFilter } from "@/types/todo";
+import {
+  Priority,
+  PriorityType,
+  Status,
+  StatusType,
+  TodoMode,
+  TodoPriorityFilter,
+  TodoStatusFilter,
+} from "@/types/todo";
 import { useCallback, useContext, useEffect, useMemo, useState } from "react";
-
 
 export type TodoSort =
   | "create-date-desc"
@@ -48,6 +55,11 @@ type ApiTodo = {
   updated_at: string;
   tasks: ApiTask[];
   comments: ApiComment[];
+  manager?: {
+    id: number;
+    display_user_id: string;
+    user_name: string;
+  } | null;
 };
 
 type ApiTodosResponse = {
@@ -70,6 +82,8 @@ export type Todo = {
   tasks: ApiTask[];
   deleteFlag: boolean;
   searchableText: string;
+  managerId: number;
+  managerName?: string;
 };
 
 const toDisplayDate = (value: string | null) => {
@@ -86,6 +100,7 @@ const toTodo = (todo: ApiTodo): Todo => {
   const searchableText = [
     todo.name,
     todo.remarks,
+    todo.manager?.user_name || "",
     ...todo.tasks.map((task) => `${task.title} ${task.content ?? ""}`),
     ...todo.comments.map((comment) => comment.comment),
   ]
@@ -108,6 +123,8 @@ const toTodo = (todo: ApiTodo): Todo => {
     deleteFlag: todo.delete_flag,
     searchableText,
     tasks: todo.tasks,
+    managerId: todo.manager_id,
+    managerName: todo.manager?.user_name || undefined,
   };
 };
 
@@ -118,6 +135,8 @@ export const useTodos = (
   status: TodoStatusFilter[],
   priority: TodoPriorityFilter[],
   sort: TodoSort,
+  managerId?: number,
+  teamId?: number,
 ) => {
   const [todos, setTodos] = useState<Todo[]>([]);
   const [totalCount, setTotalCount] = useState<number>(0);
@@ -137,7 +156,10 @@ export const useTodos = (
         const totalParams = new URLSearchParams();
         if (mode) totalParams.append("mode", mode);
         totalParams.append("is_delete_only", String(isDeleteOnly));
-        const totalResponse = await apiGet<ApiTodosResponse>(`/todo?${totalParams.toString()}`);
+        if (teamId) totalParams.append("team_id", String(teamId));
+        const totalResponse = await apiGet<ApiTodosResponse>(
+          `/todo?${totalParams.toString()}`,
+        );
         if (active) {
           setTotalCount(totalResponse.total);
         }
@@ -151,7 +173,7 @@ export const useTodos = (
     return () => {
       active = false;
     };
-  }, [mode, isDeleteOnly, setErrorResponse]);
+  }, [mode, isDeleteOnly, teamId, setErrorResponse]);
 
   // Fetch filtered & sorted todos (when search params change)
   useEffect(() => {
@@ -174,12 +196,20 @@ export const useTodos = (
             searchParams.append("priority", String(p));
           }
         });
+        if (managerId && managerId !== 0) {
+          searchParams.append("manager_id", String(managerId));
+        }
+        if (teamId) {
+          searchParams.append("team_id", String(teamId));
+        }
         if (sort) searchParams.append("sort", sort);
 
         searchParams.append("offset", "0");
         searchParams.append("limit", String(limit));
 
-        const response = await apiGet<ApiTodosResponse>(`/todo?${searchParams.toString()}`);
+        const response = await apiGet<ApiTodosResponse>(
+          `/todo?${searchParams.toString()}`,
+        );
         if (active) {
           const fetchedTodos = response.items.map(toTodo);
           setTodos(fetchedTodos);
@@ -200,7 +230,17 @@ export const useTodos = (
     return () => {
       active = false;
     };
-  }, [mode, isDeleteOnly, keyword, status, priority, sort, setErrorResponse]);
+  }, [
+    mode,
+    isDeleteOnly,
+    keyword,
+    status,
+    priority,
+    managerId,
+    teamId,
+    sort,
+    setErrorResponse,
+  ]);
 
   const loadMore = useCallback(async () => {
     if (isLoading || isLoadingMore || !hasMore) return;
@@ -222,13 +262,21 @@ export const useTodos = (
           searchParams.append("priority", String(p));
         }
       });
+      if (managerId && managerId !== 0) {
+        searchParams.append("manager_id", String(managerId));
+      }
+      if (teamId) {
+        searchParams.append("team_id", String(teamId));
+      }
       if (sort) searchParams.append("sort", sort);
 
       searchParams.append("offset", String(todos.length));
       searchParams.append("limit", String(limit));
 
-      const response = await apiGet<ApiTodosResponse>(`/todo?${searchParams.toString()}`);
-      
+      const response = await apiGet<ApiTodosResponse>(
+        `/todo?${searchParams.toString()}`,
+      );
+
       const newTodos = response.items.map(toTodo);
       setTodos((prev) => [...prev, ...newTodos]);
       setFilteredCount(response.total);
@@ -244,6 +292,8 @@ export const useTodos = (
     keyword,
     status,
     priority,
+    managerId,
+    teamId,
     sort,
     todos.length,
     isLoading,

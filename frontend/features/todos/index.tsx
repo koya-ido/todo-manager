@@ -13,15 +13,45 @@ import { TodoSkeletonList } from "@/features/todos/components/TodoSkeletonList";
 import { useTodoFilter } from "@/features/todos/hooks/useTodoFilter";
 import { TodoSort, useTodos } from "@/features/todos/hooks/useTodos";
 import { TodosProps } from "@/features/todos/types";
+import { apiGet } from "@/hooks/useFetchApi";
 import { ArrowUp, Plus, Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FC, useEffect, useRef, useState } from "react";
 
 
-export const Content: FC<TodosProps> = ({ mode = "private", isDeleteOnly = false, messages }) => {
+export const Content: FC<TodosProps> = ({ mode = "private", isDeleteOnly = false, teamId, messages }) => {
   const router = useRouter();
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const [members, setMembers] = useState<{ id: number; display_user_id: string; user_name: string }[]>([]);
+  const [teamName, setTeamName] = useState<string>("");
+
+  useEffect(() => {
+    if (mode !== "team") return;
+    const fetchMembers = async () => {
+      try {
+        const url = teamId ? `/user/team/${teamId}/members` : "/user/teams/members";
+        const data = await apiGet<{ id: number; display_user_id: string; user_name: string }[]>(url);
+        setMembers(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    void fetchMembers();
+  }, [mode, teamId]);
+
+  useEffect(() => {
+    if (mode !== "team" || !teamId) return;
+    const fetchTeamDetail = async () => {
+      try {
+        const team = await apiGet<{ name: string }>(`/team/${teamId}`);
+        setTeamName(team.name);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    void fetchTeamDetail();
+  }, [mode, teamId]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -51,6 +81,8 @@ export const Content: FC<TodosProps> = ({ mode = "private", isDeleteOnly = false
     priority,
     sort,
     setSort,
+    managerId,
+    setManagerId,
     StatusFilterItems,
     PriorityFilterItems,
     SortItems,
@@ -61,6 +93,7 @@ export const Content: FC<TodosProps> = ({ mode = "private", isDeleteOnly = false
     appliedStatus,
     appliedPriority,
     appliedSort,
+    appliedManagerId,
   } = useTodoFilter(messages);
 
   const {
@@ -78,6 +111,8 @@ export const Content: FC<TodosProps> = ({ mode = "private", isDeleteOnly = false
     appliedStatus,
     appliedPriority,
     appliedSort,
+    appliedManagerId,
+    teamId,
   );
 
   const sentinelRef = useRef<HTMLDivElement | null>(null);
@@ -109,7 +144,11 @@ export const Content: FC<TodosProps> = ({ mode = "private", isDeleteOnly = false
 
   return (
     <div className="w-full space-y-6">
-      <Heading level={1}>{messages["todo-list.heading"]}</Heading>
+      <Heading level={1}>
+        {mode === "team" && teamName
+          ? `${teamName} ${messages["todo-list.heading"]}`
+          : messages["todo-list.heading"]}
+      </Heading>
       <Heading level={2}>{messages["todo-list.description"]}</Heading>
       <Card>
         <form className="w-full flex flex-col gap-4" onSubmit={handleClickSearch}>
@@ -140,6 +179,17 @@ export const Content: FC<TodosProps> = ({ mode = "private", isDeleteOnly = false
             onValueChange={handlePriorityChange}
             placeholder="Select a priority..."
           />
+          {mode === "team" && (
+            <SelectField
+              label={messages["todo-edit.manager"] || "担当者"}
+              items={[
+                { value: "0", label: messages["todo-list.filter-option.manager.all"] || "すべての担当者" },
+                ...members.map((m) => ({ value: String(m.id), label: `${m.user_name} (#${m.display_user_id})` }))
+              ]}
+              value={managerId}
+              onValueChange={setManagerId}
+            />
+          )}
           <SelectField
             label={messages["todo-list.sort-label"]}
             items={SortItems}

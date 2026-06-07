@@ -148,8 +148,12 @@ const getTrail = (
       ? [
         homeItem,
         {
+          label: messages["breadcrumb.team-list"],
+          href: "/team",
+        },
+        {
           label: messages["breadcrumb.todo-list.team"],
-          href: "/todo?mode=team",
+          href: `/todo?mode=team${searchParams.get("teamId") ? `&teamId=${searchParams.get("teamId")}` : ""}`,
         },
       ]
       : [
