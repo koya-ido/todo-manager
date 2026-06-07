@@ -19,6 +19,19 @@ export const MobileFooter: FC = () => {
 
   /** pathと現在のURLが一致しているか判定する */
   const isActive = (path: string) => {
+    if (path.includes("private")) {
+      return (
+        currentPath.includes("private") ||
+        searchParams.toString().includes("private")
+      );
+    }
+    if (path.includes("team")) {
+      return (
+        currentPath.includes("team") ||
+        searchParams.toString().includes("team")
+      );
+    }
+
     const [targetPathname, targetQueryStr] = path.split("?");
 
     // パス部分のチェック
