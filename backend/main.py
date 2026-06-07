@@ -1,6 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from exceptions import APIException, api_exception_handler
+from fastapi.exceptions import RequestValidationError
+from starlette.exceptions import HTTPException as StarletteHTTPException
+from exceptions import (
+    APIException,
+    api_exception_handler,
+    validation_exception_handler,
+    http_exception_handler,
+    general_exception_handler,
+)
 from routers import auth_router, user_router, tag_router, todo_router, team_router
 
 app = FastAPI()
@@ -20,9 +28,19 @@ async def handle_api_exception(request, exc: APIException):
     return await api_exception_handler(request, exc)
 
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+@app.exception_handler(RequestValidationError)
+async def handle_validation_exception(request, exc: RequestValidationError):
+    return await validation_exception_handler(request, exc)
+
+
+@app.exception_handler(StarletteHTTPException)
+async def handle_http_exception(request, exc: StarletteHTTPException):
+    return await http_exception_handler(request, exc)
+
+
+@app.exception_handler(Exception)
+async def handle_general_exception(request, exc: Exception):
+    return await general_exception_handler(request, exc)
 
 
 app.include_router(auth_router)
