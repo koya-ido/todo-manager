@@ -12,6 +12,7 @@ class TeamSearchResponse(BaseModel):
     created_user_display_id: str
     is_member: bool
     is_applying: bool
+    accepting_applications: bool
 
 
 class TeamApplyRequest(BaseModel):
@@ -49,3 +50,30 @@ class TeamApplicantResponse(BaseModel):
     display_user_id: str
     user_name: str
     applied_at: datetime
+
+
+class TeamDetailResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    display_teams_id: str
+    name: str
+    created_user_id: int
+    created_user_name: str
+    created_user_display_id: str
+    is_owner: bool
+    accepting_applications: bool
+
+
+class TeamAcceptingApplicationsUpdate(BaseModel):
+    accepting_applications: bool
+
+
+class TeamMemberResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    display_user_id: str
+    user_name: str
+    is_owner: bool
+
