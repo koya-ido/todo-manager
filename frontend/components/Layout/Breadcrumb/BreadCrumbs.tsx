@@ -107,6 +107,21 @@ const getTrail = (
     ];
   }
 
+  // 6.5. Team Detail screen
+  if (pathname.startsWith("/team/") && pathname !== "/team/edit") {
+    return [
+      homeItem,
+      {
+        label: messages["breadcrumb.team-list"],
+        href: "/team",
+      },
+      {
+        label: messages["team.detail.heading"] || "チーム詳細",
+        href: null,
+      },
+    ];
+  }
+
   // 7. Team edit screen (create or edit)
   if (pathname === "/team/edit") {
     return [

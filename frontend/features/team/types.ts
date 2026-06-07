@@ -6,6 +6,7 @@ export type TeamSearchResponse = {
   created_user_display_id: string;
   is_member: boolean;
   is_applying: boolean;
+  accepting_applications: boolean;
 };
 
 export type TeamJoinedResponse = {
@@ -34,3 +35,22 @@ export type TeamApplicantResponse = {
   user_name: string;
   applied_at: string;
 };
+
+export type TeamDetailResponse = {
+  id: number;
+  display_teams_id: string;
+  name: string;
+  created_user_id: number;
+  created_user_name: string;
+  created_user_display_id: string;
+  is_owner: boolean;
+  accepting_applications: boolean;
+};
+
+export type TeamMemberResponse = {
+  id: number;
+  display_user_id: string;
+  user_name: string;
+  is_owner: boolean;
+};
+
