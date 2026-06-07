@@ -43,7 +43,7 @@ async def validation_exception_handler(request, exc: RequestValidationError):
     field_errors = []
     for error in exc.errors():
         loc = error.get("loc", [])
-        # Format JSON Pointer (skipping body request parameter root)
+        # JSON Pointerのフォーマット（リクエストボディのルートパラメータはスキップする）
         if len(loc) > 1 and loc[0] == "body":
             pointer = "/" + "/".join(str(x) for x in loc[1:])
         elif len(loc) > 0:
@@ -54,7 +54,7 @@ async def validation_exception_handler(request, exc: RequestValidationError):
         error_type = error.get("type", "")
         ctx = error.get("ctx", {})
 
-        # Default code & parameters
+        # デフォルトのエラーコードとパラメータ
         code = "validate.invalid"
         param = {}
 

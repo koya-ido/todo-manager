@@ -389,7 +389,7 @@ def update_todo(
 
 
 def create_comment(db: Session, todo_id: int, comment_text: str, user_id: int) -> Comment:
-    # Verify todo accessibility
+    # TODOへのアクセス権限を検証
     get_todo(db, todo_id, user_id)
 
     if not comment_text.strip():

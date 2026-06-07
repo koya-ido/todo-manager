@@ -47,11 +47,11 @@ export const TeamContent: FC<TeamContentProps> = ({ messages, locale }) => {
 
   return (
     <div className="w-full flex flex-col gap-6 max-w-4xl mx-auto">
-      {/* Title & Description */}
+      {/* タイトルと説明 */}
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-        <div className="space-y-1">
+        <div className="space-y-6">
           <Heading level={1}>{messages["team.heading"]}</Heading>
-          <Heading level={2} className="text-muted-foreground mt-1">
+          <Heading level={2}>
             {messages["team.description"]}
           </Heading>
         </div>
@@ -63,13 +63,13 @@ export const TeamContent: FC<TeamContentProps> = ({ messages, locale }) => {
           >
             <Link href="/team/edit?isNew=true">
               <Plus className="w-4 h-4" />
-              {messages["breadcrumb.team.create"]}
+              {messages["common.create"]}
             </Link>
           </Button>
         </div>
       </div>
 
-      {/* Search Bar */}
+      {/* 検索バー */}
       <TeamSearchForm
         messages={messages}
         searchId={searchId}
@@ -78,7 +78,7 @@ export const TeamContent: FC<TeamContentProps> = ({ messages, locale }) => {
         onSubmit={handleSearchSubmit}
       />
 
-      {/* Tabs Menu & Content Section */}
+      {/* タブメニューとコンテンツセクション */}
       <Tabs
         value={activeTab}
         onValueChange={(val) => setActiveTab(val as "joined" | "applying")}
@@ -184,7 +184,7 @@ export const TeamContent: FC<TeamContentProps> = ({ messages, locale }) => {
         </section>
       </Tabs>
 
-      {/* Search Result Dialog / Modal */}
+      {/* 検索結果ダイアログ / モーダル */}
       <TeamSearchResultDialog
         isOpen={showSearchModal}
         onOpenChange={setShowSearchModal}
@@ -197,7 +197,7 @@ export const TeamContent: FC<TeamContentProps> = ({ messages, locale }) => {
         messages={messages}
       />
 
-      {/* Cancel Confirmation Dialog */}
+      {/* キャンセル確認ダイアログ */}
       <CancelApplyDialog
         cancelTarget={cancelTarget}
         onClose={() => setCancelTarget(null)}

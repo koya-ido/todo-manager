@@ -43,7 +43,7 @@ export const CancelApplyDialog: FC<CancelApplyDialogProps> = ({
         </DialogHeader>
         <DialogFooter className="pt-2">
           <Button variant="outline" onClick={onClose} disabled={isSubmittingCancel}>
-            {messages["team.cancel-dialog.cancel-button"]}
+            {messages["common.cancel"]}
           </Button>
           <Button
             variant="destructive"

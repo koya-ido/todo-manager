@@ -47,7 +47,7 @@ export const DeleteTeamDialog: FC<DeleteTeamDialogProps> = ({
             onClick={() => onOpenChange(false)}
             disabled={isDeleting}
           >
-            {messages["team.detail.settings.delete-dialog.cancel"]}
+            {messages["common.cancel"]}
           </Button>
           <Button
             className="flex-1"
@@ -55,7 +55,7 @@ export const DeleteTeamDialog: FC<DeleteTeamDialogProps> = ({
             onClick={onConfirm}
             disabled={isDeleting}
           >
-            {messages["team.detail.settings.delete-dialog.confirm"]}
+            {messages["common.delete.verb"]}
           </Button>
         </DialogFooter>
       </DialogContent>

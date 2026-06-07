@@ -110,7 +110,7 @@ export const Content: FC<UserSettingProps> = ({ messages }) => {
                 disabled={!editingTagName.trim() || isUpdatingTag}
                 onClick={() => void handleUpdateTag()}
               >
-                {messages["user-setting.tag.dialog.update"]}
+                {messages["common.update"]}
               </Button>
             </div>
             <DialogFooter>
@@ -120,7 +120,7 @@ export const Content: FC<UserSettingProps> = ({ messages }) => {
                   variant="outline"
                   onClick={handleCloseTagDialog}
                 >
-                  {messages["user-setting.tag.dialog.cancel"]}
+                  {messages["common.cancel"]}
                 </Button>
                 <Button
                   className="flex-1"
@@ -132,7 +132,7 @@ export const Content: FC<UserSettingProps> = ({ messages }) => {
                     }
                   }}
                 >
-                  {messages["user-setting.tag.dialog.delete"]}
+                  {messages["common.delete"]}
                 </Button>
               </div>
             </DialogFooter>

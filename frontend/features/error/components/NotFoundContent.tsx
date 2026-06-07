@@ -34,22 +34,22 @@ export const NotFoundContent: FC<NotFoundContentProps> = ({ messages }) => {
     <>
       <Header />
       <div className="w-full max-w-lg mx-auto flex flex-col items-start justify-start py-4">
-        {/* Heading (404) */}
+        {/* 見出し (404) */}
         <h2 className="text-[32px] font-extrabold tracking-tight text-foreground mb-4">
           {messages["breadcrumb.not-found"]}
         </h2>
 
-        {/* Description */}
+        {/* 説明 */}
         <p className="text-md leading-relaxed mb-6 font-medium text-foreground">
           {messages["not-found.description"]}
         </p>
 
-        {/* Detailed Content */}
+        {/* 詳細コンテンツ */}
         <p className="text-md leading-relaxed mb-8 text-foreground">
           {messages["not-found.content"]}
         </p>
 
-        {/* Back navigation link */}
+        {/* 戻るナビゲーションリンク */}
         <div className="w-full flex justify-center mt-10">
           {isValidToken === null ? (
             <div className="h-6 w-32 bg-muted/60 animate-pulse rounded" />

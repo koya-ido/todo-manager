@@ -1,11 +1,11 @@
 /**
- * Utility functions for Todos feature
+ * Todo機能のユーティリティ関数
  */
 
 /**
- * Calculates the next selected value for a multi-select filter (status, priority).
- * Handles the special logic where selecting "all" resets other selections,
- * and selecting all individual choices resets to "all".
+ * 複数選択フィルター（ステータス、優先度）の次の選択値を計算する。
+ * 「すべて」を選択すると他の選択がリセットされ、
+ * すべての個別の選択肢を選択すると「すべて」にリセットされる特殊なロジックを処理する。
  */
 export const getNextMultiSelectValue = (
   prev: string[],

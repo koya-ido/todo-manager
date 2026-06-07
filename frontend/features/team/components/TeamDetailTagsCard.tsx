@@ -33,11 +33,11 @@ export const TeamDetailTagsCard: FC<TeamDetailTagsCardProps> = ({
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0 space-y-4">
-        {/* Tag Badges List */}
+        {/* タグバッジリスト */}
         <div className="flex flex-wrap gap-2 min-h-12 items-center">
           {tags.length === 0 ? (
             <span className="text-slate-400 text-sm italic">
-              {messages["todo-detail.no-tag"] || "No tags"}
+              {messages["todo-detail.no-tag"]}
             </span>
           ) : (
             tags.map((tag) => (
@@ -54,7 +54,7 @@ export const TeamDetailTagsCard: FC<TeamDetailTagsCardProps> = ({
           )}
         </div>
 
-        {/* Inline creation */}
+        {/* インライン作成 */}
         <div className="flex items-center gap-2 border-t border-slate-100 dark:border-slate-900/50 pt-3">
           <Input
             placeholder={messages["team.detail.tags.placeholder"]}

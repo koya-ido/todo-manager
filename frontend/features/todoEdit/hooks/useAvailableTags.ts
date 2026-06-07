@@ -20,7 +20,7 @@ export const useAvailableTags = ({
   const [newTagName, setNewTagName] = useState<string>("");
   const [isCreatingTag, setIsCreatingTag] = useState<boolean>(false);
 
-  // Load available tags
+  // 利用可能なタグのロード
   useEffect(() => {
     const fetchTags = async () => {
       try {

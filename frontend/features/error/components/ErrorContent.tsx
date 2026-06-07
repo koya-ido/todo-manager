@@ -55,17 +55,17 @@ export const ErrorContent: FC<ErrorContentProps> = ({
     <>
       <Header />
       <div className="w-full max-w-lg mx-auto flex flex-col items-start justify-start py-4">
-        {/* Title */}
+        {/* タイトル */}
         <h2 className="text-[32px] font-extrabold tracking-tight text-foreground mb-4">
           {messages["error.heading"]}
         </h2>
 
-        {/* Subtitle / Description */}
+        {/* サブタイトル / 説明 */}
         <p className="text-md leading-relaxed mb-6 text-foreground">
           {messages["error.description"]}
         </p>
 
-        {/* Error Details */}
+        {/* エラー詳細 */}
         <div className="flex flex-col gap-1.5 mb-8 text-foreground">
           <p className="text-md font-medium">
             {status} {statusText}.
@@ -75,7 +75,7 @@ export const ErrorContent: FC<ErrorContentProps> = ({
           </p>
         </div>
 
-        {/* Back navigation link */}
+        {/* 戻るナビゲーションリンク */}
         <div className="w-full flex justify-center mt-10">
           {isValidToken === null ? (
             <div className="h-6 w-32 bg-muted/60 animate-pulse rounded" />

@@ -2,15 +2,17 @@ import { PriorityBadge, StatusBadge, statusColors } from "@/components/Layout/Ba
 import { Card } from "@/components/Layout/Card";
 import { ProgressCircle } from "@/components/Layout/ProgressCircle/ProgressCircle";
 import { Todo } from "@/features/todos/hooks/useTodos";
+import { TodoMode } from "@/types/todo";
 import { FC } from "react";
 
 type TodoItemCardProps = {
   todo: Todo;
   messages: Record<string, string>;
   onClick: () => void;
+  mode?: TodoMode;
 };
 
-export const TodoItemCard: FC<TodoItemCardProps> = ({ todo, messages, onClick }) => {
+export const TodoItemCard: FC<TodoItemCardProps> = ({ todo, messages, onClick, mode }) => {
   const progress = todo.tasks.length > 0
     ? (todo.tasks.filter((task) => task.completion_flag).length / todo.tasks.length) * 100
     : 0;
@@ -36,7 +38,7 @@ export const TodoItemCard: FC<TodoItemCardProps> = ({ todo, messages, onClick })
           />
         </div>
         <p className="text-md font-bold break-words">{todo.title}</p>
-        {todo.managerName && (
+        {mode === "team" && todo.managerName && (
           <div className="flex gap-1">
             <p className="text-xs font-bold">{messages["todo-edit.manager"]}:</p>
             <p className="text-xs">{todo.managerName}</p>

@@ -51,7 +51,7 @@ export const KickMemberDialog: FC<KickMemberDialogProps> = ({
             onClick={onClose}
             disabled={isSubmitting}
           >
-            {messages["team.detail.members.kick-dialog.cancel"]}
+            {messages["common.cancel"]}
           </Button>
           <Button
             className="flex-1"

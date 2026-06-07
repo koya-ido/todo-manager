@@ -37,7 +37,7 @@ export const TeamDetailAdminSettingsCard: FC<TeamDetailAdminSettingsCardProps> =
         </CardTitle>
       </CardHeader>
       <CardContent className="p-0 space-y-6">
-        {/* Settings Action: Toggle Applications */}
+        {/* 設定アクション：申請受付の切り替え */}
         <div className="flex items-center space-x-3 bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100 dark:border-slate-900/50">
           <Checkbox
             id="accept-applications-checkbox"
@@ -53,7 +53,7 @@ export const TeamDetailAdminSettingsCard: FC<TeamDetailAdminSettingsCardProps> =
           </label>
         </div>
 
-        {/* Applicants List */}
+        {/* 申請者リスト */}
         <div className="space-y-3">
           <Heading level={3} className="text-base font-bold">
             {messages["team.detail.applicants.heading"]}
@@ -111,7 +111,7 @@ export const TeamDetailAdminSettingsCard: FC<TeamDetailAdminSettingsCardProps> =
           </div>
         </div>
 
-        {/* Admin actions: Edit and Delete Team */}
+        {/* 管理者アクション：チームの編集と削除 */}
         <div className="border-t border-slate-100 dark:border-slate-900/50 pt-5 flex justify-between items-center gap-3 flex-wrap">
           <Button
             variant="outline"
@@ -120,7 +120,7 @@ export const TeamDetailAdminSettingsCard: FC<TeamDetailAdminSettingsCardProps> =
           >
             <Link href={`/team/edit?id=${team.id}`}>
               <Edit className="w-4 h-4" />
-              {messages["breadcrumb.team.edit"]}
+              {messages["common.edit"]}
             </Link>
           </Button>
 

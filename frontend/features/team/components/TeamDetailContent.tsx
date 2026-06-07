@@ -61,7 +61,7 @@ export const TeamDetailContent: FC<TeamDetailContentProps> = ({
     handleOpenTagDialog,
   } = useTeamDetail(teamId, messages);
 
-  // Skeleton Loader View
+  // スケルトンローダービュー
   if (isLoading) {
     return (
       <div className="w-full flex flex-col gap-6 max-w-4xl mx-auto py-6">
@@ -80,17 +80,17 @@ export const TeamDetailContent: FC<TeamDetailContentProps> = ({
 
   return (
     <div className="w-full flex flex-col gap-6 mx-auto animate-in fade-in duration-300">
-      {/* Main Title & Description */}
-      <div>
+      {/* メインタイトルと説明 */}
+      <div className="space-y-6">
         <Heading level={1}>{team.name}</Heading>
-        <Heading level={2} className="text-muted-foreground mt-1">
+        <Heading level={2}>
           {messages["team.detail.description"]}
         </Heading>
       </div>
 
-      {/* Layout Grid */}
+      {/* レイアウトグリッド */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Card 1: Team & Owner Details */}
+        {/* カード1：チームとオーナーの詳細 */}
         <TeamDetailInfoCard
           team={team}
           messages={messages}
@@ -98,7 +98,7 @@ export const TeamDetailContent: FC<TeamDetailContentProps> = ({
           onCopyId={() => void handleCopyId()}
         />
 
-        {/* Card 2: Tag Management */}
+        {/* カード2：タグ管理 */}
         <TeamDetailTagsCard
           tags={tags}
           messages={messages}
@@ -109,7 +109,7 @@ export const TeamDetailContent: FC<TeamDetailContentProps> = ({
           onOpenTagDialog={handleOpenTagDialog}
         />
 
-        {/* Card 3: Members List */}
+        {/* カード3：メンバーリスト */}
         <TeamDetailMembersCard
           team={team}
           members={members}
@@ -117,7 +117,7 @@ export const TeamDetailContent: FC<TeamDetailContentProps> = ({
           onKickClick={(member) => setKickTarget(member)}
         />
 
-        {/* Card 4: Admin Controls Section */}
+        {/* カード4：管理者コントロールセクション */}
         {team.is_owner && (
           <TeamDetailAdminSettingsCard
             team={team}
@@ -132,7 +132,7 @@ export const TeamDetailContent: FC<TeamDetailContentProps> = ({
         )}
       </div>
 
-      {/* Dialog 1: Kick Confirmation */}
+      {/* ダイアログ1：キック確認 */}
       <KickMemberDialog
         kickTarget={kickTarget}
         onClose={() => setKickTarget(null)}
@@ -141,7 +141,7 @@ export const TeamDetailContent: FC<TeamDetailContentProps> = ({
         messages={messages}
       />
 
-      {/* Dialog 2: Delete Team Confirmation */}
+      {/* ダイアログ2：チーム削除確認 */}
       <DeleteTeamDialog
         isOpen={showDeleteDialog}
         onOpenChange={setShowDeleteDialog}
@@ -151,7 +151,7 @@ export const TeamDetailContent: FC<TeamDetailContentProps> = ({
         messages={messages}
       />
 
-      {/* Dialog 3: Common Tag Rename & Delete Dialog */}
+      {/* ダイアログ3：共通タグの名称変更と削除ダイアログ */}
       <TagSettingsDialog
         selectedTag={selectedTag}
         onClose={() => {
@@ -167,7 +167,7 @@ export const TeamDetailContent: FC<TeamDetailContentProps> = ({
         messages={messages}
       />
 
-      {/* Dialog 4: Reject Confirmation Dialog */}
+      {/* ダイアログ4：却下確認ダイアログ */}
       <RejectApplicantDialog
         rejectTarget={rejectTarget}
         onClose={() => setRejectTarget(null)}

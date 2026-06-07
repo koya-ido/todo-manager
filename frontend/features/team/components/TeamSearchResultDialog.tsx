@@ -49,7 +49,7 @@ export const TeamSearchResultDialog: FC<TeamSearchResultDialogProps> = ({
 
         {searchedTeam && (
           <div className="space-y-4 py-2">
-            {/* Team Metadata Box */}
+            {/* チームメタデータボックス */}
             <div className="p-4 rounded-lg bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-slate-900 space-y-2">
               <div className="flex justify-between items-start">
                 <h3 className="font-bold text-slate-800 dark:text-slate-200 text-base">
@@ -75,7 +75,7 @@ export const TeamSearchResultDialog: FC<TeamSearchResultDialogProps> = ({
               </div>
             </div>
 
-            {/* Action depending on user state relative to team */}
+            {/* チームに対するユーザーの状態に応じたアクション */}
             {searchedTeam.is_member ? (
               <div className="flex items-center gap-2 text-sm text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/20 p-3 rounded-lg border border-emerald-100 dark:border-emerald-950">
                 <CheckCircle2 className="w-5 h-5 shrink-0" />

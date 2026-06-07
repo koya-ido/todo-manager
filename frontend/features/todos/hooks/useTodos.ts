@@ -148,7 +148,7 @@ export const useTodos = (
 
   const limit = 20;
 
-  // Fetch total count (only when mode or isDeleteOnly changes)
+  // 合計件数の取得（モードまたはisDeleteOnlyが変更された場合のみ）
   useEffect(() => {
     let active = true;
     const fetchTotalCount = async () => {
@@ -175,7 +175,7 @@ export const useTodos = (
     };
   }, [mode, isDeleteOnly, teamId, setErrorResponse]);
 
-  // Fetch filtered & sorted todos (when search params change)
+  // フィルタリングおよびソートされたTodoの取得（検索パラメータが変更されたとき）
   useEffect(() => {
     let active = true;
     const fetchFilteredTodos = async () => {
