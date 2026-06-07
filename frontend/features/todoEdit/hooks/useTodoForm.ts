@@ -1,4 +1,5 @@
 import { ErrorContext } from "@/components/features/ErrorProvider";
+import { isErrorResponse } from "@/hooks/useError/errorUtils";
 import { useAvailableTags } from "@/features/todoEdit/hooks/useAvailableTags";
 import { useNavigationGuard } from "@/features/todoEdit/hooks/useNavigationGuard";
 import { useTeamMembers } from "@/features/todoEdit/hooks/useTeamMembers";
@@ -31,7 +32,12 @@ export const useTodoForm = ({
   messages,
 }: UseTodoFormProps) => {
   const router = useRouter();
-  const { setErrorResponse } = useContext(ErrorContext);
+  const { setErrorResponse, clearInlineErrors } = useContext(ErrorContext);
+
+  useEffect(() => {
+    clearInlineErrors();
+    return () => clearInlineErrors();
+  }, [clearInlineErrors]);
 
   // Form State
   const [name, setName] = useState<string>("");
@@ -187,14 +193,13 @@ export const useTodoForm = ({
           selectedTags: response.tags || [],
           tasks: loadedTasks,
         });
-      } catch (error) {
-        setErrorResponse(error);
-        toast.error(
-          messages["FAILED_TO_FETCH"]?.replace("{name}", "TODO") ||
-            "TODOの取得に失敗しました",
-        );
-      } finally {
         setIsLoading(false);
+      } catch (error) {
+        if (isErrorResponse(error)) {
+          router.push(`/error?status=${error.status}&code=${error.code}`);
+        } else {
+          router.push("/error?status=500&code=UNKNOWN");
+        }
       }
     };
 

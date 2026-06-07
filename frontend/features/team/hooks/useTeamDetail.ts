@@ -1,6 +1,7 @@
 "use client";
 
 import { ErrorContext } from "@/components/features/ErrorProvider";
+import { isErrorResponse } from "@/hooks/useError/errorUtils";
 import {
   TeamApplicantResponse,
   TeamDetailResponse,
@@ -59,10 +60,13 @@ export const useTeamDetail = (teamId: number, messages: Record<string, string>) 
         );
         setApplicants(teamApplicants);
       }
-    } catch (error) {
-      setErrorResponse(error);
-    } finally {
       setIsLoading(false);
+    } catch (error) {
+      if (isErrorResponse(error)) {
+        router.push(`/error?status=${error.status}&code=${error.code}`);
+      } else {
+        router.push("/error?status=500&code=UNKNOWN");
+      }
     }
   };
 

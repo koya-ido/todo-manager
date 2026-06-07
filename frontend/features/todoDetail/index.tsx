@@ -90,13 +90,7 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
     );
   }
 
-  if (!todo) {
-    return (
-      <div className="w-full flex justify-center items-center py-20">
-        <p className="text-destructive font-semibold">TODOが見つかりませんでした。</p>
-      </div>
-    );
-  }
+  if (!todo) return null;
 
   // Formatting dates
   const formatDate = (dateStr: string | null) => {

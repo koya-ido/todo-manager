@@ -1,5 +1,6 @@
 "use client";
 
+import { ErrorContext } from "@/components/features/ErrorProvider";
 import { Button } from "@/components/forms/Button";
 import { InputField } from "@/components/forms/FieldWrapper/components/InputField";
 import { PasswordField } from "@/components/forms/FieldWrapper/components/PasswordField";
@@ -17,9 +18,10 @@ import { Heading } from "@/components/typography/Heading";
 import { useTeamForm } from "@/features/teamEdit/hooks/useTeamForm";
 import { TeamEditProps } from "@/features/teamEdit/types";
 import { Circle, CircleCheck, Plus, Settings, TriangleAlert } from "lucide-react";
-import { FC, useMemo } from "react";
+import { FC, useContext, useMemo } from "react";
 
 export const Content: FC<TeamEditProps> = ({ isNew = false, teamId, messages }) => {
+  const { getInlineError } = useContext(ErrorContext);
   const {
     name,
     password,
@@ -97,7 +99,7 @@ export const Content: FC<TeamEditProps> = ({ isNew = false, teamId, messages }) 
             value={name}
             onChange={(e) => handleNameChange(e.target.value)}
             className="w-full font-sans bg-background"
-            errorText={fieldErrors.name}
+            errorText={fieldErrors.name || getInlineError("/name") || undefined}
           />
 
 
@@ -115,7 +117,7 @@ export const Content: FC<TeamEditProps> = ({ isNew = false, teamId, messages }) 
               className="w-full bg-background"
               value={password}
               onChange={(e) => handlePasswordChange(e.target.value)}
-              errorText={fieldErrors.password}
+              errorText={fieldErrors.password || getInlineError("/password") || undefined}
             />
             {password && (
               <div className="w-full flex flex-col gap-2 pt-1">
@@ -149,7 +151,7 @@ export const Content: FC<TeamEditProps> = ({ isNew = false, teamId, messages }) 
                 className="w-full bg-background"
                 value={confirmPassword}
                 onChange={(e) => handleConfirmPasswordChange(e.target.value)}
-                errorText={fieldErrors.confirmPassword}
+                errorText={fieldErrors.confirmPassword || getInlineError("/confirmPassword") || undefined}
               />
               {confirmPassword && (
                 <div className="w-full flex flex-col gap-2 pt-1">

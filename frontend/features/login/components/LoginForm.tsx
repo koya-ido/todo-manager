@@ -8,7 +8,7 @@ import { Card } from "@/components/Layout/Card";
 import { useLogin } from "@/features/login/hooks/useLogin";
 import { setAccessToken } from "@/lib/server-actions";
 import { useRouter } from "next/navigation";
-import { SubmitEvent, useContext, useMemo, useState } from "react";
+import { SubmitEvent, useContext, useEffect, useMemo, useState } from "react";
 
 type LoginFormProps = {
   messages: Record<string, string>;
@@ -25,7 +25,12 @@ export const LoginForm = ({ messages }: LoginFormProps) => {
   const router = useRouter();
   const { handleLogin } = useLogin();
 
-  const { getInlineError, setErrorResponse } = useContext(ErrorContext);
+  const { getInlineError, setErrorResponse, clearInlineErrors } = useContext(ErrorContext);
+
+  useEffect(() => {
+    clearInlineErrors();
+    return () => clearInlineErrors();
+  }, [clearInlineErrors]);
 
   const isError: boolean = useMemo(
     () => !!getInlineError("login-form"),

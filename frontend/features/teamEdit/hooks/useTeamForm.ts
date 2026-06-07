@@ -1,4 +1,5 @@
 import { ErrorContext } from "@/components/features/ErrorProvider";
+import { isErrorResponse } from "@/hooks/useError/errorUtils";
 import {
   TeamFieldErrors,
   TeamFormState,
@@ -19,7 +20,12 @@ type UseTeamFormProps = {
 
 export const useTeamForm = ({ isNew, teamId, messages }: UseTeamFormProps) => {
   const router = useRouter();
-  const { setErrorResponse } = useContext(ErrorContext);
+  const { setErrorResponse, clearInlineErrors } = useContext(ErrorContext);
+
+  useEffect(() => {
+    clearInlineErrors();
+    return () => clearInlineErrors();
+  }, [clearInlineErrors]);
 
   // Form State
   const [name, setName] = useState<string>("");
@@ -106,16 +112,13 @@ export const useTeamForm = ({ isNew, teamId, messages }: UseTeamFormProps) => {
           password: "",
           confirmPassword: "",
         });
-      } catch (error) {
-        setErrorResponse(error);
-        toast.error(
-          messages["FAILED_TO_FETCH"]?.replace(
-            "{name}",
-            messages["team.label"],
-          ),
-        );
-      } finally {
         setIsLoading(false);
+      } catch (error) {
+        if (isErrorResponse(error)) {
+          router.push(`/error?status=${error.status}&code=${error.code}`);
+        } else {
+          router.push("/error?status=500&code=UNKNOWN");
+        }
       }
     };
 
