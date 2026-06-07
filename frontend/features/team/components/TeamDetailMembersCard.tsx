@@ -34,7 +34,7 @@ export const TeamDetailMembersCard: FC<TeamDetailMembersCardProps> = ({
               className="flex items-center justify-between py-4 hover:bg-slate-50/50 dark:hover:bg-slate-900/30 transition-colors"
             >
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-indigo-50 dark:bg-indigo-950/50 flex items-center justify-center font-bold text-indigo-600 dark:text-indigo-400">
+                <div className="w-8 h-8 rounded-full bg-foreground/10 dark:bg-foreground/10 flex items-center justify-center font-bold text-foreground dark:text-foreground">
                   {member.user_name.charAt(0).toUpperCase()}
                 </div>
                 <div>
@@ -48,11 +48,11 @@ export const TeamDetailMembersCard: FC<TeamDetailMembersCardProps> = ({
                   </div>
                   <div className="mt-1 flex gap-1">
                     {member.is_owner ? (
-                      <Badge className="py-1 font-bold rounded-md border-0 text-xs bg-indigo-100 text-indigo-800 dark:bg-indigo-950/80 dark:text-indigo-300 h-fit">
+                      <Badge className="py-1 font-bold rounded-md border-0 text-xs bg-foreground/10 text-foreground dark:bg-foreground/10 dark:text-foreground h-fit">
                         {messages["team.detail.members.role.owner"]}
                       </Badge>
                     ) : (
-                      <Badge className="py-1 font-bold rounded-md border-0 text-xs bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 h-fit">
+                      <Badge className="py-1 font-bold rounded-md border-0 text-xs bg-foreground/10 text-foreground dark:bg-foreground/10 dark:text-foreground h-fit">
                         {messages["team.detail.members.role.member"]}
                       </Badge>
                     )}

@@ -263,6 +263,15 @@
   "team.detail.toast.copy-success": "Copied Team ID to clipboard",
   "team.detail.toast.tag-create-success": "Tag created successfully",
   "team.detail.toast.tag-update-success": "Tag updated successfully",
-  "team.detail.toast.tag-delete-success": "Tag deleted successfully"
+  "team.detail.toast.tag-delete-success": "Tag deleted successfully",
+  "team-edit.heading.register": "Create New Team",
+  "team-edit.heading.edit": "Edit Team Details",
+  "team-edit.description": "Configure the basic information for your team.",
+  "team-edit.display-teams-id.checklist-1": "3-20 characters",
+  "team-edit.display-teams-id.checklist-2": "Alphanumeric, hyphens, and underscores only",
+  "team-edit.password.placeholder.edit": "Enter only if you want to change it",
+  "team-edit.toast.create-success": "Team created successfully",
+  "team-edit.toast.update-success": "Team updated successfully",
+  "team-edit.toast.already-exists": "The specified Team ID is already in use."
 }
 

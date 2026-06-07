@@ -3,7 +3,8 @@ import { Checkbox } from "@/components/forms/Checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/Layout/Card";
 import { Heading } from "@/components/typography/Heading";
 import { TeamApplicantResponse, TeamDetailResponse } from "@/features/team/types";
-import { Settings, Trash2 } from "lucide-react";
+import { Edit, Settings, Trash2 } from "lucide-react";
+import Link from "next/link";
 import { FC } from "react";
 
 type TeamDetailAdminSettingsCardProps = {
@@ -89,7 +90,7 @@ export const TeamDetailAdminSettingsCard: FC<TeamDetailAdminSettingsCardProps> =
                     <div className="flex items-center gap-2 sm:self-center">
                       <Button
                         size="sm"
-                        className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold"
+                        className="text-white font-bold"
                         onClick={() => onApproveApplicant(app.id)}
                       >
                         {messages["team.detail.applicants.approve"]}
@@ -110,8 +111,19 @@ export const TeamDetailAdminSettingsCard: FC<TeamDetailAdminSettingsCardProps> =
           </div>
         </div>
 
-        {/* Danger Zone: Delete Team */}
-        <div className="border-t border-slate-100 dark:border-slate-900/50 pt-5">
+        {/* Admin actions: Edit and Delete Team */}
+        <div className="border-t border-slate-100 dark:border-slate-900/50 pt-5 flex justify-between items-center gap-3 flex-wrap">
+          <Button
+            variant="outline"
+            asChild
+            className="flex items-center gap-1.5 font-bold border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300"
+          >
+            <Link href={`/team/edit?id=${team.id}`}>
+              <Edit className="w-4 h-4" />
+              {messages["breadcrumb.team.edit"]}
+            </Link>
+          </Button>
+
           <Button
             variant="destructive"
             onClick={onDeleteTeamClick}
