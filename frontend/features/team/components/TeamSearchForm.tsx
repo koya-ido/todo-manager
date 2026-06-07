@@ -47,7 +47,7 @@ export const TeamSearchForm: FC<TeamSearchFormProps> = ({
           className="w-full md:w-32 h-11 shrink-0 flex items-center justify-center gap-1.5"
         >
           {isSearching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
-          {messages["team.search.button"]}
+          {messages["common.search"]}
         </Button>
       </form>
     </Card>

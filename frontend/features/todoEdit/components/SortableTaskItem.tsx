@@ -39,7 +39,7 @@ export const SortableTaskItem: FC<SortableTaskItemProps> = ({
       style={{ opacity: isDragging ? 0.5 : 1 }}
       className="flex items-center gap-2 bg-card border rounded-xl p-4 shadow-xs transition-opacity"
     >
-      {/* Drag Handle */}
+      {/* ドラッグハンドル */}
       <div
         ref={handleRef}
         className="cursor-grab text-muted-foreground/60 hover:text-muted-foreground focus:outline-hidden"
@@ -47,7 +47,7 @@ export const SortableTaskItem: FC<SortableTaskItemProps> = ({
         <GripVertical className="h-5 w-5" />
       </div>
 
-      {/* Task Input Fields */}
+      {/* タスク入力フィールド */}
       <div className="flex-1 min-w-0 space-y-3">
         <InputField
           label={messages["todo-edit.task-item.title"]}
@@ -73,7 +73,7 @@ export const SortableTaskItem: FC<SortableTaskItemProps> = ({
         </FieldWrapper>
       </div>
 
-      {/* Delete Task Button */}
+      {/* タスク削除ボタン */}
       {tasksCount > 1 && (
         <Button
           type="button"

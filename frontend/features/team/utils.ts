@@ -1,9 +1,9 @@
 /**
- * Utility functions for Team feature
+ * チーム機能のユーティリティ関数
  */
 
 /**
- * Formats the applied date to locale string.
+ * 申請日をローカル形式の文字列にフォーマットする。
  */
 export const formatAppliedDate = (
   appliedAt: string,
@@ -15,7 +15,7 @@ export const formatAppliedDate = (
 };
 
 /**
- * Formats a message template containing "{id}" with the actual team ID.
+ * "{id}"を含むメッセージテンプレートを実際のチームIDでフォーマットする。
  */
 export const formatTeamId = (
   template: string | undefined,
@@ -25,7 +25,7 @@ export const formatTeamId = (
 };
 
 /**
- * Formats a message template containing "{date}" with the formatted applied date.
+ * "{date}"を含むメッセージテンプレートをフォーマットされた申請日でフォーマットする。
  */
 export const formatAppliedDateLabel = (
   template: string | undefined,

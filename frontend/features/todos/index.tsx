@@ -167,7 +167,7 @@ export const Content: FC<TodosProps> = ({ mode = "private", isDeleteOnly = false
               onChange={(e) => setKeyword(e.target.value)}
               leftItem={<Search className="color-sidebar-ring" />}
             />
-            <Button type="submit">{messages["todo-list.search-button"]}</Button>
+            <Button type="submit">{messages["common.search"]}</Button>
           </div>
           <ComboboxField
             multiple
@@ -187,10 +187,10 @@ export const Content: FC<TodosProps> = ({ mode = "private", isDeleteOnly = false
           />
           {mode === "team" && (
             <SelectField
-              label={messages["todo-edit.manager"] || "担当者"}
+              label={messages["todo-edit.manager"]}
               items={[
-                { value: "0", label: messages["todo-list.filter-option.manager.all"] || "すべての担当者" },
-                ...members.map((m) => ({ value: String(m.id), label: `${m.user_name} (#${m.display_user_id})` }))
+                { value: "0", label: messages["todo-list.filter-option.manager.all"] },
+                ...members.map((m) => ({ value: String(m.id), label: `${m.user_name} #${m.display_user_id}` }))
               ]}
               value={managerId}
               onValueChange={setManagerId}
@@ -273,6 +273,7 @@ export const Content: FC<TodosProps> = ({ mode = "private", isDeleteOnly = false
                 todo={todo}
                 messages={messages}
                 onClick={() => handleClickTodo(todo.id)}
+                mode={mode}
               />
             ))}
             {isLoadingMore && <TodoSkeletonList />}

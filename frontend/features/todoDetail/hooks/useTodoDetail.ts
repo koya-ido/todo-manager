@@ -1,10 +1,16 @@
-import { ErrorContext } from "@/components/features/ErrorProvider";
-import { isErrorResponse } from "@/hooks/useError/errorUtils";
-import { TodoDetail, Comment } from "@/features/todoDetail/types";
-import { apiDelete, apiGet, apiPatch, apiPost, apiPut } from "@/hooks/useFetchApi";
 import { MeResponse } from "@/components/features/AuthSessionProvider/types";
-import { useContext, useEffect, useState, useCallback } from "react";
+import { ErrorContext } from "@/components/features/ErrorProvider";
+import { Comment, TodoDetail } from "@/features/todoDetail/types";
+import { isErrorResponse } from "@/hooks/useError/errorUtils";
+import {
+  apiDelete,
+  apiGet,
+  apiPatch,
+  apiPost,
+  apiPut,
+} from "@/hooks/useFetchApi";
 import { useRouter } from "next/navigation";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 
 type UseTodoDetailProps = {
@@ -19,9 +25,14 @@ export const useTodoDetail = ({ todoId, messages }: UseTodoDetailProps) => {
   const [currentUser, setCurrentUser] = useState<MeResponse | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [commentText, setCommentText] = useState<string>("");
-  const [isSubmittingComment, setIsSubmittingComment] = useState<boolean>(false);
-  const [isDeletingCommentId, setIsDeletingCommentId] = useState<number | null>(null);
-  const [isUpdatingCommentId, setIsUpdatingCommentId] = useState<number | null>(null);
+  const [isSubmittingComment, setIsSubmittingComment] =
+    useState<boolean>(false);
+  const [isDeletingCommentId, setIsDeletingCommentId] = useState<number | null>(
+    null,
+  );
+  const [isUpdatingCommentId, setIsUpdatingCommentId] = useState<number | null>(
+    null,
+  );
 
   const fetchTodo = useCallback(async () => {
     try {
@@ -53,7 +64,7 @@ export const useTodoDetail = ({ todoId, messages }: UseTodoDetailProps) => {
         await Promise.all([fetchTodo(), fetchCurrentUser()]);
         setIsLoading(false);
       } catch {
-        // Keep isLoading active during redirect transition
+        // リダイレクト遷移中もisLoadingをアクティブに保つ
       }
     };
     void initLoad();
@@ -64,16 +75,13 @@ export const useTodoDetail = ({ todoId, messages }: UseTodoDetailProps) => {
     try {
       const updatedTodo = await apiPut<TodoDetail>(
         `/todo/${todoId}`,
-        JSON.stringify({ status_id: parseInt(statusId, 10) })
+        JSON.stringify({ status_id: parseInt(statusId, 10) }),
       );
       setTodo(updatedTodo);
-      toast.success(messages["todo-edit.update.success"] || "ステータスを更新しました");
+      toast.success(messages["todo-edit.update.success"]);
     } catch (error) {
       setErrorResponse(error);
-      toast.error(
-        messages["FAILED_TO_UPDATE"]?.replace("{name}", "TODO") ||
-          "ステータスの更新に失敗しました"
-      );
+      toast.error(messages["FAILED_TO_UPDATE"]?.replace("{name}", "TODO"));
     }
   };
 
@@ -82,18 +90,15 @@ export const useTodoDetail = ({ todoId, messages }: UseTodoDetailProps) => {
     try {
       const updatedTodo = await apiPatch<TodoDetail>(
         `/todo/${todoId}/tasks/${taskId}`,
-        JSON.stringify({ completion_flag: completionFlag })
+        JSON.stringify({ completion_flag: completionFlag }),
       );
       if (updatedTodo.status_id !== todo.status_id) {
-        toast.success(messages["todo-edit.update.success"] || "ステータスを更新しました");
+        toast.success(messages["todo-edit.update.success"]);
       }
       setTodo(updatedTodo);
     } catch (error) {
       setErrorResponse(error);
-      toast.error(
-        messages["FAILED_TO_UPDATE"]?.replace("{name}", "タスク") ||
-          "タスクの更新に失敗しました"
-      );
+      toast.error(messages["FAILED_TO_UPDATE"]?.replace("{name}", "タスク"));
     }
   };
 
@@ -105,17 +110,14 @@ export const useTodoDetail = ({ todoId, messages }: UseTodoDetailProps) => {
     try {
       await apiPost<Comment>(
         `/todo/${todoId}/comments`,
-        JSON.stringify({ comment: commentText.trim() })
+        JSON.stringify({ comment: commentText.trim() }),
       );
       setCommentText("");
-      toast.success(messages["todo-detail.comment.create.success"] || "コメントを投稿しました");
-      await fetchTodo(); // Refresh details to show new comment
+      toast.success(messages["todo-detail.comment.create.success"]);
+      await fetchTodo(); // 新しいコメントを表示するために詳細を更新
     } catch (error) {
       setErrorResponse(error);
-      toast.error(
-        messages["FAILED_TO_CREATE"]?.replace("{name}", "コメント") ||
-          "コメントの投稿に失敗しました"
-      );
+      toast.error(messages["FAILED_TO_CREATE"]?.replace("{name}", "コメント"));
     } finally {
       setIsSubmittingComment(false);
     }
@@ -125,14 +127,11 @@ export const useTodoDetail = ({ todoId, messages }: UseTodoDetailProps) => {
     setIsDeletingCommentId(commentId);
     try {
       await apiDelete(`/todo/${todoId}/comments/${commentId}`);
-      toast.success(messages["todo-detail.comment.delete.success"] || "コメントを削除しました。");
-      await fetchTodo(); // Refresh details
+      toast.success(messages["todo-detail.comment.delete.success"]);
+      await fetchTodo(); // 詳細を更新
     } catch (error) {
       setErrorResponse(error);
-      toast.error(
-        messages["FAILED_TO_DELETE"]?.replace("{name}", "コメント") ||
-          "コメントの削除に失敗しました"
-      );
+      toast.error(messages["FAILED_TO_DELETE"]?.replace("{name}", "コメント"));
     } finally {
       setIsDeletingCommentId(null);
     }
@@ -141,14 +140,11 @@ export const useTodoDetail = ({ todoId, messages }: UseTodoDetailProps) => {
   const handleDeleteTodo = async (mode: string = "private") => {
     try {
       await apiDelete(`/todo/${todoId}`);
-      toast.success(messages["todo-detail.delete.success"] || "TODOを削除しました");
+      toast.success(messages["todo-detail.delete.success"]);
       router.push(`/todo?mode=${mode}`);
     } catch (error) {
       setErrorResponse(error);
-      toast.error(
-        messages["FAILED_TO_DELETE"]?.replace("{name}", "TODO") ||
-          "TODOの削除に失敗しました"
-      );
+      toast.error(messages["FAILED_TO_DELETE"]?.replace("{name}", "TODO"));
       throw error;
     }
   };
@@ -158,16 +154,13 @@ export const useTodoDetail = ({ todoId, messages }: UseTodoDetailProps) => {
     try {
       await apiPut(
         `/todo/${todoId}/comments/${commentId}`,
-        JSON.stringify({ comment: newText.trim() })
+        JSON.stringify({ comment: newText.trim() }),
       );
-      toast.success(messages["todo-detail.comment.update.success"] || "コメントを更新しました");
-      await fetchTodo(); // Refresh details
+      toast.success(messages["todo-detail.comment.update.success"]);
+      await fetchTodo(); // 詳細を更新
     } catch (error) {
       setErrorResponse(error);
-      toast.error(
-        messages["FAILED_TO_UPDATE"]?.replace("{name}", "コメント") ||
-          "コメントの更新に失敗しました"
-      );
+      toast.error(messages["FAILED_TO_UPDATE"]?.replace("{name}", "コメント"));
       throw error;
     } finally {
       setIsUpdatingCommentId(null);

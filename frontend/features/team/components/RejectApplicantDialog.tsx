@@ -51,7 +51,7 @@ export const RejectApplicantDialog: FC<RejectApplicantDialogProps> = ({
             onClick={onClose}
             disabled={isSubmitting}
           >
-            {messages["team.detail.applicants.reject-dialog.cancel"]}
+            {messages["common.cancel"]}
           </Button>
           <Button
             className="flex-1"

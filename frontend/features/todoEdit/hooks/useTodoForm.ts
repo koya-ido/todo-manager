@@ -1,5 +1,4 @@
 import { ErrorContext } from "@/components/features/ErrorProvider";
-import { isErrorResponse } from "@/hooks/useError/errorUtils";
 import { useAvailableTags } from "@/features/todoEdit/hooks/useAvailableTags";
 import { useNavigationGuard } from "@/features/todoEdit/hooks/useNavigationGuard";
 import { useTeamMembers } from "@/features/todoEdit/hooks/useTeamMembers";
@@ -10,6 +9,7 @@ import {
   TodoResponse,
 } from "@/features/todoEdit/types";
 import { isStateDirty } from "@/features/todoEdit/utils";
+import { isErrorResponse } from "@/hooks/useError/errorUtils";
 import { apiGet, apiPost, apiPut } from "@/hooks/useFetchApi";
 import { TodoMode } from "@/types/todo";
 import { useRouter } from "next/navigation";
@@ -39,7 +39,7 @@ export const useTodoForm = ({
     return () => clearInlineErrors();
   }, [clearInlineErrors]);
 
-  // Form State
+  // フォーム状態
   const [name, setName] = useState<string>("");
   const [statusId, setStatusId] = useState<string>("1");
   const [priorityId, setPriorityId] = useState<string>("3");
@@ -50,22 +50,22 @@ export const useTodoForm = ({
     { title: "", content: "", completion_flag: false, key: "task-initial" },
   ]);
 
-  // Team & Member State
+  // チームとメンバーの状態
   const [currentTeamId, setCurrentTeamId] = useState<number | undefined>(
     teamId,
   );
 
-  // UI State
+  // UI状態
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // Discard Confirmation State
+  // 破棄確認状態
   const [initialState, setInitialState] = useState<FormState | null>(null);
 
-  // Validation State
+  // バリデーション状態
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
 
-  // 1. Separate Tag Hook
+  // 1. 独立したタグフック
   const {
     availableTags,
     selectedTags,
@@ -81,7 +81,7 @@ export const useTodoForm = ({
     setErrorResponse,
   });
 
-  // 2. Separate Team Members Hook
+  // 2. 独立したチームメンバーフック
   const { members } = useTeamMembers({
     mode,
     currentTeamId,
@@ -133,7 +133,7 @@ export const useTodoForm = ({
     });
   };
 
-  // Load existing Todo data if editing
+  // 編集中の場合は既存のTodoデータをロード
   useEffect(() => {
     if (isNew || !todoId) return;
 
@@ -151,7 +151,7 @@ export const useTodoForm = ({
           setManagerId(String(response.manager_id));
         }
 
-        // created_at (YYYY-MM-DD)
+        // 作成日 (YYYY-MM-DD)
         let startD = "";
         if (response.created_at) {
           startD = response.created_at.split("T")[0];
@@ -206,7 +206,7 @@ export const useTodoForm = ({
     void loadTodo();
   }, [isNew, todoId, setErrorResponse, messages, setSelectedTags]);
 
-  // Set initial state for new TODO
+  // 新規TODOの初期状態を設定
   useEffect(() => {
     if (isNew) {
       setInitialState({
@@ -243,7 +243,7 @@ export const useTodoForm = ({
     initialState,
   );
 
-  // 3. Separate Navigation Guard Hook
+  // 3. 独立したナビゲーションガードフック
   const {
     showDiscardDialog,
     setShowDiscardDialog,
@@ -253,7 +253,7 @@ export const useTodoForm = ({
     setInitialState(null);
   });
 
-  // Task list operations
+  // タスクリストの操作
   const handleAddTask = () => {
     setTasks((prev) => [
       ...prev,
@@ -355,11 +355,11 @@ export const useTodoForm = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Client-side validation
+    // クライアント側のバリデーション
     const newErrors: typeof fieldErrors = {};
     let isValid = true;
 
-    // Validate name
+    // 名前の検証
     if (!name.trim()) {
       newErrors.name = messages["validate.required"];
       isValid = false;
@@ -368,7 +368,7 @@ export const useTodoForm = ({
       isValid = false;
     }
 
-    // Validate tasks
+    // タスクの検証
     const taskErrors: Record<string, { title?: string; content?: string }> = {};
     tasks.forEach((task) => {
       const currentTaskErrors: { title?: string; content?: string } = {};
@@ -401,13 +401,13 @@ export const useTodoForm = ({
       newErrors.tasks = taskErrors;
     }
 
-    // Validate date range
+    // 日付範囲の検証
     if (startDate && dueDate && startDate > dueDate) {
       newErrors.dueDate = messages["validate.dueDate"];
       isValid = false;
     }
 
-    // Validate assignee in team mode
+    // チームモード時の担当者の検証
     if (mode === "team" && !managerId) {
       newErrors.managerId = messages["validate.required"];
       isValid = false;

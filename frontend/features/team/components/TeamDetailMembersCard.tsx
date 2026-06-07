@@ -60,7 +60,7 @@ export const TeamDetailMembersCard: FC<TeamDetailMembersCardProps> = ({
                 </div>
               </div>
 
-              {/* Kick Button (Only for Admin, and cannot kick themselves) */}
+              {/* キックボタン（管理者のみ、かつ自身をキックすることは不可） */}
               {team.is_owner && !member.is_owner && (
                 <Button
                   variant="destructive"

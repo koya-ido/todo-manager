@@ -28,7 +28,7 @@ type Story = StoryObj<typeof meta>;
 
 const FRUITS = ["Apple", "Banana", "Cherry", "Date", "Elderberry", "Fig", "Grape"];
 
-// Component wrapper to manage internal state for Single selection
+// 単一選択の内部状態を管理するためのコンポーネントラッパー
 const SingleComboboxTemplate = (args: any) => {
   const [value, setValue] = React.useState<string>("");
   const anchor = React.useRef<HTMLInputElement | null>(null);
@@ -64,7 +64,7 @@ const SingleComboboxTemplate = (args: any) => {
   );
 };
 
-// Component wrapper to manage internal state for Multiple selection
+// 複数選択の内部状態を管理するためのコンポーネントラッパー
 const MultipleComboboxTemplate = (args: any) => {
   const [values, setValues] = React.useState<string[]>([]);
   const anchor = useComboboxAnchor();

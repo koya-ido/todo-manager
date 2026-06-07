@@ -14,6 +14,7 @@ import {
   DialogTitle,
 } from "@/components/Layout/Dialog";
 import { LabelWithIcon } from "@/components/Layout/LabelWithIcon/LabelWithIcon";
+import { Skeleton } from "@/components/Layout/Skeleton";
 import { Heading } from "@/components/typography/Heading";
 import { useTeamForm } from "@/features/teamEdit/hooks/useTeamForm";
 import { TeamEditProps } from "@/features/teamEdit/types";
@@ -68,15 +69,43 @@ export const Content: FC<TeamEditProps> = ({ isNew = false, teamId, messages }) 
 
   if (isLoading) {
     return (
-      <div className="w-full flex justify-center items-center py-20">
-        <p className="text-muted-foreground">Loading...</p>
+      <div className="w-full pb-28 space-y-6 max-w-2xl mx-auto animate-pulse">
+        {/* タイトルヘッダーのスケルトン */}
+        <div className="space-y-2 py-2">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-4 w-96" />
+        </div>
+
+        {/* メインフォームのスケルトン */}
+        <Card className="p-6 rounded-xl border bg-card space-y-6">
+          {/* チーム名フィールド */}
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-16" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+
+          {/* チームパスワードフィールド */}
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-28" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+
+          {/* パスワード確認用フィールド */}
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+        </Card>
+
+        {/* 送信ボタンのスケルトン */}
+        <Skeleton className="h-12 w-full rounded-md" />
       </div>
     );
   }
 
   return (
     <div className="w-full pb-28 space-y-6 max-w-2xl mx-auto">
-      {/* Title Header */}
+      {/* タイトルヘッダー */}
       <section className="space-y-1 py-2">
         <Heading level={1} className="text-2xl font-bold flex items-center gap-2">
           {isNew ? <Plus className="w-6 h-6" /> : <Settings className="w-6 h-6" />}
@@ -87,10 +116,10 @@ export const Content: FC<TeamEditProps> = ({ isNew = false, teamId, messages }) 
         </p>
       </section>
 
-      {/* Main Form */}
+      {/* メインフォーム */}
       <form onSubmit={handleSubmit} className="space-y-6" noValidate>
         <Card className="p-6 rounded-xl border bg-card space-y-6">
-          {/* Team Name */}
+          {/* チーム名 */}
           <InputField
             label={messages["team.detail.info.name"]}
             placeholder={messages["team.detail.info.name"]}
@@ -104,7 +133,7 @@ export const Content: FC<TeamEditProps> = ({ isNew = false, teamId, messages }) 
 
 
 
-          {/* Team Password */}
+          {/* チームパスワード */}
           <div className="space-y-2">
             <PasswordField
               label={messages["team.search-result.password-placeholder"]}
@@ -141,7 +170,7 @@ export const Content: FC<TeamEditProps> = ({ isNew = false, teamId, messages }) 
             )}
           </div>
 
-          {/* Confirm Team Password (only validated if password is typed) */}
+          {/* パスワード確認用（パスワードが入力された場合のみ検証される） */}
           {(password || isNew) && (
             <div className="space-y-2">
               <PasswordField
@@ -177,7 +206,7 @@ export const Content: FC<TeamEditProps> = ({ isNew = false, teamId, messages }) 
           )}
         </Card>
 
-        {/* Submit Button */}
+        {/* 送信ボタン */}
         <Button
           type="submit"
           disabled={isSubmitDisabled || isSubmitting}
@@ -189,12 +218,12 @@ export const Content: FC<TeamEditProps> = ({ isNew = false, teamId, messages }) 
               {messages["common.register"]}
             </>
           ) : (
-            messages["todo-edit.update"]
+            messages["common.update"]
           )}
         </Button>
       </form>
 
-      {/* Discard confirmation Dialog */}
+      {/* 破棄確認ダイアログ */}
       <Dialog open={showDiscardDialog} onOpenChange={setShowDiscardDialog}>
         <DialogContent showCloseButton={false}>
           <DialogHeader>

@@ -63,7 +63,7 @@ export const TagSettingsDialog: FC<TagSettingsDialogProps> = ({
             disabled={!editingTagName.trim() || isUpdatingTag}
             onClick={onUpdateTag}
           >
-            {messages["team.detail.tags.dialog.update"]}
+            {messages["common.update"]}
           </Button>
         </div>
         <DialogFooter className="flex w-full gap-2 mt-4">
@@ -72,7 +72,7 @@ export const TagSettingsDialog: FC<TagSettingsDialogProps> = ({
             variant="outline"
             onClick={onClose}
           >
-            {messages["team.detail.tags.dialog.cancel"]}
+            {messages["common.cancel"]}
           </Button>
           <Button
             className="flex-1"
@@ -84,7 +84,7 @@ export const TagSettingsDialog: FC<TagSettingsDialogProps> = ({
               }
             }}
           >
-            {messages["team.detail.tags.dialog.delete"]}
+            {messages["common.delete"]}
           </Button>
         </DialogFooter>
       </DialogContent>

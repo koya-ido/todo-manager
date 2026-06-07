@@ -136,14 +136,14 @@ export const Content: FC<ContentProps> = ({ messages }) => {
           <DialogFooter>
             <div className="w-full flex flex-col gap-2">
               <Button variant="destructive" className="w-full">
-                {messages["user.action.danger-zone.delete.dialog-confirm"]}
+                {messages["common.delete.verb"]}
               </Button>
               <Button
                 variant="outline"
                 className="w-full"
                 onClick={() => setIsOpenDialog(false)}
               >
-                {messages["user.action.danger-zone.delete.dialog-cancel"]}
+                {messages["common.cancel"]}
               </Button>
             </div>
           </DialogFooter>

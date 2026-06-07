@@ -61,7 +61,7 @@ export const TeamDetailInfoCard: FC<TeamDetailInfoCardProps> = ({
 
         <div className="border-t border-slate-100 dark:border-slate-900/50 pt-3">
           <span className="text-foreground font-bold block text-xs">
-            {messages["team.owner"] || "Owner:"}
+            {messages["team.owner"]}
           </span>
           <div className="flex items-center gap-2 mt-1">
             <Crown className="w-4 h-4 text-amber-500" />

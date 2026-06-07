@@ -15,6 +15,7 @@ import {
 } from "@/components/Layout/Dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/Layout/Popover";
 import { Separator } from "@/components/Layout/Separator";
+import { Skeleton } from "@/components/Layout/Skeleton";
 import { Heading } from "@/components/typography/Heading";
 import { useTodoDetail } from "@/features/todoDetail/hooks/useTodoDetail";
 import { TodoDetailProps } from "@/features/todoDetail/types";
@@ -50,14 +51,14 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
     { value: "4", label: messages["common.status.pending"], statusKey: "pending" },
   ];
 
-  // Comment delete dialog state
+  // コメント削除ダイアログの状態
   const [commentToDeleteId, setCommentToDeleteId] = useState<number | null>(null);
 
-  // Todo delete states
+  // Todo削除の状態
   const [isDeleteTodoDialogOpen, setIsDeleteTodoDialogOpen] = useState<boolean>(false);
   const [isDeletingTodo, setIsDeletingTodo] = useState<boolean>(false);
 
-  // Comment edit states
+  // コメント編集の状態
   const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
   const [editingCommentText, setEditingCommentText] = useState<string>("");
 
@@ -77,22 +78,139 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
       setEditingCommentId(null);
       setEditingCommentText("");
     } catch {
-      // Error is handled in the hook
+      // エラーはフック内で処理される
     }
   };
 
 
   if (isLoading) {
     return (
-      <div className="w-full flex justify-center items-center py-20">
-        <p className="text-muted-foreground">Loading...</p>
+      <div className="w-full pb-20 space-y-6 animate-pulse">
+        {/* タイトルヘッダーのスケルトン */}
+        <section className="space-y-2 py-2">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-4 w-96" />
+        </section>
+
+        {/* メインTODO詳細カードのスケルトン */}
+        <Card className="p-5 rounded-2xl border bg-card shadow-xs space-y-4">
+          {/* バッジのスケルトン */}
+          <div className="flex gap-2">
+            <Skeleton className="h-5 w-16 rounded-md" />
+            <Skeleton className="h-5 w-16 rounded-md" />
+          </div>
+
+          {/* タイトルのスケルトン */}
+          <Skeleton className="h-7 w-3/4" />
+
+          {/* 担当者のスケルトン */}
+          {mode === "team" && (
+            <div className="space-y-1">
+              <Skeleton className="h-3.5 w-16" />
+              <Skeleton className="h-5 w-32" />
+            </div>
+          )}
+
+          {/* 日付情報のスケルトン */}
+          <div className="grid grid-cols-2 gap-4 text-sm pt-2">
+            <div className="space-y-1.5">
+              <Skeleton className="h-3 w-16" />
+              <Skeleton className="h-5 w-24" />
+            </div>
+            <div className="space-y-1.5">
+              <Skeleton className="h-3 w-16" />
+              <Skeleton className="h-5 w-24" />
+            </div>
+          </div>
+
+          {/* 進捗バーのスケルトン */}
+          <div className="space-y-2 pt-2">
+            <div className="flex justify-between items-center">
+              <Skeleton className="h-3.5 w-16" />
+              <Skeleton className="h-3.5 w-8" />
+            </div>
+            <Skeleton className="h-2 w-full rounded-full" />
+          </div>
+
+          {/* ステータス切り替えコントロールのスケルトン */}
+          <Skeleton className="h-10 w-full rounded-lg" />
+        </Card>
+
+        {/* 編集および削除アクションのスケルトン */}
+        <div className="flex gap-3">
+          <Skeleton className="h-11 flex-1 rounded-md" />
+          <Skeleton className="h-11 flex-1 rounded-md" />
+        </div>
+
+        {/* タグセクションのスケルトン */}
+        <section className="space-y-3 pt-2">
+          <div className="flex justify-between items-center">
+            <Skeleton className="h-6 w-20" />
+            <Skeleton className="h-4 w-12" />
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Skeleton className="h-8 w-20 rounded-full" />
+            <Skeleton className="h-8 w-24 rounded-full" />
+            <Skeleton className="h-8 w-16 rounded-full" />
+          </div>
+        </section>
+
+        {/* タスクセクションのスケルトン */}
+        <section className="space-y-3 pt-2">
+          <div className="flex justify-between items-center">
+            <Skeleton className="h-6 w-20" />
+            <Skeleton className="h-4 w-12" />
+          </div>
+          <div className="space-y-2.5">
+            {[1, 2].map((i) => (
+              <div key={i} className="flex items-center gap-3 p-4 rounded-xl border border-gray-100 bg-card">
+                <Skeleton className="size-5 rounded-md shrink-0" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-4 w-1/3" />
+                  <Skeleton className="h-3.5 w-2/3" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* コメントセクションのスケルトン */}
+        <section className="space-y-3 pt-2">
+          <div className="flex justify-between items-center">
+            <Skeleton className="h-6 w-20" />
+            <Skeleton className="h-4 w-12" />
+          </div>
+          {/* 新規コメント入力フォームのスケルトン */}
+          <div className="space-y-2">
+            <Skeleton className="h-20 w-full rounded-xl" />
+            <div className="flex justify-end">
+              <Skeleton className="h-9 w-24 rounded-lg" />
+            </div>
+          </div>
+          {/* コメント項目リストのスケルトン */}
+          <div className="space-y-3 pt-2">
+            {[1, 2].map((i) => (
+              <div key={i} className="p-4 rounded-xl border border-gray-100 bg-card space-y-2">
+                <div className="flex justify-between items-center">
+                  <div className="flex gap-2">
+                    <Skeleton className="h-4 w-16" />
+                    <Skeleton className="h-4 w-12" />
+                  </div>
+                  <Skeleton className="h-4 w-28" />
+                </div>
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-5/6" />
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
     );
   }
 
   if (!todo) return null;
 
-  // Formatting dates
+  // 日付のフォーマット
   const formatDate = (dateStr: string | null) => {
     if (!dateStr) return "yyyy/MM/dd";
     const d = new Date(dateStr);
@@ -107,42 +225,41 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
     return `${d.getFullYear()}/${pad(d.getMonth() + 1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
   };
 
-  // Progress calculation
+  // 進捗の計算
   const totalTasksCount = todo.tasks.length;
   const completedTasksCount = todo.tasks.filter((t) => t.completion_flag).length;
   const progress = totalTasksCount > 0 ? Math.round((completedTasksCount / totalTasksCount) * 100) : 0;
 
-  // Overdue check
+  // 期限超過のチェック
   const isOverdue =
     todo.due_date &&
     new Date(todo.due_date).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0) &&
-    todo.status_id !== 3; // Not "Done"
+    todo.status_id !== 3; // 「完了」以外
 
   const todoStatusKey = Status[todo.status_id as keyof typeof Status] || "not-started";
   const todoPriorityKey = Priority[todo.priority_id as keyof typeof Priority] || "medium";
 
   return (
     <div className="w-full pb-20 space-y-6">
-      {/* Title Header */}
+      {/* タイトルヘッダー */}
       <section className="space-y-1 py-2">
         <Heading level={1} className="text-2xl font-bold">
-          {messages["todo-detail.heading"] || "詳細"}
+          {messages["todo-detail.heading"]}
         </Heading>
         <p className="text-sm text-muted-foreground">
-          {messages["todo-detail.description"] ||
-            "TODOの内容を確認し、実行したタスクからチェックをつけていきましょう。"}
+          {messages["todo-detail.description"]}
         </p>
       </section>
 
-      {/* Main TODO Detail Card */}
+      {/* メインTODO詳細カード */}
       <Card className="p-5 rounded-2xl border bg-card shadow-xs">
-        {/* Badges */}
+        {/* バッジ */}
         <div className="flex gap-2">
           <StatusBadge status={todoStatusKey} messages={messages} />
           <PriorityBadge priority={todoPriorityKey} messages={messages} />
         </div>
 
-        {/* Title */}
+        {/* タイトル */}
         <h2 className="text-xl font-bold text-foreground break-words">{todo.name}</h2>
 
         {mode === "team" && (
@@ -158,17 +275,17 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
           </div>
         )}
 
-        {/* Dates Info */}
+        {/* 日付情報 */}
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <p className="text-xs text-muted-foreground font-semibold mb-0.5">
-              {messages["common.start-date"] || "開始日"}
+              {messages["common.start-date"]}
             </p>
             <p className="font-bold text-foreground">{formatDate(todo.created_at)}</p>
           </div>
           <div>
             <p className={cn("text-xs font-semibold mb-0.5", isOverdue ? "text-destructive" : "text-muted-foreground")}>
-              {messages["common.due-date"] || "期限日"}
+              {messages["common.due-date"]}
             </p>
             <div className="flex items-center gap-1.5">
               <p className={cn("font-bold", isOverdue ? "text-destructive" : "text-foreground")}>
@@ -179,7 +296,7 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
           </div>
         </div>
 
-        {/* Progress Bar */}
+        {/* 進捗バー */}
         <div className="space-y-1.5">
           <div className="flex justify-between items-center text-xs">
             <span className="text-muted-foreground font-semibold">進捗状況</span>
@@ -193,7 +310,7 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
           </div>
         </div>
 
-        {/* Status Toggle Control */}
+        {/* ステータス切り替えコントロール */}
         <ToggleGroup
           type="single"
           value={String(todo.status_id)}
@@ -218,7 +335,7 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
         </ToggleGroup>
       </Card>
 
-      {/* Edit and Delete Actions */}
+      {/* 編集および削除アクション */}
       <div className="flex gap-3">
         <Button
           variant="secondary"
@@ -227,7 +344,7 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
         >
           <Link href={`/todo/edit?mode=${mode}&id=${todoId}`}>
             <Pencil className="h-4 w-4" />
-            {messages["todo-detail.edit"] || "編集する"}
+            {messages["common.edit.verb"]}
           </Link>
         </Button>
         <Button
@@ -237,25 +354,25 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
           className="flex-1 text-sm font-bold py-3 shadow-xs flex items-center justify-center gap-2 cursor-pointer"
         >
           <Trash2 className="h-4 w-4" />
-          {messages["todo-detail.delete"] || "削除する"}
+          {messages["common.delete.verb"]}
         </Button>
       </div>
 
-      {/* Tags Section */}
+      {/* タグセクション */}
       <section className="space-y-3 pt-2">
         <div className="flex justify-between items-center">
           <Heading level={2} className="text-lg font-bold">
-            {messages["todo-detail.tag"] || "タグ"}
+            {messages["common.tag"]}
           </Heading>
           <span className="text-sm text-muted-foreground font-medium">
             {todo.tags.length}
-            {messages["common.unit"] || "件"}
+            {messages["common.unit"]}
           </span>
         </div>
         <div className="flex flex-wrap gap-2">
           {todo.tags.length === 0 ? (
             <p className="text-sm text-muted-foreground">
-              {messages["todo-detail.no-tag"] || "タグはありません"}
+              {messages["todo-detail.no-tag"]}
             </p>
           ) : (
             todo.tags.map((tag) => (
@@ -270,15 +387,15 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
         </div>
       </section>
 
-      {/* Tasks Section */}
+      {/* タスクセクション */}
       <section className="space-y-3 pt-2">
         <div className="flex justify-between items-center">
           <Heading level={2} className="text-lg font-bold">
-            {messages["todo-detail.task"] || "タスク"}
+            {messages["common.task"]}
           </Heading>
           <span className="text-sm text-muted-foreground font-medium">
             {todo.tasks.length}
-            {messages["common.unit"] || "件"}
+            {messages["common.unit"]}
           </span>
         </div>
         <div className="space-y-2.5">
@@ -292,7 +409,7 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
                   key={task.id}
                   className="flex items-center gap-3 p-4 rounded-xl border border-gray-100 bg-card shadow-2xs"
                 >
-                  {/* Custom Checkbox */}
+                  {/* カスタムチェックボックス */}
                   <Checkbox
                     checked={task.completion_flag}
                     onCheckedChange={(checked) => {
@@ -300,7 +417,7 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
                     }}
                     className="mt-0.5 size-5 border-gray-300 data-[state=checked]:bg-foreground data-[state=checked]:border-foreground data-[state=checked]:text-background cursor-pointer"
                   />
-                  {/* Task Content */}
+                  {/* タスク内容 */}
                   <div className="flex-1 min-w-0 space-y-0.5">
                     <p className={cn("text-sm font-semibold break-words", task.completion_flag ? "text-muted-foreground line-through" : "text-foreground")}>
                       {task.title}
@@ -320,22 +437,22 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
         </div>
       </section>
 
-      {/* Comments Section */}
+      {/* コメントセクション */}
       <section className="space-y-3 pt-2">
         <div className="flex justify-between items-center">
           <Heading level={2} className="text-lg font-bold">
-            {messages["todo-detail.comment"] || "コメント"}
+            {messages["todo-detail.comment"]}
           </Heading>
           <span className="text-sm text-muted-foreground font-medium">
             {todo.comments.filter(c => !c.delete_flag).length}
-            {messages["common.unit"] || "件"}
+            {messages["common.unit"]}
           </span>
         </div>
 
-        {/* New Comment Input Form */}
+        {/* 新規コメント入力フォーム */}
         <form onSubmit={handleSendComment} className="space-y-2">
           <textarea
-            placeholder={messages["todo-detail.comment.placeholder"] || "コメントを入力してください..."}
+            placeholder={messages["todo-detail.comment.placeholder"]}
             value={commentText}
             onChange={(e) => setCommentText(e.target.value)}
             disabled={isSubmittingComment}
@@ -349,18 +466,18 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
               disabled={isSubmittingComment || !commentText.trim()}
               className="bg-foreground text-background hover:bg-foreground/90 font-bold px-5 py-2 text-sm rounded-lg flex items-center justify-center gap-1.5"
             >
-              {messages["todo-detail.comment.send"] || "送信"}
+              {messages["todo-detail.comment.send"]}
             </Button>
           </div>
         </form>
 
-        {/* Comment Items list */}
+        {/* コメント項目リスト */}
         <div className="space-y-3 pt-2">
           {todo.comments.filter(c => !c.delete_flag).length === 0 ? (
             <div className="w-full py-8 flex flex-col justify-center items-center gap-2 text-muted-foreground/60">
               <MessageSquare className="h-6 w-6 stroke-1" />
               <p className="text-xs">
-                {messages["todo-detail.comment.no-comment"] || "コメントはまだ投稿されていません"}
+                {messages["todo-detail.comment.no-comment"]}
               </p>
             </div>
           ) : (
@@ -391,7 +508,7 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
                           <span>{formatDateTime(comment.created_at)}</span>
                           {isEdited && (
                             <span className="text-[10px] bg-gray-100 text-muted-foreground/85 px-1.5 py-0.5 rounded-sm font-bold select-none">
-                              {messages["todo-detail.comment.edited"] || "編集済み"}
+                              {messages["todo-detail.comment.edited"]}
                             </span>
                           )}
                         </div>
@@ -470,28 +587,28 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
           )}
         </div>
 
-        {/* Bottom indicator */}
+        {/* ボトムインジケーター */}
         {todo.comments.filter(c => !c.delete_flag).length > 0 && (
           <div className="w-full flex flex-col justify-center items-center gap-2 py-6 text-muted-foreground/50">
             <MessageSquare className="h-5 w-5 stroke-1" />
             <p className="text-xs">
-              {messages["todo-detail.comment.last-label"] || "コメントをすべて確認しました"}
+              {messages["todo-detail.comment.last-label"]}
             </p>
           </div>
         )}
       </section>
 
-      {/* Delete Comment Confirmation Dialog */}
+      {/* コメント削除確認ダイアログ */}
       <Dialog open={commentToDeleteId !== null} onOpenChange={(open) => !open && setCommentToDeleteId(null)}>
         <DialogContent showCloseButton={false}>
           <DialogHeader>
             <DialogTitle className="text-destructive flex items-center justify-center gap-2 text-md">
               <AlertCircle size={20} className="text-destructive" />
-              {messages["todo-detail.comment.delete"] || "コメントの削除"}
+              {messages["common.delete"]}
             </DialogTitle>
           </DialogHeader>
           <DialogDescription className="text-center py-2 text-sm">
-            {messages["todo-detail.comment.confirm-delete"] || "本当にこのコメントを削除しますか？"}
+            {messages["todo-detail.comment.confirm-delete"]}
           </DialogDescription>
           <DialogFooter>
             <div className="w-full flex flex-col gap-2">
@@ -506,7 +623,7 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
                   }
                 }}
               >
-                {messages["todo-detail.comment.delete"] || "削除"}
+                {messages["common.delete"]}
               </Button>
               <Button
                 variant="outline"
@@ -520,17 +637,17 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
         </DialogContent>
       </Dialog>
 
-      {/* Delete TODO Confirmation Dialog */}
+      {/* TODO削除確認ダイアログ */}
       <Dialog open={isDeleteTodoDialogOpen} onOpenChange={(open) => !open && setIsDeleteTodoDialogOpen(false)}>
         <DialogContent showCloseButton={false} className="w-full">
           <DialogHeader>
             <DialogTitle className="text-destructive flex items-center justify-center gap-2 text-md">
               <AlertCircle size={20} className="text-destructive" />
-              {messages["todo-detail.delete.dialog.title"] || "TODOの削除"}
+              {messages["todo-detail.delete.dialog.title"]}
             </DialogTitle>
           </DialogHeader>
           <DialogDescription className="text-center py-2 text-sm">
-            {messages["todo-detail.delete.dialog.confirm"] || "本当にこのTODOを削除しますか？\n削除したTODOは元に戻せません。"}
+            {messages["todo-detail.delete.dialog.confirm"]}
           </DialogDescription>
           <DialogFooter>
             <div className="w-full flex flex-col gap-2">
@@ -543,14 +660,14 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
                   try {
                     await handleDeleteTodo(mode);
                   } catch {
-                    // Handled in hook
+                    // フック内で処理される
                   } finally {
                     setIsDeletingTodo(false);
                     setIsDeleteTodoDialogOpen(false);
                   }
                 }}
               >
-                {messages["todo-detail.delete"] || "削除"}
+                {messages["common.delete.verb"]}
               </Button>
               <Button
                 variant="outline"
@@ -558,7 +675,7 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
                 disabled={isDeletingTodo}
                 onClick={() => setIsDeleteTodoDialogOpen(false)}
               >
-                キャンセル
+                {messages["common.cancel"]}
               </Button>
             </div>
           </DialogFooter>

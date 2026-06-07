@@ -49,7 +49,7 @@ def seed_sample_data(db: Session) -> None:
     for team_id, user_id in memberships - existing_memberships:
         db.add(models.TeamUser(team_id=team_id, user_id=user_id))
 
-    # Beta Team (Unjoined team for owner/member)
+    # Betaチーム（owner/memberが未加入のチーム）
     team_beta = db.query(models.Team).filter(models.Team.display_teams_id == "team-beta").first()
     if not team_beta:
         team_beta = models.Team(
@@ -65,7 +65,7 @@ def seed_sample_data(db: Session) -> None:
         team_beta.name = "Beta Team"
         team_beta.password = auth.get_password_hash("Team-Password-456")
 
-    # Gamma Team (Unjoined team for owner/member)
+    # Gammaチーム（owner/memberが未加入のチーム）
     team_gamma = db.query(models.Team).filter(models.Team.display_teams_id == "team-gamma").first()
     if not team_gamma:
         team_gamma = models.Team(
@@ -81,7 +81,7 @@ def seed_sample_data(db: Session) -> None:
         team_gamma.name = "Gamma Team"
         team_gamma.password = auth.get_password_hash("Team-Password-789")
 
-    # Add creator guest to memberships for beta and gamma
+    # betaとgammaのメンバーシップに作成者であるguestを追加
     beta_memberships = {(team_beta.id, guest.id)}
     existing_beta_memberships = {
         (item.team_id, item.user_id)

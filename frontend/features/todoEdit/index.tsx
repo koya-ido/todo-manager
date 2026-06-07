@@ -24,6 +24,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/Layout/Dialog";
+import { Skeleton } from "@/components/Layout/Skeleton";
 import { Heading } from "@/components/typography/Heading";
 import { TodoEditProps } from "@/features/todoEdit/types";
 import { cn } from "@/lib/utils";
@@ -97,34 +98,122 @@ export const Content: FC<TodoEditProps> = ({ mode = "private", isNew = false, to
 
   if (isLoading) {
     return (
-      <div className="w-full flex justify-center items-center py-20">
-        <p className="text-muted-foreground">Loading...</p>
+      <div className="w-full pb-28 space-y-6 animate-pulse">
+        {/* タイトルヘッダーのスケルトン */}
+        <section className="space-y-2 py-2">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-4 w-96" />
+        </section>
+
+        {/* 基本情報カードのスケルトン */}
+        <section className="space-y-3">
+          <Skeleton className="h-6 w-24" />
+          <Card className="p-4 rounded-xl border bg-card space-y-4">
+            {/* TODO名フィールド */}
+            <div className="space-y-2">
+              <Skeleton className="h-4 w-16" />
+              <Skeleton className="h-10 w-full" />
+            </div>
+
+            {/* ステータスと優先度フィールド */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-16" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-16" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+            </div>
+
+            {/* 担当者 (teamモードのみ表示) */}
+            {mode === "team" && (
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-16" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+            )}
+
+            {/* 開始日と期限日フィールド */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-16" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-16" />
+                <Skeleton className="h-10 w-full" />
+              </div>
+            </div>
+          </Card>
+        </section>
+
+        {/* タグセクションのスケルトン */}
+        <section className="space-y-3">
+          <div className="flex justify-between items-center">
+            <Skeleton className="h-6 w-16" />
+            <Skeleton className="h-9 w-24 rounded-md" />
+          </div>
+          <div className="flex flex-wrap gap-2 min-h-8 items-center">
+            <Skeleton className="h-8 w-20 rounded-full" />
+            <Skeleton className="h-8 w-24 rounded-full" />
+          </div>
+        </section>
+
+        {/* タスクセクションのスケルトン */}
+        <section className="space-y-3">
+          <Skeleton className="h-6 w-16" />
+          <div className="space-y-3">
+            {[1, 2].map((i) => (
+              <div key={i} className="flex items-center gap-2 bg-card border rounded-xl p-4 shadow-xs">
+                <Skeleton className="h-5 w-5 rounded-md shrink-0" />
+                <div className="flex-1 space-y-3">
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-20" />
+                    <Skeleton className="h-10 w-full" />
+                  </div>
+                  <div className="space-y-2">
+                    <Skeleton className="h-4 w-28" />
+                    <Skeleton className="h-16 w-full" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="flex justify-center pt-2">
+            <Skeleton className="h-9 w-28 rounded-md" />
+          </div>
+        </section>
+
+        {/* 送信ボタンのスケルトン */}
+        <Skeleton className="h-12 w-full rounded-md" />
       </div>
     );
   }
 
   return (
     <div className="w-full pb-28 space-y-6">
-      {/* Title Header */}
+      {/* タイトルヘッダー */}
       <section className="space-y-1 py-2">
         <Heading level={1} className="text-2xl font-bold">
-          {messages[`todo-edit.heading.${isNew ? "register" : "edit"}`]}
+          {isNew ? messages["todo-edit.heading.register"] : messages["common.edit"]}
         </Heading>
         <p className="text-sm text-muted-foreground">
           {messages["todo-edit.description"]}
         </p>
       </section>
 
-      {/* Main Form */}
+      {/* メインフォーム */}
       <form onSubmit={handleSubmit} className="space-y-6" noValidate>
-        {/* Basic Info Card */}
+        {/* 基本情報カード */}
         <section className="space-y-3">
           <Heading level={2} className="text-lg font-bold">
             {messages["todo-edit.basic-info"]}
           </Heading>
 
           <Card className="p-4 rounded-xl border bg-card space-y-4">
-            {/* TODO Name */}
+            {/* TODO名 */}
             <InputField
               label={(messages["todo-edit.title"])}
               placeholder={messages["todo-edit.title"]}
@@ -136,7 +225,7 @@ export const Content: FC<TodoEditProps> = ({ mode = "private", isNew = false, to
               errorText={fieldErrors.name || getInlineError("/name") || undefined}
             />
 
-            {/* Status & Priority */}
+            {/* ステータスと優先度 */}
             <div className="grid grid-cols-2 gap-4">
               <SelectField
                 label={messages["common.status"]}
@@ -152,11 +241,11 @@ export const Content: FC<TodoEditProps> = ({ mode = "private", isNew = false, to
               />
             </div>
 
-            {/* Assignee / Manager (Team Mode Only) */}
+            {/* 担当者 / 管理者（チームモードのみ） */}
             {mode === "team" && (
               <SelectField
-                label={messages["todo-edit.manager"] || "担当者"}
-                placeholder={messages["todo-edit.select-manager"] || "担当者を選択してください"}
+                label={messages["todo-edit.manager"]}
+                placeholder={messages["todo-edit.select-manager"]}
                 items={members.map((m) => ({ value: String(m.id), label: `${m.user_name} (${m.display_user_id})` }))}
                 value={managerId}
                 onValueChange={(val) => {
@@ -172,7 +261,7 @@ export const Content: FC<TodoEditProps> = ({ mode = "private", isNew = false, to
               />
             )}
 
-            {/* Start Date & Due Date */}
+            {/* 開始日と期限日 */}
             <div className="grid grid-cols-2 gap-4">
               <DateField
                 label={messages["common.start-date"]}
@@ -191,14 +280,14 @@ export const Content: FC<TodoEditProps> = ({ mode = "private", isNew = false, to
           </Card>
         </section>
 
-        {/* Tags Section */}
+        {/* タグセクション */}
         <section className="space-y-3">
           <div className="flex justify-between items-center relative">
             <Heading level={2} className="text-lg font-bold">
-              {messages["todo-edit.tag"]}
+              {messages["common.tag"]}
             </Heading>
 
-            {/* Combobox Tag Selector */}
+            {/* コンボボックス・タグセレクター */}
             <Combobox
               multiple
               value={selectedTags.map((t) => String(t.id))}
@@ -230,7 +319,7 @@ export const Content: FC<TodoEditProps> = ({ mode = "private", isNew = false, to
                           value={String(tag.id)}
                           className="flex items-center gap-2 px-2 py-1.5 rounded-md text-sm cursor-pointer select-none [&_[data-slot=combobox-item-indicator]]:hidden"
                         >
-                          {/* Custom checkbox visual on the left */}
+                          {/* 左側のカスタムチェックボックスのビジュアル */}
                           <div className={cn(
                             "h-4 w-4 rounded-sm border border-input flex items-center justify-center transition-colors pointer-events-none",
                             isSelected ? "bg-foreground border-foreground text-background" : "bg-transparent"
@@ -243,7 +332,7 @@ export const Content: FC<TodoEditProps> = ({ mode = "private", isNew = false, to
                     })}
                   </ComboboxList>)}
 
-                {/* Inline Add Tag Form */}
+                {/* インライン・タグ追加フォーム */}
                 <ComboboxSeparator className="my-1 border-t" />
                 <div className="p-1 flex gap-1 items-center">
                   <input
@@ -271,7 +360,7 @@ export const Content: FC<TodoEditProps> = ({ mode = "private", isNew = false, to
           <div className="flex flex-wrap gap-2 min-h-8 items-center">
             {selectedTags.length === 0 ? (
               <p className="text-sm text-muted-foreground/70">
-                {messages["todo-detail.no-tag"] || "タグはありません"}
+                {messages["todo-detail.no-tag"]}
               </p>
             ) : (
               selectedTags.map((tag) => (
@@ -294,10 +383,10 @@ export const Content: FC<TodoEditProps> = ({ mode = "private", isNew = false, to
           </div>
         </section>
 
-        {/* Tasks Section */}
+        {/* タスクセクション */}
         <section className="space-y-3">
           <Heading level={2} className="text-lg font-bold">
-            {messages["todo-edit.task"] || "タスク"}
+            {messages["common.task"]}
           </Heading>
 
           <DragDropProvider
@@ -334,7 +423,7 @@ export const Content: FC<TodoEditProps> = ({ mode = "private", isNew = false, to
             </div>
           </DragDropProvider>
 
-          {/* Add Task Button */}
+          {/* タスク追加ボタン */}
           <div className="flex justify-center pt-2">
             <Button
               type="button"
@@ -343,7 +432,7 @@ export const Content: FC<TodoEditProps> = ({ mode = "private", isNew = false, to
               className="bg-background shadow-xs gap-1 px-4 py-2 text-sm font-medium"
             >
               <Plus className="h-4 w-4" />
-              {messages["todo-edit.task-item.add"] || "タスクを追加"}
+              {messages["todo-edit.task-item.add"]}
             </Button>
           </div>
         </section>
@@ -359,7 +448,7 @@ export const Content: FC<TodoEditProps> = ({ mode = "private", isNew = false, to
               {messages["common.register"]}
             </>
           ) : (
-            messages["todo-edit.update"]
+            messages["common.update"]
           )}
         </Button>
       </form>
@@ -369,11 +458,11 @@ export const Content: FC<TodoEditProps> = ({ mode = "private", isNew = false, to
           <DialogHeader>
             <DialogTitle className="text-destructive flex items-center justify-center gap-2">
               <TriangleAlert size={24} color="var(--destructive)" />
-              {messages["todo-edit.confirm-discard.title"] || "変更内容を破棄しますか？"}
+              {messages["todo-edit.confirm-discard.title"]}
             </DialogTitle>
           </DialogHeader>
           <DialogDescription className="text-center py-2">
-            {messages["todo-edit.confirm-discard.description"] || "編集中に画面遷移をしようとしたら、編集内容は破棄されます。本当に移動しますか？"}
+            {messages["todo-edit.confirm-discard.description"]}
           </DialogDescription>
           <DialogFooter>
             <div className="w-full flex flex-col gap-2">
@@ -382,14 +471,14 @@ export const Content: FC<TodoEditProps> = ({ mode = "private", isNew = false, to
                 className="w-full"
                 onClick={handleConfirmDiscard}
               >
-                {messages["todo-edit.confirm-discard.confirm"] || "破棄して移動する"}
+                {messages["todo-edit.confirm-discard.confirm"]}
               </Button>
               <Button
                 variant="outline"
                 className="w-full"
                 onClick={handleCancelDiscard}
               >
-                {messages["todo-edit.confirm-discard.cancel"] || "編集を続ける"}
+                {messages["todo-edit.confirm-discard.cancel"]}
               </Button>
             </div>
           </DialogFooter>

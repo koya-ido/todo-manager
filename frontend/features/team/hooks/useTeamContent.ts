@@ -13,14 +13,14 @@ import { toast } from "sonner";
 export const useTeamContent = (messages: Record<string, string>) => {
   const { setErrorResponse } = useContext(ErrorContext);
 
-  // Lists and loading states
+  // リストとローディング状態
   const [joinedTeams, setJoinedTeams] = useState<TeamJoinedResponse[]>([]);
   const [applyingTeams, setApplyingTeams] = useState<TeamApplyingResponse[]>(
     [],
   );
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  // Search state
+  // 検索状態
   const [searchId, setSearchId] = useState<string>("");
   const [isSearching, setIsSearching] = useState<boolean>(false);
   const [searchedTeam, setSearchedTeam] = useState<TeamSearchResponse | null>(
@@ -28,22 +28,22 @@ export const useTeamContent = (messages: Record<string, string>) => {
   );
   const [showSearchModal, setShowSearchModal] = useState<boolean>(false);
 
-  // Join application state
+  // 参加申請状態
   const [applyPassword, setApplyPassword] = useState<string>("");
   const [isSubmittingApply, setIsSubmittingApply] = useState<boolean>(false);
   const [applyError, setApplyError] = useState<string>("");
 
-  // Cancel application confirmation state
+  // 申請キャンセル確認状態
   const [cancelTarget, setCancelTarget] = useState<{
     id: number;
     name: string;
   } | null>(null);
   const [isSubmittingCancel, setIsSubmittingCancel] = useState<boolean>(false);
 
-  // Tab state
+  // タブ状態
   const [activeTab, setActiveTab] = useState<"joined" | "applying">("joined");
 
-  // Load teams
+  // チームのロード
   const loadTeamsData = async (silent = false) => {
     if (!silent) setIsLoading(true);
     try {
@@ -62,7 +62,7 @@ export const useTeamContent = (messages: Record<string, string>) => {
     void loadTeamsData();
   }, []);
 
-  // Handle team search
+  // チーム検索の処理
   const handleSearchSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchId.trim()) return;
@@ -93,7 +93,7 @@ export const useTeamContent = (messages: Record<string, string>) => {
     }
   };
 
-  // Submit join application
+  // 参加申請の送信
   const handleApplySubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchedTeam || !applyPassword.trim()) return;
@@ -121,12 +121,12 @@ export const useTeamContent = (messages: Record<string, string>) => {
     }
   };
 
-  // Cancel own application (Trigger confirmation modal)
+  // 自身の申請のキャンセル（確認モーダルのトリガー）
   const handleCancelApply = (teamId: number, teamName: string) => {
     setCancelTarget({ id: teamId, name: teamName });
   };
 
-  // Perform API request to cancel application
+  // 申請キャンセルのAPIリクエストを実行
   const handleConfirmCancelApply = async () => {
     if (!cancelTarget) return;
 

@@ -1,23 +1,32 @@
 "use client";
 
 import { ErrorContext } from "@/components/features/ErrorProvider";
-import { isErrorResponse } from "@/hooks/useError/errorUtils";
 import {
   TeamApplicantResponse,
   TeamDetailResponse,
   TeamMemberResponse,
 } from "@/features/team/types";
 import { Tag } from "@/features/userSetting/types";
-import { apiDelete, apiGet, apiPatch, apiPost, apiPut } from "@/hooks/useFetchApi";
+import { isErrorResponse } from "@/hooks/useError/errorUtils";
+import {
+  apiDelete,
+  apiGet,
+  apiPatch,
+  apiPost,
+  apiPut,
+} from "@/hooks/useFetchApi";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
 
-export const useTeamDetail = (teamId: number, messages: Record<string, string>) => {
+export const useTeamDetail = (
+  teamId: number,
+  messages: Record<string, string>,
+) => {
   const router = useRouter();
   const { setErrorResponse } = useContext(ErrorContext);
 
-  // States
+  // 状態
   const [team, setTeam] = useState<TeamDetailResponse | null>(null);
   const [members, setMembers] = useState<TeamMemberResponse[]>([]);
   const [applicants, setApplicants] = useState<TeamApplicantResponse[]>([]);
@@ -25,7 +34,7 @@ export const useTeamDetail = (teamId: number, messages: Record<string, string>) 
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isCopied, setIsCopied] = useState<boolean>(false);
 
-  // Form states
+  // フォーム状態
   const [newTagName, setNewTagName] = useState<string>("");
   const [isSubmittingTag, setIsSubmittingTag] = useState<boolean>(false);
   const [isUpdatingTag, setIsUpdatingTag] = useState<boolean>(false);
@@ -33,22 +42,25 @@ export const useTeamDetail = (teamId: number, messages: Record<string, string>) 
   const [selectedTag, setSelectedTag] = useState<Tag | null>(null);
   const [editingTagName, setEditingTagName] = useState<string>("");
 
-  // Dialog control states
+  // ダイアログ制御状態
   const [kickTarget, setKickTarget] = useState<TeamMemberResponse | null>(null);
   const [isSubmittingKick, setIsSubmittingKick] = useState<boolean>(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false);
   const [isDeletingTeam, setIsDeletingTeam] = useState<boolean>(false);
   const [isTogglingAccept, setIsTogglingAccept] = useState<boolean>(false);
-  const [rejectTarget, setRejectTarget] = useState<TeamApplicantResponse | null>(null);
+  const [rejectTarget, setRejectTarget] =
+    useState<TeamApplicantResponse | null>(null);
   const [isSubmittingReject, setIsSubmittingReject] = useState<boolean>(false);
 
-  // Load All Team Detail Data
+  // すべてのチーム詳細データをロード
   const fetchData = async () => {
     try {
       const teamDetails = await apiGet<TeamDetailResponse>(`/team/${teamId}`);
       setTeam(teamDetails);
 
-      const teamMembers = await apiGet<TeamMemberResponse[]>(`/team/${teamId}/members`);
+      const teamMembers = await apiGet<TeamMemberResponse[]>(
+        `/team/${teamId}/members`,
+      );
       setMembers(teamMembers);
 
       const teamTags = await apiGet<Tag[]>(`/tags/team/${teamId}`);
@@ -56,7 +68,7 @@ export const useTeamDetail = (teamId: number, messages: Record<string, string>) 
 
       if (teamDetails.is_owner) {
         const teamApplicants = await apiGet<TeamApplicantResponse[]>(
-          `/team/${teamId}/applicants`
+          `/team/${teamId}/applicants`,
         );
         setApplicants(teamApplicants);
       }
@@ -74,7 +86,7 @@ export const useTeamDetail = (teamId: number, messages: Record<string, string>) 
     void fetchData();
   }, [teamId]);
 
-  // Copy Display ID
+  // 表示用IDのコピー
   const handleCopyId = async () => {
     if (!team) return;
     try {
@@ -87,16 +99,18 @@ export const useTeamDetail = (teamId: number, messages: Record<string, string>) 
     }
   };
 
-  // Toggle Application Reception status
+  // 申請受付ステータスの切り替え
   const handleToggleAcceptApps = async (checked: boolean) => {
     if (!team || isTogglingAccept) return;
     setIsTogglingAccept(true);
     try {
       await apiPatch(
         `/team/${teamId}/accepting-applications`,
-        JSON.stringify({ accepting_applications: checked })
+        JSON.stringify({ accepting_applications: checked }),
       );
-      setTeam((prev) => (prev ? { ...prev, accepting_applications: checked } : null));
+      setTeam((prev) =>
+        prev ? { ...prev, accepting_applications: checked } : null,
+      );
       toast.success(messages["team.detail.toast.accept-apps-updated"]);
     } catch (error) {
       setErrorResponse(error);
@@ -105,7 +119,7 @@ export const useTeamDetail = (teamId: number, messages: Record<string, string>) 
     }
   };
 
-  // Approve joining applicant
+  // 参加申請者の承認
   const handleApproveApplicant = async (userId: number) => {
     try {
       await apiPost(`/team/${teamId}/applicants/${userId}/approve`);
@@ -116,7 +130,7 @@ export const useTeamDetail = (teamId: number, messages: Record<string, string>) 
     }
   };
 
-  // Reject joining applicant (Trigger confirmation dialog)
+  // 参加申請者の却下（確認ダイアログのトリガー）
   const handleConfirmRejectApplicant = async () => {
     if (!rejectTarget) return;
     setIsSubmittingReject(true);
@@ -132,7 +146,7 @@ export const useTeamDetail = (teamId: number, messages: Record<string, string>) 
     }
   };
 
-  // Kick out member
+  // メンバーのキック
   const handleConfirmKick = async () => {
     if (!kickTarget) return;
     setIsSubmittingKick(true);
@@ -148,7 +162,7 @@ export const useTeamDetail = (teamId: number, messages: Record<string, string>) 
     }
   };
 
-  // Delete team
+  // チームの削除
   const handleDeleteTeam = async () => {
     setIsDeletingTeam(true);
     try {
@@ -163,7 +177,7 @@ export const useTeamDetail = (teamId: number, messages: Record<string, string>) 
     }
   };
 
-  // Create team tag
+  // チームタグの作成
   const handleCreateTag = async () => {
     const name = newTagName.trim();
     if (!name || isSubmittingTag) return;
@@ -181,13 +195,16 @@ export const useTeamDetail = (teamId: number, messages: Record<string, string>) 
     }
   };
 
-  // Update tag
+  // タグの更新
   const handleUpdateTag = async () => {
     const name = editingTagName.trim();
     if (!selectedTag || !name || isUpdatingTag) return;
     setIsUpdatingTag(true);
     try {
-      await apiPut(`/tags/team/${teamId}/${selectedTag.id}`, JSON.stringify({ name }));
+      await apiPut(
+        `/tags/team/${teamId}/${selectedTag.id}`,
+        JSON.stringify({ name }),
+      );
       toast.success(messages["team.detail.toast.tag-update-success"]);
       setSelectedTag(null);
       setEditingTagName("");
@@ -200,7 +217,7 @@ export const useTeamDetail = (teamId: number, messages: Record<string, string>) 
     }
   };
 
-  // Delete tag
+  // タグの削除
   const handleDeleteTag = async (tagId: number) => {
     if (deletingTagId !== null) return;
     setDeletingTagId(tagId);

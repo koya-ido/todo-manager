@@ -34,7 +34,7 @@ const getTrail = (
     href: "/home",
   };
 
-  // 1. Home screen
+  // 1. ホーム画面
   if (pathname === "/" || pathname === "/home") {
     return [
       {
@@ -44,7 +44,7 @@ const getTrail = (
     ];
   }
 
-  // 2. Inbox screen
+  // 2. インボックス画面
   if (pathname === "/inbox") {
     return [
       homeItem,
@@ -55,7 +55,7 @@ const getTrail = (
     ];
   }
 
-  // 3. User screen
+  // 3. ユーザー画面
   if (pathname === "/user") {
     return [
       homeItem,
@@ -66,7 +66,7 @@ const getTrail = (
     ];
   }
 
-  // 4. User settings screen
+  // 4. ユーザー設定画面
   if (pathname === "/user/setting") {
     return [
       homeItem,
@@ -81,7 +81,7 @@ const getTrail = (
     ];
   }
 
-  // 5. User edit screen
+  // 5. ユーザー編集画面
   if (pathname === "/user/edit") {
     return [
       homeItem,
@@ -96,7 +96,7 @@ const getTrail = (
     ];
   }
 
-  // 6. Team List screen
+  // 6. チーム一覧画面
   if (pathname === "/team") {
     return [
       homeItem,
@@ -107,7 +107,7 @@ const getTrail = (
     ];
   }
 
-  // 6.5. Team Detail screen
+  // 6.5. チーム詳細画面
   if (pathname.startsWith("/team/") && pathname !== "/team/edit") {
     return [
       homeItem,
@@ -116,13 +116,13 @@ const getTrail = (
         href: "/team",
       },
       {
-        label: messages["team.detail.heading"] || "チーム詳細",
+        label: messages["team.detail.heading"],
         href: null,
       },
     ];
   }
 
-  // 7. Team edit screen (create or edit)
+  // 7. チーム編集画面（新規作成または編集）
   if (pathname === "/team/edit") {
     return [
       homeItem,
@@ -132,18 +132,18 @@ const getTrail = (
       },
       {
         label: isNew
-          ? messages["breadcrumb.team.create"] || "新規作成"
-          : messages["breadcrumb.team.edit"] || "編集",
+          ? messages["common.create"]
+          : messages["common.edit"],
         href: null,
       },
     ];
   }
 
-  // 8. Todo paths
+  // 8. Todoパス
   if (pathname.startsWith("/todo")) {
     const isTeamMode = mode === "team";
 
-    // Parent list (either Team TODO or Private TODO)
+    // 親リスト（チームTODOまたは個人TODOのいずれか）
     const listParentItems: TrailItem[] = isTeamMode
       ? [
         homeItem,
@@ -164,14 +164,14 @@ const getTrail = (
         },
       ];
 
-    // If we are exactly at `/todo`
+    // もし "/todo" にいる場合
     if (pathname === "/todo") {
-      // Modify the last item's href to be null because it's the current page
+      // 現在のページであるため、最後の項目のhrefをnullに変更する
       const last = listParentItems[listParentItems.length - 1];
       return [...listParentItems.slice(0, -1), { ...last, href: null }];
     }
 
-    // If we are at `/todo/deleted`
+    // もし "/todo/deleted" にいる場合
     if (pathname === "/todo/deleted") {
       return [
         ...listParentItems,
@@ -182,7 +182,7 @@ const getTrail = (
       ];
     }
 
-    // If we are at `/todo/edit`
+    // もし "/todo/edit" にいる場合
     if (pathname === "/todo/edit") {
       const id = searchParams.get("id");
       return [
@@ -197,15 +197,15 @@ const getTrail = (
           : []),
         {
           label: isNew
-            ? messages["breadcrumb.todo.create"]
-            : messages["breadcrumb.todo.edit"],
+            ? messages["common.create"]
+            : messages["common.edit"],
           href: null,
         },
       ];
     }
 
-    // If we are at `/todo/[id]`
-    // E.g. `/todo/123`
+    // もし "/todo/[id]" にいる場合
+    // 例: "/todo/123"
     return [
       ...listParentItems,
       {
@@ -215,12 +215,12 @@ const getTrail = (
     ];
   }
 
-  // 9. Error page
+  // 9. エラーページ
   if (pathname === "/error") {
     return [];
   }
 
-  // 10. Not Found page
+  // 10. 404ページ
   if (pathname === "/not-found") {
     return [
       homeItem,
@@ -231,7 +231,7 @@ const getTrail = (
     ];
   }
 
-  // Default fallback (just home)
+  // デフォルトのフォールバック（ホームのみ）
   return [homeItem];
 };
 
@@ -242,7 +242,7 @@ const BreadCrumbsContent: FC<BreadCrumbsProps> = ({ messages }) => {
 
   const trail = getTrail(pathname, searchParams, messages);
 
-  // Return nothing if the trail has 0 or 1 items (like home itself has only 1 item)
+  // パンくずリストの項目数が0または1の場合（ホーム自体は1項目のみなど）、何も返さない
   if (trail.length <= 1) {
     return null;
   }
