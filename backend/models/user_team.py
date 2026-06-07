@@ -39,6 +39,7 @@ class User(Base):
 
     created_teams = relationship("Team", back_populates="created_user")
     team_users = relationship("TeamUser", back_populates="user", cascade="all, delete-orphan")
+    team_applications = relationship("TeamApplication", back_populates="user", cascade="all, delete-orphan")
     managed_todos = relationship(
         "Todo",
         foreign_keys="Todo.manager_id",
@@ -77,5 +78,23 @@ class Team(Base):
 
     created_user = relationship("User", back_populates="created_teams")
     team_users = relationship("TeamUser", back_populates="team", cascade="all, delete-orphan")
+    team_applications = relationship("TeamApplication", back_populates="team", cascade="all, delete-orphan")
     tags = relationship("Tag", back_populates="team")
     todos = relationship("Todo", back_populates="team")
+
+
+class TeamApplication(Base):
+    __tablename__ = "team_applications"
+
+    id = Column(Integer, primary_key=True, index=True)
+    team_id = Column(Integer, ForeignKey("teams.id", ondelete="CASCADE"), nullable=False)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+
+    team = relationship("Team", back_populates="team_applications")
+    user = relationship("User", back_populates="team_applications")
+
+    __table_args__ = (
+        UniqueConstraint("team_id", "user_id", name="uq_team_applications_team_id_user_id"),
+    )
+
