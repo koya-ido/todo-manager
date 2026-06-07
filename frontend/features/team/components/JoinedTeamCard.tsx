@@ -63,7 +63,7 @@ export const JoinedTeamCard: FC<JoinedTeamCardProps> = ({ team, messages }) => {
             className="w-full flex items-center justify-center gap-1.5"
             asChild
           >
-            <Link href={`/todo?mode=team`}>
+            <Link href={`/todo?mode=team&teamId=${team.id}`}>
               <ExternalLink className="w-3.5 h-3.5" />
               {messages["team.action.todo-list"]}
             </Link>

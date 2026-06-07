@@ -6,6 +6,7 @@ type PageProps = {
   searchParams: Promise<{
     mode?: string;
     isDeleteOnly?: string;
+    teamId?: string;
   }>;
 };
 
@@ -25,6 +26,7 @@ export default async function TodoListPage({ searchParams }: PageProps) {
       ? (resolvedParams.mode as TodoMode)
       : undefined;
   const isDeleteOnly = resolvedParams.isDeleteOnly === "true";
+  const teamId = resolvedParams.teamId ? parseInt(resolvedParams.teamId, 10) : undefined;
 
-  return <Content mode={mode} isDeleteOnly={isDeleteOnly} messages={messages} />;
+  return <Content mode={mode} isDeleteOnly={isDeleteOnly} teamId={teamId} messages={messages} />;
 }

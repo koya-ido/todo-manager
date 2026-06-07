@@ -41,6 +41,7 @@
   "todo-list.sort-label": "Sort",
   "todo-list.filter-option.status.all": "All Statuses",
   "todo-list.filter-option.priority.all": "All Priorities",
+  "todo-list.filter-option.manager.all": "All Assignees",
   "todo-list.sort-option.createdAt-asc": "Created Date (Ascending)",
   "todo-list.sort-option.createdAt-desc": "Created Date (Descending)",
   "todo-list.sort-option.startDate-asc": "Start Date (Ascending)",

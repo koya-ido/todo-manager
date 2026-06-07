@@ -41,6 +41,7 @@
   "todo-list.sort-label": "並び替え",
   "todo-list.filter-option.status.all": "すべてのステータス",
   "todo-list.filter-option.priority.all": "すべての優先度",
+  "todo-list.filter-option.manager.all": "すべての担当者",
   "todo-list.sort-option.createdAt-asc": "作成日時の昇順",
   "todo-list.sort-option.createdAt-desc": "作成日時の降順",
   "todo-list.sort-option.startDate-asc": "開始日の昇順",

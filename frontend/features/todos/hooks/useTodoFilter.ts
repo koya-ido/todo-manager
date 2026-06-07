@@ -67,6 +67,7 @@ export const useTodoFilter = (messages: Record<string, string>) => {
     messages["todo-list.filter-option.priority.all"] || "",
   ]);
   const [sort, setSort] = useState<TodoSort>("create-date-desc");
+  const [managerId, setManagerId] = useState<string>("0");
 
   const [appliedKeyword, setAppliedKeyword] = useState<string>("");
   const [appliedStatus, setAppliedStatus] = useState<TodoStatusFilter[]>([0]);
@@ -74,6 +75,7 @@ export const useTodoFilter = (messages: Record<string, string>) => {
     0,
   ]);
   const [appliedSort, setAppliedSort] = useState<TodoSort>("create-date-desc");
+  const [appliedManagerId, setAppliedManagerId] = useState<number>(0);
 
   const selectedStatusIds = useMemo(
     () =>
@@ -137,14 +139,15 @@ export const useTodoFilter = (messages: Record<string, string>) => {
   );
 
   const handleClickSearch = useCallback(
-    (e: React.SubmitEvent<HTMLFormElement>) => {
+    (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
       setAppliedKeyword(keyword);
       setAppliedStatus(selectedStatusIds);
       setAppliedPriority(selectedPriorityIds);
       setAppliedSort(sort);
+      setAppliedManagerId(Number(managerId));
     },
-    [keyword, selectedStatusIds, selectedPriorityIds, sort],
+    [keyword, selectedStatusIds, selectedPriorityIds, sort, managerId],
   );
 
   return {
@@ -156,6 +159,8 @@ export const useTodoFilter = (messages: Record<string, string>) => {
     setPriority,
     sort,
     setSort,
+    managerId,
+    setManagerId,
     StatusFilterItems,
     PriorityFilterItems,
     SortItems,
@@ -168,5 +173,6 @@ export const useTodoFilter = (messages: Record<string, string>) => {
     appliedStatus,
     appliedPriority,
     appliedSort,
+    appliedManagerId,
   };
 };

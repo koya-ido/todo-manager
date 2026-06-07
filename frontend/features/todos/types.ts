@@ -4,4 +4,5 @@ import { TodoMode } from "@/types/todo";
 export type TodosProps = ContentProps & {
   mode?: TodoMode;
   isDeleteOnly?: boolean;
+  teamId?: number;
 };
