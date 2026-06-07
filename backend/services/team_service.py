@@ -1,7 +1,9 @@
+import secrets
+import string
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 
-from auth import verify_password
+from auth import verify_password, get_password_hash
 from exceptions import APIException
 from models import Team, TeamUser, User, TeamApplication, Todo, Tag
 from schemas import (
@@ -10,6 +12,8 @@ from schemas import (
     TeamJoinedResponse,
     TeamSearchResponse,
     TeamDetailResponse,
+    TeamCreate,
+    TeamUpdate,
 )
 
 
@@ -455,3 +459,105 @@ def kick_member(db: Session, team_id: int, member_user_id: int, current_user_id:
 
     db.delete(tu)
     db.commit()
+
+
+DISPLAY_TEAMS_ID_CHARS = string.ascii_letters + string.digits
+DISPLAY_TEAMS_ID_LENGTH = 6
+DISPLAY_TEAMS_ID_MAX_RETRIES = 10
+
+
+def generate_display_teams_id(db: Session) -> str:
+    for _ in range(DISPLAY_TEAMS_ID_MAX_RETRIES):
+        display_id = "".join(
+            secrets.choice(DISPLAY_TEAMS_ID_CHARS) for _ in range(DISPLAY_TEAMS_ID_LENGTH)
+        )
+        exists = db.query(Team.id).filter(Team.display_teams_id == display_id).first() is not None
+        if not exists:
+            return display_id
+
+    raise APIException(
+        status_code=500,
+        title="サーバーエラー",
+        detail="チームIDの採番に失敗しました",
+        code="DISPLAY_ID_GENERATION_FAILED",
+    )
+
+
+def create_team(db: Session, team_in: TeamCreate, creator_id: int) -> TeamDetailResponse:
+    display_teams_id = generate_display_teams_id(db)
+
+    # チームの作成
+    team = Team(
+        created_user_id=creator_id,
+        display_teams_id=display_teams_id,
+        name=team_in.name,
+        password=get_password_hash(team_in.password),
+    )
+    db.add(team)
+    db.flush()
+
+    # 作成者をチームのメンバーに自動追加
+    team_user = TeamUser(
+        team_id=team.id,
+        user_id=creator_id,
+    )
+    db.add(team_user)
+    db.commit()
+    db.refresh(team)
+
+    owner = db.query(User).filter(User.id == creator_id).first()
+    owner_name = owner.user_name if owner else "Unknown"
+    owner_display_id = owner.display_user_id if owner else "------"
+
+    return TeamDetailResponse(
+        id=team.id,
+        display_teams_id=team.display_teams_id,
+        name=team.name,
+        created_user_id=creator_id,
+        created_user_name=owner_name,
+        created_user_display_id=owner_display_id,
+        is_owner=True,
+        accepting_applications=team.accepting_applications,
+    )
+
+
+def update_team(db: Session, team_id: int, team_in: TeamUpdate, current_user_id: int) -> TeamDetailResponse:
+    team = db.query(Team).filter(Team.id == team_id).first()
+    if not team:
+        raise APIException(
+            status_code=404,
+            title="更新エラー",
+            detail="指定されたチームが存在しません",
+            code="TEAM_NOT_FOUND",
+        )
+
+    if team.created_user_id != current_user_id:
+        raise APIException(
+            status_code=403,
+            title="権限エラー",
+            detail="チーム管理者のみがチーム情報を更新できます",
+            code="TEAM_FORBIDDEN",
+        )
+
+    # フィールドの更新
+    team.name = team_in.name
+    if team_in.password:
+        team.password = get_password_hash(team_in.password)
+
+    db.commit()
+    db.refresh(team)
+
+    owner = db.query(User).filter(User.id == team.created_user_id).first()
+    owner_name = owner.user_name if owner else "Unknown"
+    owner_display_id = owner.display_user_id if owner else "------"
+
+    return TeamDetailResponse(
+        id=team.id,
+        display_teams_id=team.display_teams_id,
+        name=team.name,
+        created_user_id=team.created_user_id,
+        created_user_name=owner_name,
+        created_user_display_id=owner_display_id,
+        is_owner=True,
+        accepting_applications=team.accepting_applications,
+    )

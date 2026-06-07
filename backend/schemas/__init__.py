@@ -11,6 +11,8 @@ from .team import (
     TeamDetailResponse,
     TeamAcceptingApplicationsUpdate,
     TeamMemberResponse,
+    TeamCreate,
+    TeamUpdate,
 )
 from .todo import (
     CommentCreate,
@@ -54,6 +56,8 @@ __all__ = [
     "TeamDetailResponse",
     "TeamAcceptingApplicationsUpdate",
     "TeamMemberResponse",
+    "TeamCreate",
+    "TeamUpdate",
     "TodoCreate",
     "TodoResponse",
     "TodoUpdate",

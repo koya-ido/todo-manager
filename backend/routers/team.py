@@ -16,6 +16,8 @@ from schemas import (
     TeamDetailResponse,
     TeamAcceptingApplicationsUpdate,
     TeamMemberResponse,
+    TeamCreate,
+    TeamUpdate,
 )
 from services import (
     search_team_by_display_id,
@@ -31,6 +33,8 @@ from services import (
     delete_team,
     kick_member,
     get_team_members,
+    create_team,
+    update_team,
 )
 
 router = APIRouter(prefix="/api/team")
@@ -179,3 +183,22 @@ def kick_team_member(
 ):
     kick_member(db, team_id, user_id, current_user.id)
     return {"success": True}
+
+
+@router.post("", response_model=TeamDetailResponse, status_code=201)
+def create_new_team(
+    request: TeamCreate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return create_team(db, request, current_user.id)
+
+
+@router.put("/{team_id}", response_model=TeamDetailResponse)
+def update_existing_team(
+    team_id: int,
+    request: TeamUpdate,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    return update_team(db, team_id, request, current_user.id)

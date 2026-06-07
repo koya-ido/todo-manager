@@ -1,5 +1,6 @@
 from datetime import datetime
-from pydantic import BaseModel, ConfigDict
+from typing import Optional
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class TeamSearchResponse(BaseModel):
@@ -76,4 +77,14 @@ class TeamMemberResponse(BaseModel):
     display_user_id: str
     user_name: str
     is_owner: bool
+
+
+class TeamCreate(BaseModel):
+    name: str = Field(..., min_length=1, max_length=255)
+    password: str = Field(..., min_length=8)
+
+
+class TeamUpdate(BaseModel):
+    name: str = Field(..., min_length=1, max_length=255)
+    password: Optional[str] = Field(None, min_length=8)
 
