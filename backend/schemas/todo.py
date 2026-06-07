@@ -86,6 +86,7 @@ class TodoResponse(TodoBase):
     tasks: list[TaskResponse] = Field(default_factory=list)
     comments: list[CommentResponse] = Field(default_factory=list)
     tags: list[TagResponse] = Field(default_factory=list)
+    manager: Optional[UserResponse] = None
 
 
 class TodosResponse(BaseModel):

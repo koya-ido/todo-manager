@@ -195,6 +195,8 @@ def get_todos(
     keyword: str | None = None,
     status_ids: list[int] | None = None,
     priority_ids: list[int] | None = None,
+    manager_id: int | None = None,
+    team_id: int | None = None,
     sort: str | None = None,
     offset: int | None = None,
     limit: int | None = None,
@@ -224,6 +226,12 @@ def get_todos(
 
     if priority_ids:
         query = query.filter(Todo.priority_id.in_(priority_ids))
+
+    if manager_id is not None:
+        query = query.filter(Todo.manager_id == manager_id)
+
+    if team_id is not None:
+        query = query.filter(Todo.team_id == team_id)
 
     total = query.count()
 
