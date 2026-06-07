@@ -19,7 +19,7 @@ import { ContentProps } from "@/types/contentTypes";
 import { Circle, CircleCheck, Copy } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { FC, SubmitEvent, useContext, useMemo, useState } from "react";
+import { FC, SubmitEvent, useContext, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
 export const Content: FC<ContentProps> = ({ messages }) => {
@@ -30,7 +30,12 @@ export const Content: FC<ContentProps> = ({ messages }) => {
   const [isSuccessSignUp, setIsSuccessSignUp] = useState<boolean>(false);
   const { handleSignUp } = useSignUp();
 
-  const { setErrorResponse } = useContext(ErrorContext);
+  const { getInlineError, setErrorResponse, clearInlineErrors } = useContext(ErrorContext);
+
+  useEffect(() => {
+    clearInlineErrors();
+    return () => clearInlineErrors();
+  }, [clearInlineErrors]);
 
   const isUserName5CharactersOrMoreAnd30CharactersOrLess: boolean =
     useMemo(() => {
@@ -188,6 +193,7 @@ export const Content: FC<ContentProps> = ({ messages }) => {
               required
               value={userName}
               onChange={(e) => setUserName(e.target.value)}
+              errorText={getInlineError("/username") || undefined}
             />
             <div className="w-full flex flex-col gap-2">
               {userNameChecklist.map((check, index) => (
@@ -215,6 +221,7 @@ export const Content: FC<ContentProps> = ({ messages }) => {
               className="h-6.25 bg-background"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              errorText={getInlineError("/password") || undefined}
             />
             <div className="w-full flex flex-col gap-2">
               {passwordChecklist.map((check, index) => (

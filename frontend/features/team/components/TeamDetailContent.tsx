@@ -76,18 +76,7 @@ export const TeamDetailContent: FC<TeamDetailContentProps> = ({
     );
   }
 
-  if (!team) {
-    return (
-      <div className="w-full flex flex-col items-center justify-center py-20 text-center">
-        <p className="text-destructive font-semibold text-lg">
-          {messages["error.heading"] || "Error"}
-        </p>
-        <p className="text-muted-foreground mt-1">
-          {messages["not-found.content"]}
-        </p>
-      </div>
-    );
-  }
+  if (!team) return null;
 
   return (
     <div className="w-full flex flex-col gap-6 mx-auto animate-in fade-in duration-300">

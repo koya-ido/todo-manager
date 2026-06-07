@@ -68,7 +68,13 @@ export const useError = ({ messages }: UseErrorProps) => {
       if (!error) return null;
 
       // メッセージオブジェクトからエラーメッセージを取得
-      return messages[error.i18nKey] || error.i18nKey;
+      let message = messages[error.i18nKey] || error.i18nKey;
+      if (error.params) {
+        Object.entries(error.params).forEach(([key, value]) => {
+          message = message.replace(`{${key}}`, String(value));
+        });
+      }
+      return message;
     },
     [errors, messages],
   );

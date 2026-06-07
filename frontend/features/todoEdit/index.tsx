@@ -1,5 +1,6 @@
 "use client";
 
+import { ErrorContext } from "@/components/features/ErrorProvider";
 import { Button } from "@/components/forms/Button";
 import {
   Combobox,
@@ -29,12 +30,13 @@ import { cn } from "@/lib/utils";
 import { DragDropProvider } from "@dnd-kit/react";
 import { isSortable } from "@dnd-kit/react/sortable";
 import { Check, Plus, TriangleAlert, X } from "lucide-react";
-import { FC, useRef } from "react";
+import { FC, useContext, useRef } from "react";
 import { SortableTaskItem } from "./components/SortableTaskItem";
 import { useTodoForm } from "./hooks/useTodoForm";
 
 export const Content: FC<TodoEditProps> = ({ mode = "private", isNew = false, todoId, teamId, messages }) => {
   const tagTriggerRef = useRef<HTMLButtonElement | null>(null);
+  const { getInlineError } = useContext(ErrorContext);
 
   const {
     name,
@@ -131,7 +133,7 @@ export const Content: FC<TodoEditProps> = ({ mode = "private", isNew = false, to
               value={name}
               onChange={(e) => handleNameChange(e.target.value)}
               className="w-full font-sans"
-              errorText={fieldErrors.name}
+              errorText={fieldErrors.name || getInlineError("/name") || undefined}
             />
 
             {/* Status & Priority */}
@@ -166,7 +168,7 @@ export const Content: FC<TodoEditProps> = ({ mode = "private", isNew = false, to
                   });
                 }}
                 required
-                errorText={fieldErrors.managerId}
+                errorText={fieldErrors.managerId || getInlineError("/manager_id") || undefined}
               />
             )}
 
@@ -183,7 +185,7 @@ export const Content: FC<TodoEditProps> = ({ mode = "private", isNew = false, to
                 placeholder={messages["common.due-date"]}
                 value={dueDate}
                 onChange={handleDueDateChange}
-                errorText={fieldErrors.dueDate}
+                errorText={fieldErrors.dueDate || getInlineError("/due_date") || undefined}
               />
             </div>
           </Card>
@@ -325,8 +327,8 @@ export const Content: FC<TodoEditProps> = ({ mode = "private", isNew = false, to
                   handleTaskChange={handleTaskChange}
                   handleRemoveTask={handleRemoveTask}
                   messages={messages}
-                  errorTextTitle={fieldErrors.tasks?.[task.key]?.title}
-                  errorTextContent={fieldErrors.tasks?.[task.key]?.content}
+                  errorTextTitle={fieldErrors.tasks?.[task.key]?.title || getInlineError(`/tasks/${index}/title`) || undefined}
+                  errorTextContent={fieldErrors.tasks?.[task.key]?.content || getInlineError(`/tasks/${index}/content`) || undefined}
                 />
               ))}
             </div>

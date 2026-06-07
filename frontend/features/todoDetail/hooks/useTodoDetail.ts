@@ -1,4 +1,5 @@
 import { ErrorContext } from "@/components/features/ErrorProvider";
+import { isErrorResponse } from "@/hooks/useError/errorUtils";
 import { TodoDetail, Comment } from "@/features/todoDetail/types";
 import { apiDelete, apiGet, apiPatch, apiPost, apiPut } from "@/hooks/useFetchApi";
 import { MeResponse } from "@/components/features/AuthSessionProvider/types";
@@ -27,13 +28,14 @@ export const useTodoDetail = ({ todoId, messages }: UseTodoDetailProps) => {
       const data = await apiGet<TodoDetail>(`/todo/${todoId}`);
       setTodo(data);
     } catch (error) {
-      setErrorResponse(error);
-      toast.error(
-        messages["FAILED_TO_FETCH"]?.replace("{name}", "TODO") ||
-          "TODOの取得に失敗しました"
-      );
+      if (isErrorResponse(error)) {
+        router.push(`/error?status=${error.status}&code=${error.code}`);
+      } else {
+        router.push("/error?status=500&code=UNKNOWN");
+      }
+      throw error;
     }
-  }, [todoId, setErrorResponse, messages]);
+  }, [todoId, router]);
 
   const fetchCurrentUser = useCallback(async () => {
     try {
@@ -47,8 +49,12 @@ export const useTodoDetail = ({ todoId, messages }: UseTodoDetailProps) => {
   useEffect(() => {
     const initLoad = async () => {
       setIsLoading(true);
-      await Promise.all([fetchTodo(), fetchCurrentUser()]);
-      setIsLoading(false);
+      try {
+        await Promise.all([fetchTodo(), fetchCurrentUser()]);
+        setIsLoading(false);
+      } catch {
+        // Keep isLoading active during redirect transition
+      }
     };
     void initLoad();
   }, [fetchTodo, fetchCurrentUser]);

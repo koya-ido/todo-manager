@@ -217,13 +217,7 @@ const getTrail = (
 
   // 9. Error page
   if (pathname === "/error") {
-    return [
-      homeItem,
-      {
-        label: messages["breadcrumb.error"],
-        href: null,
-      },
-    ];
+    return [];
   }
 
   // 10. Not Found page

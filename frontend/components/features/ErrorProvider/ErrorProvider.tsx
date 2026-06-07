@@ -18,7 +18,7 @@ const defaultErrorContextValue = {
   setErrorResponse: (errorResponse?: unknown): void => {
     void errorResponse;
   },
-  clearInlineErrors: () => {},
+  clearInlineErrors: () => { },
 };
 
 export const ErrorContext = createContext(defaultErrorContextValue);
@@ -41,7 +41,15 @@ export const ErrorProvider = ({ messages, children }: ErrorProviderProps) => {
   const handleErrorResponse = (errorResponse: unknown) => {
     // 型チェック
     if (!isErrorResponse(errorResponse)) {
-      toast.error("An unexpected error occurred");
+      const unexpectedMessage = messages["error.description"];
+      toast.error(unexpectedMessage, {
+        position: "top-center",
+        style: {
+          backgroundColor: "var(--destructive)",
+          color: "var(--background)",
+          fontWeight: "bold",
+        },
+      });
       return;
     }
 
@@ -51,7 +59,12 @@ export const ErrorProvider = ({ messages, children }: ErrorProviderProps) => {
     // toastエラーを取得して表示
     const toastErrors = getToastErrors(parsedErrors);
     toastErrors.forEach((error) => {
-      const message = messages[error.i18nKey] || error.i18nKey;
+      let message = messages[error.i18nKey] || error.i18nKey;
+      if (error.params) {
+        Object.entries(error.params).forEach(([key, value]) => {
+          message = message.replace(`{${key}}`, String(value));
+        });
+      }
       toast.error(message, {
         position: "top-center",
         style: {
