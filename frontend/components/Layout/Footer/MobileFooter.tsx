@@ -83,19 +83,19 @@ export const MobileFooter: FC = () => {
         isActive={isActive("/todo?mode=private")}
       />
       <FooterItem
-        href="/todo?mode=team"
+        href="/team"
         icon={
           <IconTeam
             size={24}
             color={
-              isActive("/todo?mode=team")
+              isActive("/team")
                 ? "var(--background)"
                 : "var(--foreground)"
             }
           />
         }
         label="team"
-        isActive={isActive("/todo?mode=team")}
+        isActive={isActive("/team")}
       />
       <FooterItem
         href="/user"
