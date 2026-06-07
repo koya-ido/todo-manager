@@ -1,11 +1,12 @@
 "use client";
 
 import { Button } from "@/components/forms/Button";
+import { Badge } from "@/components/Layout/Badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/Layout/Card";
 import { TeamJoinedResponse } from "@/features/team/types";
 import { formatTeamId } from "@/features/team/utils";
 import { cn } from "@/lib/utils";
-import { ExternalLink, Shield, Users } from "lucide-react";
+import { ExternalLink, Users } from "lucide-react";
 import Link from "next/link";
 import { FC } from "react";
 
@@ -29,10 +30,9 @@ export const JoinedTeamCard: FC<JoinedTeamCardProps> = ({ team, messages }) => {
             </CardTitle>
           </div>
           {team.is_owner && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-semibold bg-indigo-100 text-indigo-800 dark:bg-indigo-950/80 dark:text-indigo-300">
-              <Shield className="w-3 h-3" />
+            <Badge className="py-1 font-bold rounded-md border-0 text-xs bg-indigo-100 text-indigo-800 dark:bg-indigo-950/80 dark:text-indigo-300 h-fit">
               {messages["team.role.owner"]}
-            </span>
+            </Badge>
           )}
         </CardHeader>
         <CardContent className="p-0 text-sm text-slate-600 dark:text-slate-400">
@@ -69,19 +69,17 @@ export const JoinedTeamCard: FC<JoinedTeamCardProps> = ({ team, messages }) => {
             </Link>
           </Button>
 
-          {team.is_owner && (
-            <Button
-              variant="secondary"
-              size="sm"
-              className="w-full flex items-center justify-center gap-1.5"
-              asChild
-            >
-              <Link href={`/team/${team.id}`}>
-                <ExternalLink className="w-3.5 h-3.5" />
-                {messages["team.action.team-detail"]}
-              </Link>
-            </Button>
-          )}
+          <Button
+            variant="secondary"
+            size="sm"
+            className="w-full flex items-center justify-center gap-1.5"
+            asChild
+          >
+            <Link href={`/team/${team.id}`}>
+              <ExternalLink className="w-3.5 h-3.5" />
+              {messages["team.action.team-detail"]}
+            </Link>
+          </Button>
         </div>
       </div>
     </Card>
