@@ -40,7 +40,7 @@ export const TeamDetailInfoCard: FC<TeamDetailInfoCardProps> = ({
             {messages["team.detail.info.id"]}
           </span>
           <div className="flex items-center gap-2 mt-1">
-            <code className="bg-slate-100 dark:bg-slate-800/80 px-2.5 py-1 rounded text-sm font-mono font-bold text-indigo-600 dark:text-indigo-400">
+            <code className="bg-foreground/10 dark:bg-foreground/10 px-2.5 py-1 rounded text-sm font-mono font-bold text-foreground dark:text-foreground">
               {team.display_teams_id}
             </code>
             <Button

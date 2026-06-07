@@ -1,16 +1,18 @@
 "use client";
 
+import { Button } from "@/components/forms/Button";
 import { Skeleton } from "@/components/Layout/Skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Layout/Tabs";
 import { Heading } from "@/components/typography/Heading";
-import { Calendar, Users } from "lucide-react";
+import { ApplyingTeamCard } from "@/features/team/components/ApplyingTeamCard";
+import { CancelApplyDialog } from "@/features/team/components/CancelApplyDialog";
+import { JoinedTeamCard } from "@/features/team/components/JoinedTeamCard";
+import { TeamSearchForm } from "@/features/team/components/TeamSearchForm";
+import { TeamSearchResultDialog } from "@/features/team/components/TeamSearchResultDialog";
+import { useTeamContent } from "@/features/team/hooks/useTeamContent";
+import { Calendar, Plus, Users } from "lucide-react";
+import Link from "next/link";
 import { FC } from "react";
-import { useTeamContent } from "../hooks/useTeamContent";
-import { ApplyingTeamCard } from "./ApplyingTeamCard";
-import { CancelApplyDialog } from "./CancelApplyDialog";
-import { JoinedTeamCard } from "./JoinedTeamCard";
-import { TeamSearchForm } from "./TeamSearchForm";
-import { TeamSearchResultDialog } from "./TeamSearchResultDialog";
 
 type TeamContentProps = {
   messages: Record<string, string>;
@@ -46,11 +48,25 @@ export const TeamContent: FC<TeamContentProps> = ({ messages, locale }) => {
   return (
     <div className="w-full flex flex-col gap-6 max-w-4xl mx-auto">
       {/* Title & Description */}
-      <div>
-        <Heading level={1}>{messages["team.heading"]}</Heading>
-        <Heading level={2}>
-          {messages["team.description"]}
-        </Heading>
+      <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+        <div className="space-y-1">
+          <Heading level={1}>{messages["team.heading"]}</Heading>
+          <Heading level={2} className="text-muted-foreground mt-1">
+            {messages["team.description"]}
+          </Heading>
+        </div>
+        <div className="w-full flex justify-end">
+          <Button
+            variant="default"
+            asChild
+            className="text-white font-bold self-start sm:self-center shadow-md flex items-center gap-1.5 px-4 py-2 text-sm"
+          >
+            <Link href="/team/edit?isNew=true">
+              <Plus className="w-4 h-4" />
+              {messages["breadcrumb.team.create"]}
+            </Link>
+          </Button>
+        </div>
       </div>
 
       {/* Search Bar */}
