@@ -1,39 +1,9 @@
 import { ErrorContext } from "@/components/features/ErrorProvider";
+import { getLocalDateString } from "@/features/home/utils";
 import { useUser } from "@/features/user/hooks/useUser";
 import { apiGet } from "@/hooks/useFetchApi";
-import { Priority, Status } from "@/types/todo";
+import { ApiTodo, ApiTodosResponse } from "@/types/todo";
 import { useContext, useEffect, useState } from "react";
-import { getLocalDateString } from "../utils";
-
-export type ApiTask = {
-  id: number;
-  position: number;
-  title: string;
-  content: string | null;
-  completion_flag: boolean;
-};
-
-export type ApiTodo = {
-  id: number;
-  priority_id: keyof typeof Priority;
-  status_id: keyof typeof Status;
-  team_id: number | null;
-  manager_id: number;
-  name: string;
-  due_date: string | null;
-  remarks: string | null;
-  delete_flag: boolean;
-  created_by: number;
-  updated_by: number;
-  created_at: string;
-  updated_at: string;
-  tasks: ApiTask[];
-};
-
-export type ApiTodosResponse = {
-  total: number;
-  items: ApiTodo[];
-};
 
 export const useHome = () => {
   const { userName } = useUser();

@@ -11,9 +11,9 @@ type UserEditFormProps = {
   messages: Record<string, string>;
   userName: string;
   setUserName: (value: string) => void;
-  password:  string;
+  password: string;
   setPassword: (value: string) => void;
-  confirmPassword:  string;
+  confirmPassword: string;
   setConfirmPassword: (value: string) => void;
   isCheckingUsername: boolean;
   isAvailable: boolean;
@@ -104,14 +104,14 @@ export const UserEditForm: FC<UserEditFormProps> = ({
   ];
 
   return (
-    <div className="w-full max-w-2xl mx-auto flex flex-col justify-center gap-5">
+    <div className="w-full max-w-2xl mx-auto space-y-6">
       <div className="space-y-1 py-2">
         <Heading level={1} className="text-2xl font-bold">
           {messages["user-edit.heading"]}
         </Heading>
-        <p className="text-sm text-muted-foreground">
+        <Heading level={2} className="text-muted-foreground text-sm font-medium">
           {messages["user-edit.description"]}
-        </p>
+        </Heading>
       </div>
 
       <Card>

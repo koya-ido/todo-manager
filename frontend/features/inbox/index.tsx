@@ -10,11 +10,11 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { FC } from "react";
 
-type InboxContentProps = {
+type ContentProps = {
   messages: Record<string, string>;
 };
 
-export const InboxContent: FC<InboxContentProps> = ({ messages }) => {
+export const Content: FC<ContentProps> = ({ messages }) => {
   const { inboxes, isLoading, deletingIds, deleteInboxItem } = useInbox();
 
   if (isLoading) {
@@ -34,15 +34,15 @@ export const InboxContent: FC<InboxContentProps> = ({ messages }) => {
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div className="w-full max-w-2xl mx-auto space-y-6">
       {/* 画面ヘッダー */}
       <header className="mb-8 space-y-1">
         <Heading level={1} className="text-2xl font-bold flex items-center gap-2">
           {messages["inbox.heading"]}
         </Heading>
-        <p className="text-sm text-muted-foreground">
+        <Heading level={2} className="text-muted-foreground text-sm font-medium">
           {messages["inbox.description"]}
-        </p>
+        </Heading>
       </header>
 
       {inboxes.length === 0 ? (

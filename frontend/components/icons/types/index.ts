@@ -1,7 +1,7 @@
 /** IconコンポーネントのPropsの型 */
-export interface IconProps {
+export type IconProps = {
   /** アイコンサイズ(px) */
   size?: number;
   /** アイコンの色 */
   color?: string;
-}
+};

@@ -1,4 +1,4 @@
-import { TeamContent } from "@/features/team/components/TeamContent";
+import { Content } from "@/features/team";
 import { getLocaleFromCookie, getMessages, t } from "@/lib/server-i18n";
 import { Metadata } from "next";
 
@@ -14,5 +14,5 @@ export default async function TeamPage() {
   const locale = await getLocaleFromCookie();
   const messages = await getMessages(locale);
 
-  return <TeamContent messages={messages} locale={locale} />;
+  return <Content messages={messages} locale={locale} />;
 }

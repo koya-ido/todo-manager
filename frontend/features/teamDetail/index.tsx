@@ -13,13 +13,13 @@ import { TeamDetailTagsCard } from "@/features/team/components/TeamDetailTagsCar
 import { useTeamDetail } from "@/features/team/hooks/useTeamDetail";
 import { FC } from "react";
 
-type TeamDetailContentProps = {
+type ContentProps = {
   teamId: number;
   messages: Record<string, string>;
   locale?: string;
 };
 
-export const TeamDetailContent: FC<TeamDetailContentProps> = ({
+export const Content: FC<ContentProps> = ({
   teamId,
   messages,
 }) => {
@@ -64,7 +64,7 @@ export const TeamDetailContent: FC<TeamDetailContentProps> = ({
   // スケルトンローダービュー
   if (isLoading) {
     return (
-      <div className="w-full flex flex-col gap-6 max-w-4xl mx-auto py-6">
+      <div className="w-full max-w-4xl mx-auto py-6 space-y-6">
         <Skeleton className="h-10 w-1/4" />
         <Skeleton className="h-6 w-1/2" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
@@ -79,11 +79,11 @@ export const TeamDetailContent: FC<TeamDetailContentProps> = ({
   if (!team) return null;
 
   return (
-    <div className="w-full flex flex-col gap-6 mx-auto animate-in fade-in duration-300">
+    <div className="w-full mx-auto space-y-6 animate-in fade-in duration-300">
       {/* メインタイトルと説明 */}
       <div className="space-y-6">
         <Heading level={1}>{team.name}</Heading>
-        <Heading level={2}>
+        <Heading level={2} className="text-muted-foreground text-sm font-medium">
           {messages["team.detail.description"]}
         </Heading>
       </div>

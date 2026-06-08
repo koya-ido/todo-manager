@@ -38,8 +38,7 @@ const buttonVariants = cva(
   },
 );
 
-interface CommonButtonProps
-  extends React.ComponentProps<"button">, VariantProps<typeof buttonVariants> {
+type CommonButtonProps = React.ComponentProps<"button"> & VariantProps<typeof buttonVariants> & {
   asChild?: boolean;
 }
 

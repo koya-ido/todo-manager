@@ -4,7 +4,7 @@ import { FC } from "react";
 
 export const UserEditSkeleton: FC = () => {
   return (
-    <div className="w-full max-w-2xl mx-auto flex flex-col gap-6 animate-pulse">
+    <div className="w-full max-w-2xl mx-auto space-y-6 animate-pulse">
       <div className="space-y-2 py-2">
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-4 w-96" />

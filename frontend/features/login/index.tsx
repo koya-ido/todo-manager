@@ -20,7 +20,7 @@ export const Content: FC<ContentProps> = ({ messages }) => {
         <Heading level={1} className="text-2xl font-bold">
           TODO Manager
         </Heading>
-        <Heading level={2} className="font-normal">
+        <Heading level={2} className="text-muted-foreground text-sm font-medium">
           {messages["login.heading"]}
         </Heading>
       </section>

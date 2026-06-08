@@ -14,12 +14,12 @@ import { Calendar, Plus, Users } from "lucide-react";
 import Link from "next/link";
 import { FC } from "react";
 
-type TeamContentProps = {
+type ContentProps = {
   messages: Record<string, string>;
   locale?: string;
 }
 
-export const TeamContent: FC<TeamContentProps> = ({ messages, locale }) => {
+export const Content: FC<ContentProps> = ({ messages, locale }) => {
   const {
     joinedTeams,
     applyingTeams,
@@ -46,12 +46,12 @@ export const TeamContent: FC<TeamContentProps> = ({ messages, locale }) => {
   } = useTeamContent(messages);
 
   return (
-    <div className="w-full flex flex-col gap-6 max-w-4xl mx-auto">
+    <div className="w-full max-w-4xl mx-auto space-y-6">
       {/* タイトルと説明 */}
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
         <div className="space-y-6">
           <Heading level={1}>{messages["team.heading"]}</Heading>
-          <Heading level={2}>
+          <Heading level={2} className="text-muted-foreground text-sm font-medium">
             {messages["team.description"]}
           </Heading>
         </div>

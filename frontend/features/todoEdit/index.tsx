@@ -199,9 +199,9 @@ export const Content: FC<TodoEditProps> = ({ mode = "private", isNew = false, to
         <Heading level={1} className="text-2xl font-bold">
           {isNew ? messages["todo-edit.heading.register"] : messages["common.edit"]}
         </Heading>
-        <p className="text-sm text-muted-foreground">
+        <Heading level={2} className="text-muted-foreground text-sm font-medium">
           {messages["todo-edit.description"]}
-        </p>
+        </Heading>
       </section>
 
       {/* メインフォーム */}

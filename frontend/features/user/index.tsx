@@ -57,9 +57,9 @@ export const Content: FC<ContentProps> = ({ messages }) => {
   };
 
   return (
-    <div className="w-full flex flex-col justify-center gap-5">
+    <div className="w-full space-y-6">
       <Heading level={1}>{userName}</Heading>
-      <Heading level={2}>{messages["user.description"]}</Heading>
+      <Heading level={2} className="text-muted-foreground text-sm font-medium">{messages["user.description"]}</Heading>
       <Card className="flex flex-col gap-3">
         <dl className="w-full">
           <dt>ID</dt>

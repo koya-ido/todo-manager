@@ -1,4 +1,4 @@
-import { Content } from "@/features/user/components/Content";
+import { Content } from "@/features/user";
 import { getLocaleFromCookie, getMessages } from "@/lib/server-i18n";
 import { Metadata } from "next";
 

@@ -7,7 +7,7 @@ import { formatAppliedDateLabel, formatTeamId } from "@/features/team/utils";
 import { Calendar } from "lucide-react";
 import { FC } from "react";
 
-interface ApplyingTeamCardProps {
+type ApplyingTeamCardProps = {
   team: TeamApplyingResponse;
   messages: Record<string, string>;
   locale?: string;
