@@ -18,3 +18,13 @@ class UserResponse(UserBase):
     id: int
     created_at: datetime
     updated_at: datetime
+
+
+class UserUpdate(BaseModel):
+    username: str
+    password: str
+
+
+class UsernameCheckResponse(BaseModel):
+    available: bool
+

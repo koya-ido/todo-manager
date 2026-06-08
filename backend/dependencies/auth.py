@@ -67,3 +67,34 @@ def get_current_user(request: Request, db: Session = Depends(get_db), _token_obj
         )
 
     return user
+
+
+def get_current_user_optional(
+    request: Request,
+    db: Session = Depends(get_db)
+) -> Optional[User]:
+    token = extract_token_from_request(request)
+    if not token:
+        return None
+
+    try:
+        payload = decode_token(token)
+    except Exception:
+        return None
+
+    subject = payload.get("sub")
+    jti = payload.get("jti")
+    exp_timestamp = payload.get("exp")
+    if not subject or not jti or not exp_timestamp:
+        return None
+
+    revoked_token = db.query(RevokedToken).filter(RevokedToken.jti == jti).first()
+    if revoked_token:
+        return None
+
+    user = db.query(User).filter(
+        User.display_user_id == subject,
+        User.delete_flag.is_(False),
+    ).first()
+    return user
+
