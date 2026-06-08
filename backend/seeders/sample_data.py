@@ -188,9 +188,11 @@ def seed_sample_data(db: Session) -> None:
         if not comment:
             db.add(models.Comment(user_id=user_id, todo_id=todo_id, comment=body))
 
+    db.query(models.Inbox).delete()
+
     inbox_specs = (
-        (owner.id, private_todo.id, "todo_reminder", "Private todo deadline is approaching"),
-        (guest.id, team_todo.id, "team_notice", "Sprint board is being prepared"),
+        (owner.id, private_todo.id, "todo_today", private_todo.name),
+        (member.id, team_todo.id, "team_todo_assigned", team_todo.name),
     )
     for target_user_id, todo_id, inbox_type, message in inbox_specs:
         inbox = db.query(models.Inbox).filter(
