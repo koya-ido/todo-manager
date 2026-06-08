@@ -14,6 +14,7 @@ import { useTodoFilter } from "@/features/todos/hooks/useTodoFilter";
 import { TodoSort, useTodos } from "@/features/todos/hooks/useTodos";
 import { TodosProps } from "@/features/todos/types";
 import { apiGet } from "@/hooks/useFetchApi";
+import { User } from "@/types/user";
 import { ArrowUp, Plus, Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -23,7 +24,7 @@ import { FC, useEffect, useRef, useState } from "react";
 export const Content: FC<TodosProps> = ({ mode = "private", isDeleteOnly = false, teamId, messages }) => {
   const router = useRouter();
   const [showScrollButton, setShowScrollButton] = useState(false);
-  const [members, setMembers] = useState<{ id: number; display_user_id: string; user_name: string }[]>([]);
+  const [members, setMembers] = useState<User[]>([]);
   const [teamName, setTeamName] = useState<string>("");
 
   useEffect(() => {
@@ -31,7 +32,7 @@ export const Content: FC<TodosProps> = ({ mode = "private", isDeleteOnly = false
     const fetchMembers = async () => {
       try {
         const url = teamId ? `/user/team/${teamId}/members` : "/user/teams/members";
-        const data = await apiGet<{ id: number; display_user_id: string; user_name: string }[]>(url);
+        const data = await apiGet<User[]>(url);
         setMembers(data);
       } catch (error) {
         console.error(error);
@@ -155,7 +156,7 @@ export const Content: FC<TodosProps> = ({ mode = "private", isDeleteOnly = false
           ? `${teamName} ${messages["todo-list.heading"]}`
           : messages["todo-list.heading"]}
       </Heading>
-      <Heading level={2}>{messages["todo-list.description"]}</Heading>
+      <Heading level={2} className="text-muted-foreground text-sm font-medium">{messages["todo-list.description"]}</Heading>
       <Card>
         <form className="w-full flex flex-col gap-4" onSubmit={handleClickSearch}>
           <div className="flex gap-3 items-end">

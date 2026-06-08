@@ -16,29 +16,13 @@ export type TaskState = {
   key: string;
 };
 
-export type Tag = {
-  id: number;
-  name: string;
-};
+import { Tag as CommonTag } from "@/types/tag";
+import { TodoDetail } from "@/types/todo";
+import { User } from "@/types/user";
 
-export type TodoResponse = {
-  id: number;
-  name: string;
-  status_id: number;
-  priority_id: number;
-  team_id?: number | null;
-  manager_id?: number | null;
-  created_at: string | null;
-  due_date: string | null;
-  tags: Tag[];
-  tasks: {
-    id: number;
-    title: string;
-    content: string | null;
-    completion_flag: boolean;
-    position: number;
-  }[];
-};
+export type Tag = CommonTag;
+export type TodoResponse = TodoDetail;
+export type Member = User;
 
 export type FormState = {
   name: string;
@@ -49,12 +33,6 @@ export type FormState = {
   managerId: string;
   selectedTags: Tag[];
   tasks: TaskState[];
-};
-
-export type Member = {
-  id: number;
-  user_name: string;
-  display_user_id: string;
 };
 
 export type FieldErrors = {

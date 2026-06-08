@@ -1,4 +1,4 @@
-import { Content } from "@/features/userEdit/components/Content";
+import { Content } from "@/features/userEdit";
 import { getLocaleFromCookie, getMessages } from "@/lib/server-i18n";
 import { Metadata } from "next";
 

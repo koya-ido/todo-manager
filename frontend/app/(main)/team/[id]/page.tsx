@@ -1,4 +1,4 @@
-import { TeamDetailContent } from "@/features/team/components/TeamDetailContent";
+import { Content } from "@/features/teamDetail";
 import { getLocaleFromCookie, getMessages } from "@/lib/server-i18n";
 
 type PageProps = {
@@ -30,6 +30,6 @@ export default async function TodoListPage({ params }: PageProps) {
   }
 
   return (
-    <TeamDetailContent teamId={teamId} messages={messages} locale={locale} />
+    <Content teamId={teamId} messages={messages} locale={locale} />
   );
 }

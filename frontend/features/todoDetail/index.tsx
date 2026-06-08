@@ -246,9 +246,9 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
         <Heading level={1} className="text-2xl font-bold">
           {messages["todo-detail.heading"]}
         </Heading>
-        <p className="text-sm text-muted-foreground">
+        <Heading level={2} className="text-muted-foreground text-sm font-medium">
           {messages["todo-detail.description"]}
-        </p>
+        </Heading>
       </section>
 
       {/* メインTODO詳細カード */}

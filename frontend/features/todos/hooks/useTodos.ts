@@ -2,7 +2,10 @@
 
 import { ErrorContext } from "@/components/features/ErrorProvider";
 import { apiGet } from "@/hooks/useFetchApi";
+import { Task } from "@/types/task";
 import {
+  ApiTodo,
+  ApiTodosResponse,
   Priority,
   PriorityType,
   Status,
@@ -21,52 +24,6 @@ export type TodoSort =
   | "start-date-desc"
   | "start-date-asc";
 
-type ApiTask = {
-  id: number;
-  position: number;
-  title: string;
-  content: string | null;
-  completion_flag: boolean;
-};
-
-type ApiComment = {
-  id: number;
-  user_id: number;
-  todo_id: number;
-  comment: string;
-  created_at: string;
-  updated_at: string;
-  delete_flag: boolean;
-};
-
-type ApiTodo = {
-  id: number;
-  priority_id: keyof typeof Priority;
-  status_id: keyof typeof Status;
-  team_id: number | null;
-  manager_id: number;
-  name: string;
-  due_date: string | null;
-  remarks: string | null;
-  delete_flag: boolean;
-  created_by: number;
-  updated_by: number;
-  created_at: string;
-  updated_at: string;
-  tasks: ApiTask[];
-  comments: ApiComment[];
-  manager?: {
-    id: number;
-    display_user_id: string;
-    user_name: string;
-  } | null;
-};
-
-type ApiTodosResponse = {
-  total: number;
-  items: ApiTodo[];
-};
-
 export type Todo = {
   id: number;
   title: string;
@@ -79,7 +36,7 @@ export type Todo = {
   dueDate: string;
   createdAt: string;
   dueDateValue: string | null;
-  tasks: ApiTask[];
+  tasks: Task[];
   deleteFlag: boolean;
   searchableText: string;
   managerId: number;
@@ -102,7 +59,7 @@ const toTodo = (todo: ApiTodo): Todo => {
     todo.remarks,
     todo.manager?.user_name || "",
     ...todo.tasks.map((task) => `${task.title} ${task.content ?? ""}`),
-    ...todo.comments.map((comment) => comment.comment),
+    ...(todo.comments?.map((comment) => comment.comment) ?? []),
   ]
     .filter(Boolean)
     .join(" ")

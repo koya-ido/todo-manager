@@ -1,9 +1,8 @@
 import { PriorityBadge, StatusBadge } from "@/components/Layout/Badge";
 import { Card } from "@/components/Layout/Card";
-import { Priority, Status } from "@/types/todo";
+import { ApiTodo, Priority, Status } from "@/types/todo";
 import Link from "next/link";
 import { FC } from "react";
-import { ApiTodo } from "../hooks/useHome";
 
 type TodayTodoCardProps = {
   todo: ApiTodo;

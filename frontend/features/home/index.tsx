@@ -1,7 +1,6 @@
 "use client";
 
 import { Button } from "@/components/forms/Button";
-import { Card } from "@/components/Layout/Card";
 import { Heading } from "@/components/typography/Heading";
 import { HomeSkeleton } from "@/features/home/components/HomeSkeleton";
 import { MetricCard } from "@/features/home/components/MetricCard";
@@ -12,11 +11,11 @@ import { Check, Plus } from "lucide-react";
 import Link from "next/link";
 import { FC } from "react";
 
-type HomeContentProps = {
+type ContentProps = {
   messages: Record<string, string>;
 };
 
-export const HomeContent: FC<HomeContentProps> = ({ messages }) => {
+export const Content: FC<ContentProps> = ({ messages }) => {
   const {
     userName,
     isDataLoading,
@@ -34,9 +33,9 @@ export const HomeContent: FC<HomeContentProps> = ({ messages }) => {
       {/* タイトルと挨拶 */}
       <div className="space-y-2">
         <Heading level={1}>{messages["home.heading"]}</Heading>
-        <p className="text-muted-foreground text-sm font-medium">
+        <Heading level={2} className="text-muted-foreground text-sm font-medium">
           {messages["home.description"]?.replace("{username}", userName)}。
-        </p>
+        </Heading>
       </div>
 
       {/* 統計情報カード */}
@@ -78,14 +77,14 @@ export const HomeContent: FC<HomeContentProps> = ({ messages }) => {
         </div>
 
         {todayIncompleteTodos.length === 0 ? (
-          <Card className="flex flex-col items-center justify-center py-12 text-center text-muted-foreground bg-card border border-border/50 rounded-2xl shadow-xs">
+          <div className="flex flex-col items-center justify-center py-8 text-center text-muted-foreground">
             <div className="flex items-center justify-center w-16 h-16 rounded-full border-2 border-muted-foreground/30 text-muted-foreground/40 mb-3 bg-muted/10">
               <Check className="w-8 h-8 stroke-[2.5]" />
             </div>
             <p className="text-sm font-medium text-muted-foreground/85">
               {messages["home.today-incomplete-todos.empty"]}
             </p>
-          </Card>
+          </div>
         ) : (
           <div className="space-y-3">
             {todayIncompleteTodos.map((todo) => (

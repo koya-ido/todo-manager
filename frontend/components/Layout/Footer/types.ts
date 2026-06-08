@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 
 /** FooterItemコンポーネントのPropsの型 */
-export interface FooterItemProps {
+export type FooterItemProps = {
   /** 画面遷移先URL */
   href: string;
   /** フッターに表示するアイコン */
@@ -10,4 +10,4 @@ export interface FooterItemProps {
   label: string;
   /** 現在のページと遷移先が同じかどうか */
   isActive: boolean;
-}
+};

@@ -1,4 +1,4 @@
-import { ErrorContent } from "@/features/error/components/ErrorContent";
+import { Content } from "@/features/error";
 import { getLocaleFromCookie, getMessages } from "@/lib/server-i18n";
 import { Metadata } from "next";
 
@@ -20,5 +20,5 @@ export default async function ErrorPage({ searchParams }: ErrorPageProps) {
   const locale = await getLocaleFromCookie();
   const messages = await getMessages(locale);
 
-  return <ErrorContent messages={messages} status={status} code={code} />;
+  return <Content messages={messages} status={status} code={code} />;
 }

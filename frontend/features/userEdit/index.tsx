@@ -39,4 +39,3 @@ export const Content: FC<ContentProps> = ({ messages }) => {
     />
   );
 };
-

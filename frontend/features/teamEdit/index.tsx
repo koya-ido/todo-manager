@@ -111,9 +111,9 @@ export const Content: FC<TeamEditProps> = ({ isNew = false, teamId, messages }) 
           {isNew ? <Plus className="w-6 h-6" /> : <Settings className="w-6 h-6" />}
           {isNew ? messages["team-edit.heading.register"] : messages["team-edit.heading.edit"]}
         </Heading>
-        <p className="text-sm text-muted-foreground">
+        <Heading level={2} className="text-muted-foreground text-sm font-medium">
           {messages["team-edit.description"]}
-        </p>
+        </Heading>
       </section>
 
       {/* メインフォーム */}

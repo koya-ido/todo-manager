@@ -42,9 +42,9 @@ export const Content: FC<UserSettingProps> = ({ messages }) => {
   } = useTags();
 
   return (
-    <div className="w-full flex flex-col justify-center gap-5">
+    <div className="w-full space-y-6">
       <Heading level={1}>{messages["user-setting.heading"]}</Heading>
-      <Heading level={2}>{messages["user-setting.description"]}</Heading>
+      <Heading level={2} className="text-muted-foreground text-sm font-medium">{messages["user-setting.description"]}</Heading>
       <section className="flex flex-col gap-3">
         <Heading level={3}>{messages["user-setting.tag"]}</Heading>
         <div className="flex flex-wrap gap-2">
