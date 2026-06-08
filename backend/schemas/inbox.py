@@ -16,8 +16,16 @@ class InboxCreate(InboxBase):
     pass
 
 
+class InboxTodoInfo(BaseModel):
+    id: int
+    name: str
+    team_name: Optional[str] = None
+
+
 class InboxResponse(InboxBase):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
     created_at: datetime
+    todo: Optional[InboxTodoInfo] = None
+

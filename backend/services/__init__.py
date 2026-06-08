@@ -18,6 +18,8 @@ from .todo_service import (
     update_comment,
 )
 from .user_service import create_user, delete_user_by_display_id, get_team_members, get_all_teams_members
+from .inbox_service import get_inboxes, delete_inbox, get_unread_count
+
 from .team_service import (
     search_team_by_display_id,
     get_joined_teams,
@@ -50,6 +52,9 @@ __all__ = [
     "get_all_teams_members",
     "get_todo",
     "get_todos",
+    "get_inboxes",
+    "delete_inbox",
+    "get_unread_count",
     "revoke_access_token",
     "update_tag",
     "update_task_completion",
@@ -71,3 +76,4 @@ __all__ = [
     "create_team",
     "update_team",
 ]
+

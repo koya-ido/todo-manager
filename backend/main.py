@@ -9,7 +9,8 @@ from exceptions import (
     http_exception_handler,
     general_exception_handler,
 )
-from routers import auth_router, user_router, tag_router, todo_router, team_router
+from routers import auth_router, user_router, tag_router, todo_router, team_router, inbox_router
+
 
 app = FastAPI()
 
@@ -48,3 +49,5 @@ app.include_router(user_router)
 app.include_router(tag_router)
 app.include_router(todo_router)
 app.include_router(team_router)
+app.include_router(inbox_router)
+

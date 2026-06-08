@@ -1,6 +1,7 @@
+import json
 import secrets
 import string
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 
 from sqlalchemy import or_
 from sqlalchemy.exc import IntegrityError
@@ -156,6 +157,37 @@ def delete_user_by_display_id(db: Session, display_user_id: str) -> DeleteUserRe
     ]
 
     delete_private_data_for_user(db, user)
+
+    # 自身が所属しているチームからメンバーが脱退したときのお知らせ
+    teams_joined = db.query(TeamUser).filter(TeamUser.user_id == user.id).all()
+    for tj in teams_joined:
+        team = tj.team
+        if not team:
+            continue
+        # 他の所属メンバーを取得
+        other_members = db.query(TeamUser).filter(
+            TeamUser.team_id == team.id,
+            TeamUser.user_id != user.id
+        ).all()
+        
+        msg_data = {
+            "left_user_name": user.user_name,
+            "left_user_display_id": user.display_user_id,
+            "left_at": datetime.now(timezone(timedelta(hours=9))).isoformat(),
+            "team_name": team.name,
+            "team_display_id": team.display_teams_id,
+            "team_id": team.id
+        }
+        
+        for om in other_members:
+            inbox = Inbox(
+                target_user_id=om.user_id,
+                type="team_member_left",
+                message=json.dumps(msg_data, ensure_ascii=False),
+                is_read=False
+            )
+            db.add(inbox)
+
     db.query(TeamUser).filter(TeamUser.user_id == user.id).delete(synchronize_session=False)
     cleanup_empty_teams(db, team_ids)
     deletion_mode = finalize_user_deletion(db, user)

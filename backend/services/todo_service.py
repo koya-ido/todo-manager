@@ -3,7 +3,8 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from exceptions import APIException
-from models import Comment, Priority, Status, Task, Team, TeamUser, Todo, User, TodoTag
+from models import Comment, Priority, Status, Task, Team, TeamUser, Todo, User, TodoTag, Inbox
+
 from schemas import TaskCreate, TodoCreate, TodoUpdate
 
 
@@ -302,6 +303,17 @@ def create_todo(db: Session, request: TodoCreate, current_user_id: int) -> Todo:
     )
     db.add(todo)
     
+    # 担当者設定時のお知らせ
+    if todo.team_id is not None and todo.manager_id is not None:
+        inbox = models.Inbox(
+            target_user_id=todo.manager_id,
+            todo_id=todo.id,
+            type="team_todo_assigned",
+            message=todo.name,
+            is_read=False
+        )
+        db.add(inbox)
+    
     print("DEBUG: Adding TODO to session:", todo)  # デバッグ用ログ
 
     try:
@@ -360,6 +372,7 @@ def update_todo(
             code="TODO_TASK_REQUIRED",
         )
 
+    old_manager_id = todo.manager_id
     for field, value in update_data.items():
         setattr(todo, field, value)
     todo.updated_by = current_user_id
@@ -373,6 +386,17 @@ def update_todo(
         todo.todo_tags.clear()
         db.flush()
         todo.todo_tags.extend([TodoTag(tag_id=tag_id) for tag_id in tag_ids])
+
+    # 担当者変更時のお知らせ
+    if todo.team_id is not None and todo.manager_id is not None and todo.manager_id != old_manager_id:
+        inbox = models.Inbox(
+            target_user_id=todo.manager_id,
+            todo_id=todo.id,
+            type="team_todo_assigned",
+            message=todo.name,
+            is_read=False
+        )
+        db.add(inbox)
 
     try:
         db.commit()
@@ -414,6 +438,18 @@ def create_comment(db: Session, todo_id: int, comment_text: str, user_id: int) -
         comment=comment_text.strip(),
     )
     db.add(comment)
+
+    # 担当者に自分以外のコメントがついたときのお知らせ
+    if todo.manager_id is not None and todo.manager_id != user_id:
+        inbox = Inbox(
+            target_user_id=todo.manager_id,
+            todo_id=todo.id,
+            type="todo_comment",
+            message=comment_text.strip(),
+            is_read=False
+        )
+        db.add(inbox)
+
     try:
         db.commit()
         db.refresh(comment)

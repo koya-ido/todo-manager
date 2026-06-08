@@ -1,11 +1,14 @@
 import secrets
 import string
+import json
+from datetime import datetime, timezone, timedelta
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 
 from auth import verify_password, get_password_hash
 from exceptions import APIException
-from models import Team, TeamUser, User, TeamApplication, Todo, Tag
+from models import Team, TeamUser, User, TeamApplication, Todo, Tag, Inbox
+
 from schemas import (
     TeamApplicantResponse,
     TeamApplyingResponse,
@@ -179,6 +182,26 @@ def apply_to_team(db: Session, team_id: int, user_id: int, password: str) -> Non
     # 6. 申請を作成
     app = TeamApplication(team_id=team_id, user_id=user_id)
     db.add(app)
+
+    # 自身が管理者のチームに申請が来たときのお知らせ
+    applicant = db.query(User).filter(User.id == user_id).first()
+    if applicant:
+        msg_data = {
+            "applicant_name": applicant.user_name,
+            "applicant_display_id": applicant.display_user_id,
+            "applied_at": datetime.now(timezone(timedelta(hours=9))).isoformat(),
+            "team_id": team.id,
+            "team_name": team.name,
+            "team_display_id": team.display_teams_id
+        }
+        inbox = Inbox(
+            target_user_id=team.created_user_id,
+            type="team_application_received",
+            message=json.dumps(msg_data, ensure_ascii=False),
+            is_read=False
+        )
+        db.add(inbox)
+
     db.commit()
 
 
@@ -284,6 +307,22 @@ def approve_applicant(db: Session, team_id: int, user_id: int, current_user_id: 
 
     # 4. 申請を削除
     db.delete(app)
+
+    # チーム参加申請が承諾されたときのお知らせ
+    msg_data = {
+        "team_name": team.name,
+        "team_display_id": team.display_teams_id,
+        "approved_at": datetime.now(timezone(timedelta(hours=9))).isoformat(),
+        "team_id": team.id
+    }
+    inbox = Inbox(
+        target_user_id=user_id,
+        type="team_application_approved",
+        message=json.dumps(msg_data, ensure_ascii=False),
+        is_read=False
+    )
+    db.add(inbox)
+
     db.commit()
 
 
@@ -458,6 +497,22 @@ def kick_member(db: Session, team_id: int, member_user_id: int, current_user_id:
         )
 
     db.delete(tu)
+
+    # チームから脱退させられたときのお知らせ
+    msg_data = {
+        "team_name": team.name,
+        "team_display_id": team.display_teams_id,
+        "kicked_at": datetime.now(timezone(timedelta(hours=9))).isoformat(),
+        "team_id": team.id
+    }
+    inbox = Inbox(
+        target_user_id=member_user_id,
+        type="team_member_kicked",
+        message=json.dumps(msg_data, ensure_ascii=False),
+        is_read=False
+    )
+    db.add(inbox)
+
     db.commit()
 
 
