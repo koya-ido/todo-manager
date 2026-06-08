@@ -249,3 +249,12 @@ def get_all_teams_members(db: Session, current_user_id: int) -> list[User]:
     )
     return members
 
+
+def update_user(db: Session, user: User, username: str, password: str) -> User:
+    user.user_name = username
+    user.password = get_password_hash(password)
+    db.commit()
+    db.refresh(user)
+    return user
+
+

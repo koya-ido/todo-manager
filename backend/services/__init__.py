@@ -17,7 +17,7 @@ from .todo_service import (
     delete_todo,
     update_comment,
 )
-from .user_service import create_user, delete_user_by_display_id, get_team_members, get_all_teams_members
+from .user_service import create_user, delete_user_by_display_id, get_team_members, get_all_teams_members, update_user
 from .inbox_service import get_inboxes, delete_inbox, get_unread_count
 
 from .team_service import (
@@ -75,5 +75,7 @@ __all__ = [
     "kick_member",
     "create_team",
     "update_team",
+    "update_user",
 ]
+
 

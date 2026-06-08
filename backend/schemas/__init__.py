@@ -25,7 +25,7 @@ from .todo import (
     TodoUpdate,
     TodosResponse,
 )
-from .user import UserCreate, UserResponse
+from .user import UserCreate, UserResponse, UserUpdate, UsernameCheckResponse
 
 
 __all__ = [
@@ -64,4 +64,6 @@ __all__ = [
     "TodosResponse",
     "UserCreate",
     "UserResponse",
+    "UserUpdate",
+    "UsernameCheckResponse",
 ]
