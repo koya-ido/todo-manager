@@ -1,13 +1,9 @@
-import Link from "next/link";
+import { HomeContent } from "@/features/home";
+import { getLocaleFromCookie, getMessages } from "@/lib/server-i18n";
 
-export default function HomePage() {
-  return (
-    <div className="flex flex-col w-full items-center justify-center gap-10">
-      <h1 className="text-4xl font-bold">TODO Manager</h1>
-      <p>Welcome to TODO Manager! Please log in to manage your tasks.</p>
-      <Link href="/login" className="text-blue-500 hover:underline">
-        Go to Login
-      </Link>
-    </div>
-  );
+export default async function HomePage() {
+  const locale = await getLocaleFromCookie();
+  const messages = await getMessages(locale);
+
+  return <HomeContent messages={messages} />;
 }
