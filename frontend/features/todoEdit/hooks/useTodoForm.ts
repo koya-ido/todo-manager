@@ -196,7 +196,11 @@ export const useTodoForm = ({
         setIsLoading(false);
       } catch (error) {
         if (isErrorResponse(error)) {
-          router.push(`/error?status=${error.status}&code=${error.code}`);
+          if (error.code === "TODO_NOT_FOUND" || error.status === 404) {
+            router.push("/not-found");
+          } else {
+            router.push(`/error?status=${error.status}&code=${error.code}`);
+          }
         } else {
           router.push("/error?status=500&code=UNKNOWN");
         }
