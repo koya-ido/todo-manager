@@ -1,14 +1,41 @@
 import { IconBellActive } from "@/components/Layout/Header/assets/IconBellActive";
 import { IconBellInactive } from "@/components/Layout/Header/assets/IconBellInactive";
+import { apiGet } from "@/hooks/useFetchApi";
 import Link from "next/link";
-import { FC, useState } from "react";
+import { usePathname } from "next/navigation";
+import { FC, useEffect, useState } from "react";
 
 /**
  * スマホレイアウト用のヘッダーコンポーネント
  * @returns スマホレイアウト用のヘッダー
  */
 export const MobileHeader: FC = () => {
-  const [isBellActive] = useState<boolean>(true);
+  const [isBellActive, setIsBellActive] = useState<boolean>(false);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const checkInbox = async () => {
+      try {
+        const data = await apiGet<{ count: number }>("/inbox/unread");
+        if (isMounted) {
+          setIsBellActive(data.count > 0);
+        }
+      } catch {
+        if (isMounted) {
+          setIsBellActive(false);
+        }
+      }
+    };
+
+    void checkInbox();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [pathname]);
+
 
   const labelClass = "text-xs";
 
@@ -24,7 +51,7 @@ export const MobileHeader: FC = () => {
               <IconBellInactive size={24} color="var(--foreground)" />
             )}
             <span
-              className={`${labelClass} ${isBellActive ? "font-bold" : ""}`}
+              className={`${labelClass} font-bold`}
             >
               Inbox
             </span>

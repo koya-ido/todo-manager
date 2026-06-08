@@ -1,7 +1,10 @@
-export default function InboxPage() {
-  return (
-    <div className="flex h-full items-center justify-center">
-      <h1 className="text-2xl font-bold">Inbox</h1>
-    </div>
-  );
+import { InboxContent } from "@/features/inbox";
+import { getLocaleFromCookie, getMessages } from "@/lib/server-i18n";
+
+export default async function InboxPage() {
+  const locale = await getLocaleFromCookie();
+  const messages = await getMessages(locale);
+
+  return <InboxContent messages={messages} />;
 }
+
