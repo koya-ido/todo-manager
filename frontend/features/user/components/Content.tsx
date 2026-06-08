@@ -95,7 +95,6 @@ export const Content: FC<ContentProps> = ({ messages }) => {
             </Link>
           </Button>
           <Button
-            variant="outline"
             onClick={() => handleLogout()}
             className="w-full"
           >

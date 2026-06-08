@@ -31,6 +31,12 @@ export const MobileFooter: FC = () => {
         searchParams.toString().includes("team")
       );
     }
+    if (path.includes("user")) {
+      return (
+        currentPath.includes("user") ||
+        searchParams.toString().includes("user")
+      );
+    }
 
     const [targetPathname, targetQueryStr] = path.split("?");
 
