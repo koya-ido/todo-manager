@@ -141,15 +141,33 @@ export const useTodoDetail = ({ todoId, messages }: UseTodoDetailProps) => {
     }
   };
 
-  const handleDeleteTodo = async (mode: string = "private") => {
+  const handleDeleteTodo = async (
+    mode: string = "private",
+    isPermanently: boolean = false,
+  ) => {
     try {
       await apiDelete(`/todo/${todoId}`);
-      toast.success(messages["todo-detail.delete.success"]);
+      if (isPermanently) {
+        toast.success(messages["todo-detail.delete-permanently.success"]);
+      } else {
+        toast.success(messages["todo-detail.delete.success"]);
+      }
       router.push(`/todo?mode=${mode}`);
     } catch (error) {
       setErrorResponse(error);
       toast.error(messages["FAILED_TO_DELETE"]?.replace("{name}", "TODO"));
       throw error;
+    }
+  };
+
+  const handleRestoreTodo = async (mode: string = "private") => {
+    try {
+      await apiPut(`/todo/${todoId}`, JSON.stringify({ delete_flag: false }));
+      toast.success(messages["todo-detail.restore.success"]);
+      router.push(`/todo?mode=${mode}`);
+    } catch (error) {
+      setErrorResponse(error);
+      toast.error(messages["FAILED_TO_UPDATE"]?.replace("{name}", "TODO"));
     }
   };
 
@@ -185,6 +203,7 @@ export const useTodoDetail = ({ todoId, messages }: UseTodoDetailProps) => {
     handleSendComment,
     handleDeleteComment,
     handleDeleteTodo,
+    handleRestoreTodo,
     handleUpdateComment,
     refetchTodo: fetchTodo,
   };

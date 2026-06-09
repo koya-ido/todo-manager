@@ -58,6 +58,7 @@ export type TodoDetail = {
   manager?: User | null;
   created_at: string | null;
   due_date: string | null;
+  delete_flag: boolean;
   tags: Tag[];
   tasks: Task[];
   comments: Comment[];

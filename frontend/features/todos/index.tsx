@@ -4,6 +4,7 @@ import { Button, ButtonLink } from "@/components/forms/Button";
 import { ComboboxField } from "@/components/forms/FieldWrapper/components/ComboboxField";
 import { InputGroupField } from "@/components/forms/FieldWrapper/components/InputGroupField";
 import { SelectField } from "@/components/forms/FieldWrapper/components/SelectField";
+import { Switch } from "@/components/forms/Switch";
 import { IconTodo } from "@/components/icons/IconTodo";
 import { PageContainer, PageHeader } from "@/components/Layout";
 import { Badge } from "@/components/Layout/Badge";
@@ -25,6 +26,22 @@ export const Content: FC<TodosProps> = ({ mode = "private", isDeleteOnly = false
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [members, setMembers] = useState<User[]>([]);
   const [teamName, setTeamName] = useState<string>("");
+  const [deleteOnly, setDeleteOnly] = useState(isDeleteOnly);
+
+  useEffect(() => {
+    setDeleteOnly(isDeleteOnly);
+  }, [isDeleteOnly]);
+
+  const handleToggleDeleteOnly = (checked: boolean) => {
+    setDeleteOnly(checked);
+    const params = new URLSearchParams(window.location.search);
+    if (checked) {
+      params.set("isDeleteOnly", "true");
+    } else {
+      params.delete("isDeleteOnly");
+    }
+    window.history.replaceState(null, "", `${window.location.pathname}?${params.toString()}`);
+  };
 
   useEffect(() => {
     if (mode !== "team") return;
@@ -106,7 +123,7 @@ export const Content: FC<TodosProps> = ({ mode = "private", isDeleteOnly = false
     loadMore,
   } = useTodos(
     mode,
-    isDeleteOnly,
+    deleteOnly,
     appliedKeyword,
     appliedStatus,
     appliedPriority,
@@ -159,6 +176,19 @@ export const Content: FC<TodosProps> = ({ mode = "private", isDeleteOnly = false
       />
       <Card>
         <form className="w-full flex flex-col gap-4" onSubmit={handleClickSearch}>
+          <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-900/30 p-3 rounded-xl border border-slate-100 dark:border-slate-900/50">
+            <label
+              htmlFor="delete-only-toggle"
+              className="text-sm font-semibold select-none cursor-pointer text-slate-700 dark:text-slate-300"
+            >
+              {messages["todo-list.show-deleted-only"]}
+            </label>
+            <Switch
+              id="delete-only-toggle"
+              checked={deleteOnly}
+              onCheckedChange={handleToggleDeleteOnly}
+            />
+          </div>
           <div className="flex gap-3 items-end">
             <InputGroupField
               label={messages["todo-list.search"]}
