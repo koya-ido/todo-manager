@@ -70,6 +70,8 @@
   "todo-list.sort-option.startDate-desc": "開始日の降順",
   "todo-list.sort-option.dueDate-asc": "期限日の昇順",
   "todo-list.sort-option.dueDate-desc": "期限日の降順",
+  "todo-list.sort-option.updatedAt-asc": "更新日時の昇順",
+  "todo-list.sort-option.updatedAt-desc": "更新日時の降順",
   "todo-list.all-todos": "すべてのTODO",
   "todo-list.filtered-todos": "一致するTODO",
   "todo-list.create-todo": "新規TODO作成",

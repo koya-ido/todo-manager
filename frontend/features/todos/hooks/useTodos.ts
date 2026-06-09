@@ -19,6 +19,8 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react";
 export type TodoSort =
   | "create-date-desc"
   | "create-date-asc"
+  | "update-date-desc"
+  | "update-date-asc"
   | "end-date-desc"
   | "end-date-asc"
   | "start-date-desc"
