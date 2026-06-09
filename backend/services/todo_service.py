@@ -251,6 +251,10 @@ def get_todos(
         order_clauses.append(Todo.created_at.desc())
     elif sort == "start-date-asc":
         order_clauses.append(Todo.created_at.asc())
+    elif sort == "update-date-desc":
+        order_clauses.append(Todo.updated_at.desc())
+    elif sort == "update-date-asc":
+        order_clauses.append(Todo.updated_at.asc())
 
     order_clauses.append(Todo.id)
     query = query.order_by(*order_clauses)
