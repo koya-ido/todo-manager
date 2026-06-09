@@ -70,6 +70,8 @@
   "todo-list.sort-option.startDate-desc": "Start Date (Descending)",
   "todo-list.sort-option.dueDate-asc": "Due Date (Ascending)",
   "todo-list.sort-option.dueDate-desc": "Due Date (Descending)",
+  "todo-list.sort-option.updatedAt-asc": "Updated Date (Ascending)",
+  "todo-list.sort-option.updatedAt-desc": "Updated Date (Descending)",
   "todo-list.all-todos": "All TODOs",
   "todo-list.filtered-todos": "Matching TODOs",
   "todo-list.create-todo": "Create New TODO",

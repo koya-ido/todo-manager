@@ -41,6 +41,14 @@ export const useTodoFilter = (messages: Record<string, string>) => {
         label: messages["todo-list.sort-option.createdAt-asc"] || "",
       },
       {
+        value: "update-date-desc",
+        label: messages["todo-list.sort-option.updatedAt-desc"] || "",
+      },
+      {
+        value: "update-date-asc",
+        label: messages["todo-list.sort-option.updatedAt-asc"] || "",
+      },
+      {
         value: "end-date-desc",
         label: messages["todo-list.sort-option.dueDate-desc"] || "",
       },
