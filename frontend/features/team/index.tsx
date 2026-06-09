@@ -1,9 +1,9 @@
 "use client";
 
-import { Button } from "@/components/forms/Button";
+import { ButtonLink } from "@/components/forms/Button";
+import { PageContainer, PageHeader } from "@/components/Layout";
 import { Skeleton } from "@/components/Layout/Skeleton";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/Layout/Tabs";
-import { Heading } from "@/components/typography/Heading";
 import { ApplyingTeamCard } from "@/features/team/components/ApplyingTeamCard";
 import { CancelApplyDialog } from "@/features/team/components/CancelApplyDialog";
 import { JoinedTeamCard } from "@/features/team/components/JoinedTeamCard";
@@ -11,7 +11,6 @@ import { TeamSearchForm } from "@/features/team/components/TeamSearchForm";
 import { TeamSearchResultDialog } from "@/features/team/components/TeamSearchResultDialog";
 import { useTeamContent } from "@/features/team/hooks/useTeamContent";
 import { Calendar, Plus, Users } from "lucide-react";
-import Link from "next/link";
 import { FC } from "react";
 
 type ContentProps = {
@@ -46,26 +45,22 @@ export const Content: FC<ContentProps> = ({ messages, locale }) => {
   } = useTeamContent(messages);
 
   return (
-    <div className="w-full max-w-4xl mx-auto space-y-6">
+    <PageContainer>
       {/* タイトルと説明 */}
       <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
-        <div className="space-y-6">
-          <Heading level={1}>{messages["team.heading"]}</Heading>
-          <Heading level={2} className="text-muted-foreground text-sm font-medium">
-            {messages["team.description"]}
-          </Heading>
-        </div>
+        <PageHeader
+          title={messages["team.heading"]}
+          description={messages["team.description"]}
+        />
         <div className="w-full flex justify-end">
-          <Button
-            variant="default"
-            asChild
-            className="text-white font-bold self-start sm:self-center shadow-md flex items-center gap-1.5 px-4 py-2 text-sm"
+          <ButtonLink
+            variant="outline"
+            href="/team/edit?isNew=true"
+            className="w-auto"
           >
-            <Link href="/team/edit?isNew=true">
-              <Plus className="w-4 h-4" />
-              {messages["common.create"]}
-            </Link>
-          </Button>
+            <Plus className="w-4 h-4" />
+            {messages["common.create"]}
+          </ButtonLink>
         </div>
       </div>
 
@@ -102,7 +97,7 @@ export const Content: FC<ContentProps> = ({ messages, locale }) => {
           </TabsTrigger>
           <TabsTrigger
             value="applying"
-            className="px-3 sm:px-6 py-3 text-sm font-semibold transition-all border-b-2 rounded-none bg-transparent flex-1 sm:flex-none justify-center sm:justify-start flex items-center gap-1.5 data-[state=active]:text-foreground dark:data-[state=active]:text-indigo-400 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 border-transparent"
+            className="px-3 sm:px-6 py-3 text-sm font-semibold transition-all border-b-2 rounded-none bg-transparent flex-1 sm:flex-none justify-center sm:justify-start flex items-center gap-1.5 data-[state=active]:text-foreground dark:data-[state=active]:text-foreground text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 border-transparent"
           >
             <Calendar className="w-4 h-4" />
             {messages["team.tab.applying"]}
@@ -205,6 +200,6 @@ export const Content: FC<ContentProps> = ({ messages, locale }) => {
         onConfirm={() => void handleConfirmCancelApply()}
         messages={messages}
       />
-    </div>
+    </PageContainer>
   );
 };

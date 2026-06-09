@@ -1,27 +1,20 @@
 "use client";
 
-import { Button } from "@/components/forms/Button";
+import { Button, ButtonLink } from "@/components/forms/Button";
+import { PageContainer, PageHeader } from "@/components/Layout";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "@/components/Layout/Card";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/Layout/Dialog";
+import { ConfirmDialog } from "@/components/Layout/Dialog";
 import { Heading } from "@/components/typography/Heading";
 import { useUser } from "@/features/user/hooks/useUser";
 import { apiPost } from "@/hooks/useFetchApi";
 import { clearAccessToken } from "@/lib/server-actions";
 import { ContentProps } from "@/types/contentTypes";
 import { Check, Copy, TriangleAlert } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FC, useState } from "react";
 import { toast } from "sonner";
@@ -57,9 +50,11 @@ export const Content: FC<ContentProps> = ({ messages }) => {
   };
 
   return (
-    <div className="w-full space-y-6">
-      <Heading level={1}>{userName}</Heading>
-      <Heading level={2} className="text-muted-foreground text-sm font-medium">{messages["user.description"]}</Heading>
+    <PageContainer>
+      <PageHeader
+        title={userName}
+        description={messages["user.description"]}
+      />
       <Card className="flex flex-col gap-3">
         <dl className="w-full">
           <dt>ID</dt>
@@ -86,14 +81,12 @@ export const Content: FC<ContentProps> = ({ messages }) => {
       <section className="flex flex-col gap-3">
         <Heading level={3}>{messages["user.action"]}</Heading>
         <div className="w-full flex flex-col gap-3">
-          <Button variant="outline" className="w-full">
-            <Link href="/user/edit">{messages["user.action.edit"]}</Link>
-          </Button>
-          <Button variant="outline" className="w-full">
-            <Link href="/user/setting">
-              {messages["user.action.configure"]}
-            </Link>
-          </Button>
+          <ButtonLink variant="outline" href="/user/edit" className="w-full">
+            {messages["user.action.edit"]}
+          </ButtonLink>
+          <ButtonLink variant="outline" href="/user/setting" className="w-full">
+            {messages["user.action.configure"]}
+          </ButtonLink>
           <Button
             onClick={() => handleLogout()}
             className="w-full"
@@ -102,52 +95,41 @@ export const Content: FC<ContentProps> = ({ messages }) => {
           </Button>
         </div>
       </section>
-      <Dialog open={isOpenDialog}>
-        <Card className="bg-destructive/10 border-destructive gap-3 px-0">
-          <CardHeader>
-            <CardTitle className="text-destructive">
-              {messages["user.action.danger-zone"]}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="flex flex-col gap-3">
-              <p>{messages["user.action.danger-zone.delete.description"]}</p>
-              <DialogTrigger asChild>
-                <Button
-                  variant="destructive"
-                  onClick={() => setIsOpenDialog(true)}
-                  className="w-full"
-                >
-                  {messages["user.action.danger-zone.delete"]}
-                </Button>
-              </DialogTrigger>
-            </div>
-          </CardContent>
-        </Card>
-        <DialogContent showCloseButton={false}>
-          <DialogHeader>
-            <DialogTitle className="text-destructive flex items-center justify-center gap-2">
-              <TriangleAlert size={24} color="var(--destructive)" />
-              {messages["user.action.danger-zone.delete.dialog-title"]}
-            </DialogTitle>
-          </DialogHeader>
-          <p>{messages["user.action.danger-zone.delete.dialog-description"]}</p>
-          <DialogFooter>
-            <div className="w-full flex flex-col gap-2">
-              <Button variant="destructive" className="w-full">
-                {messages["common.delete.verb"]}
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={() => setIsOpenDialog(false)}
-              >
-                {messages["common.cancel"]}
-              </Button>
-            </div>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </div>
+      <Card className="bg-destructive/10 border-destructive gap-3 px-0">
+        <CardHeader>
+          <CardTitle className="text-destructive">
+            {messages["user.action.danger-zone"]}
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="flex flex-col gap-3">
+            <p>{messages["user.action.danger-zone.delete.description"]}</p>
+            <Button
+              variant="destructive"
+              onClick={() => setIsOpenDialog(true)}
+              className="w-full"
+            >
+              {messages["user.action.danger-zone.delete"]}
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      <ConfirmDialog
+        isOpen={isOpenDialog}
+        onOpenChange={setIsOpenDialog}
+        title={
+          <>
+            <TriangleAlert size={24} className="text-destructive" />
+            {messages["user.action.danger-zone.delete.dialog-title"]}
+          </>
+        }
+        description={messages["user.action.danger-zone.delete.dialog-description"]}
+        confirmText={messages["common.delete.verb"]}
+        cancelText={messages["common.cancel"]}
+        buttonLayout="vertical"
+        onConfirm={() => setIsOpenDialog(false)}
+      />
+    </PageContainer>
   );
 };

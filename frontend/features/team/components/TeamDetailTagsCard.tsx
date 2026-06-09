@@ -1,5 +1,6 @@
 import { Button } from "@/components/forms/Button";
 import { Input } from "@/components/forms/Input";
+import { TagBadge } from "@/components/Layout/Badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/Layout/Card";
 import { Tag } from "@/features/userSetting/types";
 import { Plus, Tag as TagIcon } from "lucide-react";
@@ -41,15 +42,11 @@ export const TeamDetailTagsCard: FC<TeamDetailTagsCardProps> = ({
             </span>
           ) : (
             tags.map((tag) => (
-              <Button
+              <TagBadge
                 key={tag.id}
-                variant="secondary"
-                size="xs"
-                className="h-auto rounded-full px-2.5 py-1 font-bold bg-slate-100 hover:bg-indigo-100 hover:text-indigo-800 dark:bg-slate-800 dark:hover:bg-indigo-950/50 transition-all cursor-pointer"
+                name={tag.name}
                 onClick={() => onOpenTagDialog(tag)}
-              >
-                {tag.name}
-              </Button>
+              />
             ))
           )}
         </div>

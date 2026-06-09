@@ -33,7 +33,8 @@ def read_inboxes(
             todo_info = {
                 "id": inbox.todo.id,
                 "name": inbox.todo.name,
-                "team_name": inbox.todo.team.name if inbox.todo.team else None
+                "team_name": inbox.todo.team.name if inbox.todo.team else None,
+                "team_id": inbox.todo.team_id
             }
         results.append({
             "id": inbox.id,

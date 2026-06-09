@@ -16,6 +16,7 @@ export type InboxItem = {
     id: number;
     name: string;
     team_name: string | null;
+    team_id?: number | null;
   } | null;
 };
 

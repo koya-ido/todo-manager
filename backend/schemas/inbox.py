@@ -20,6 +20,7 @@ class InboxTodoInfo(BaseModel):
     id: int
     name: str
     team_name: Optional[str] = None
+    team_id: Optional[int] = None
 
 
 class InboxResponse(InboxBase):

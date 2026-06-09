@@ -1,13 +1,12 @@
 "use client";
 
-import { Button } from "@/components/forms/Button";
+import { ButtonLink } from "@/components/forms/Button";
 import { Badge } from "@/components/Layout/Badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/Layout/Card";
 import { TeamJoinedResponse } from "@/features/team/types";
 import { formatTeamId } from "@/features/team/utils";
 import { cn } from "@/lib/utils";
 import { ExternalLink, Users } from "lucide-react";
-import Link from "next/link";
 import { FC } from "react";
 
 type JoinedTeamCardProps = {
@@ -57,29 +56,25 @@ export const JoinedTeamCard: FC<JoinedTeamCardProps> = ({ team, messages }) => {
 
       <div className="border-t border-slate-100 dark:border-slate-900/50">
         <div className="space-y-2">
-          <Button
+          <ButtonLink
             variant="outline"
             size="sm"
+            href={`/todo?mode=team&teamId=${team.id}`}
             className="w-full flex items-center justify-center gap-1.5"
-            asChild
           >
-            <Link href={`/todo?mode=team&teamId=${team.id}`}>
-              <ExternalLink className="w-3.5 h-3.5" />
-              {messages["team.action.todo-list"]}
-            </Link>
-          </Button>
+            <ExternalLink className="w-3.5 h-3.5" />
+            {messages["team.action.todo-list"]}
+          </ButtonLink>
 
-          <Button
+          <ButtonLink
             variant="secondary"
             size="sm"
+            href={`/team/${team.id}`}
             className="w-full flex items-center justify-center gap-1.5"
-            asChild
           >
-            <Link href={`/team/${team.id}`}>
-              <ExternalLink className="w-3.5 h-3.5" />
-              {messages["team.action.team-detail"]}
-            </Link>
-          </Button>
+            <ExternalLink className="w-3.5 h-3.5" />
+            {messages["team.action.team-detail"]}
+          </ButtonLink>
         </div>
       </div>
     </Card>

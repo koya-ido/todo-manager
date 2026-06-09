@@ -53,7 +53,9 @@ export const getCardDetails = (
           item.todo?.name || item.message,
         ) + teamPrefix;
       if (item.todo_id) {
-        linkUrl = `/todo/${item.todo_id}`;
+        linkUrl = item.todo?.team_id
+          ? `/todo/${item.todo_id}?mode=team&teamId=${item.todo.team_id}`
+          : `/todo/${item.todo_id}`;
       }
       break;
 
@@ -66,7 +68,9 @@ export const getCardDetails = (
           item.todo?.name || item.message,
         ) + teamPrefix;
       if (item.todo_id) {
-        linkUrl = `/todo/${item.todo_id}`;
+        linkUrl = item.todo?.team_id
+          ? `/todo/${item.todo_id}?mode=team&teamId=${item.todo.team_id}`
+          : `/todo/${item.todo_id}`;
       }
       break;
 
@@ -79,7 +83,9 @@ export const getCardDetails = (
           item.todo?.name || item.message,
         ) + teamPrefix;
       if (item.todo_id) {
-        linkUrl = `/todo/${item.todo_id}`;
+        linkUrl = item.todo?.team_id
+          ? `/todo/${item.todo_id}?mode=team&teamId=${item.todo.team_id}`
+          : `/todo/${item.todo_id}`;
       }
       break;
 
@@ -91,7 +97,9 @@ export const getCardDetails = (
           .replace("{title}", item.todo?.name || "")
           .replace("{comment}", item.message) + teamPrefix;
       if (item.todo_id) {
-        linkUrl = `/todo/${item.todo_id}`;
+        linkUrl = item.todo?.team_id
+          ? `/todo/${item.todo_id}?mode=team&teamId=${item.todo.team_id}`
+          : `/todo/${item.todo_id}`;
       }
       break;
 

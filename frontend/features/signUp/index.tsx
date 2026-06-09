@@ -167,7 +167,7 @@ export const Content: FC<ContentProps> = ({ messages }) => {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center gap-5">
+    <div className="flex flex-col justify-center w-full items-center gap-5">
       <Image
         src="/assets/icons/ApplicationLogo.svg"
         alt="アプリケーションロゴ"

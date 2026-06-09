@@ -1,14 +1,13 @@
 "use client";
 
-import { Button } from "@/components/forms/Button";
-import { Heading } from "@/components/typography/Heading";
+import { ButtonLink } from "@/components/forms/Button";
+import { PageContainer, PageHeader } from "@/components/Layout";
 import { HomeSkeleton } from "@/features/home/components/HomeSkeleton";
 import { MetricCard } from "@/features/home/components/MetricCard";
 import { TodayTodoCard } from "@/features/home/components/TodayTodoCard";
 import { useHome } from "@/features/home/hooks/useHome";
 import { getTodayDisplayString } from "@/features/home/utils";
 import { Check, Plus } from "lucide-react";
-import Link from "next/link";
 import { FC } from "react";
 
 type ContentProps = {
@@ -29,14 +28,12 @@ export const Content: FC<ContentProps> = ({ messages }) => {
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-6 pb-10 px-1">
+    <PageContainer>
       {/* タイトルと挨拶 */}
-      <div className="space-y-2">
-        <Heading level={1}>{messages["home.heading"]}</Heading>
-        <Heading level={2} className="text-muted-foreground text-sm font-medium">
-          {messages["home.description"]?.replace("{username}", userName)}。
-        </Heading>
-      </div>
+      <PageHeader
+        title={messages["home.heading"]}
+        description={messages["home.description"]?.replace("{username}", userName) + "。"}
+      />
 
       {/* 統計情報カード */}
       <div className="grid grid-cols-2 gap-4">
@@ -53,16 +50,10 @@ export const Content: FC<ContentProps> = ({ messages }) => {
       </div>
 
       {/* 新規作成のショートカット */}
-      <Button
-        variant="outline"
-        asChild
-        className="w-full h-12 rounded-xl bg-card border border-border text-foreground hover:bg-accent hover:text-accent-foreground font-bold shadow-xs hover:shadow-sm transition-all duration-200 flex items-center justify-center gap-2"
-      >
-        <Link href="/todo/edit?mode=private&isNew=true">
-          <Plus className="w-5 h-5" />
-          {messages["home.create-todo"]}
-        </Link>
-      </Button>
+      <ButtonLink href="/todo/edit?mode=private&isNew=true">
+        <Plus className="w-5 h-5" />
+        {messages["home.create-todo"]}
+      </ButtonLink>
 
       {/* 未完了TODOセクション */}
       <div>
@@ -103,6 +94,6 @@ export const Content: FC<ContentProps> = ({ messages }) => {
           </div>
         )}
       </div>
-    </div>
+    </PageContainer>
   );
 };

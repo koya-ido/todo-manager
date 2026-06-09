@@ -30,7 +30,7 @@ export const useUserEdit = ({ messages }: UseUserEditProps) => {
     return () => clearInlineErrors();
   }, [clearInlineErrors]);
 
-  // Load current user details
+  // 現在のユーザー情報を読み込む
   useEffect(() => {
     const fetchUser = async () => {
       try {
@@ -44,7 +44,7 @@ export const useUserEdit = ({ messages }: UseUserEditProps) => {
           messages["FAILED_TO_FETCH"]?.replace(
             "{name}",
             messages["user.username"],
-          ) || "ユーザー情報の取得に失敗しました",
+          ),
         );
       } finally {
         setIsLoading(false);
@@ -53,7 +53,7 @@ export const useUserEdit = ({ messages }: UseUserEditProps) => {
     void fetchUser();
   }, [setErrorResponse, messages]);
 
-  // Debounced Username Availability Check
+  // ユーザー名の重複チェックを遅延させる
   useEffect(() => {
     if (isLoading) return;
 
@@ -177,10 +177,7 @@ export const useUserEdit = ({ messages }: UseUserEditProps) => {
           password: password,
         }),
       );
-      toast.success(
-        messages["user-edit.toast.update-success"] ||
-          "ユーザー情報を更新しました。",
-      );
+      toast.success(messages["user-edit.toast.update-success"]);
       router.push("/user");
       router.refresh();
     } catch (error: unknown) {
@@ -189,7 +186,7 @@ export const useUserEdit = ({ messages }: UseUserEditProps) => {
         messages["FAILED_TO_UPDATE"]?.replace(
           "{name}",
           messages["user.username"],
-        ) || "ユーザー情報の更新に失敗しました",
+        ),
       );
     } finally {
       setIsSubmitting(false);

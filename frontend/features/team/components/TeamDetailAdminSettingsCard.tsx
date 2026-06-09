@@ -1,21 +1,22 @@
-import { Button } from "@/components/forms/Button";
+import { Button, ButtonLink } from "@/components/forms/Button";
 import { Checkbox } from "@/components/forms/Checkbox";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/Layout/Card";
 import { Heading } from "@/components/typography/Heading";
 import { TeamApplicantResponse, TeamDetailResponse } from "@/features/team/types";
-import { Edit, Settings, Trash2 } from "lucide-react";
-import Link from "next/link";
-import { FC } from "react";
+import { Check, Copy, Edit, Eye, EyeOff, Settings, Trash2 } from "lucide-react";
+import { FC, useState } from "react";
 
 type TeamDetailAdminSettingsCardProps = {
   team: TeamDetailResponse;
   applicants: TeamApplicantResponse[];
   messages: Record<string, string>;
   isTogglingAccept: boolean;
+  isCopiedPassword: boolean;
   onToggleAcceptApps: (checked: boolean) => void;
   onApproveApplicant: (userId: number) => void;
   onRejectClick: (app: TeamApplicantResponse) => void;
   onDeleteTeamClick: () => void;
+  onCopyPassword: () => void;
 };
 
 export const TeamDetailAdminSettingsCard: FC<TeamDetailAdminSettingsCardProps> = ({
@@ -23,11 +24,14 @@ export const TeamDetailAdminSettingsCard: FC<TeamDetailAdminSettingsCardProps> =
   applicants,
   messages,
   isTogglingAccept,
+  isCopiedPassword,
   onToggleAcceptApps,
   onApproveApplicant,
   onRejectClick,
   onDeleteTeamClick,
+  onCopyPassword,
 }) => {
+  const [showPassword, setShowPassword] = useState(false);
   return (
     <Card className="md:col-span-2 border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-md shadow-xs">
       <CardHeader className="p-0 flex flex-row items-center gap-2 pb-2">
@@ -51,6 +55,48 @@ export const TeamDetailAdminSettingsCard: FC<TeamDetailAdminSettingsCardProps> =
           >
             {messages["team.detail.settings.accept-apps"]}
           </label>
+        </div>
+
+        {/* 設定アクション：パスワードの確認・コピー */}
+        <div className="bg-slate-50 dark:bg-slate-900/30 p-4 rounded-xl border border-slate-100 dark:border-slate-900/50 space-y-2">
+          <span className="text-sm font-semibold text-slate-700 dark:text-slate-300 block">
+            {messages["team.detail.settings.password-label"]}
+          </span>
+          {team.password ? (
+            <div className="flex items-center gap-2">
+              <code className="bg-slate-100 dark:bg-slate-800 px-3 py-1.5 rounded text-sm font-mono font-bold text-slate-800 dark:text-slate-200 select-all min-w-[120px] text-center border border-slate-200 dark:border-slate-700">
+                {showPassword ? team.password : "********"}
+              </code>
+              <Button
+                variant="outline"
+                size="xs"
+                onClick={() => setShowPassword(!showPassword)}
+                className="flex items-center justify-center p-2"
+                title={showPassword ? "Hide" : "Show"}
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </Button>
+              <Button
+                variant="outline"
+                size="xs"
+                onClick={onCopyPassword}
+                className="flex items-center gap-1 text-xs"
+              >
+                {isCopiedPassword ? (
+                  <Check className="w-3.5 h-3.5 text-green-500" />
+                ) : (
+                  <Copy className="w-3.5 h-3.5" />
+                )}
+                {isCopiedPassword
+                  ? messages["team.detail.settings.password-copied"]
+                  : messages["team.detail.settings.password-copy"]}
+              </Button>
+            </div>
+          ) : (
+            <span className="text-slate-400 text-xs italic block pt-1">
+              {messages["team.detail.settings.password-unavailable"]}
+            </span>
+          )}
         </div>
 
         {/* 申請者リスト */}
@@ -90,7 +136,7 @@ export const TeamDetailAdminSettingsCard: FC<TeamDetailAdminSettingsCardProps> =
                     <div className="flex items-center gap-2 sm:self-center">
                       <Button
                         size="sm"
-                        className="text-white font-bold"
+                        className="flex items-center gap-1 shrink-0"
                         onClick={() => onApproveApplicant(app.id)}
                       >
                         {messages["team.detail.applicants.approve"]}
@@ -113,16 +159,14 @@ export const TeamDetailAdminSettingsCard: FC<TeamDetailAdminSettingsCardProps> =
 
         {/* 管理者アクション：チームの編集と削除 */}
         <div className="border-t border-slate-100 dark:border-slate-900/50 pt-5 flex justify-between items-center gap-3 flex-wrap">
-          <Button
+          <ButtonLink
             variant="outline"
-            asChild
-            className="flex items-center gap-1.5 font-bold border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300"
+            href={`/team/edit?id=${team.id}`}
+            className="flex items-center gap-1.5 font-bold border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 w-auto"
           >
-            <Link href={`/team/edit?id=${team.id}`}>
-              <Edit className="w-4 h-4" />
-              {messages["common.edit"]}
-            </Link>
-          </Button>
+            <Edit className="w-4 h-4" />
+            {messages["common.edit"]}
+          </ButtonLink>
 
           <Button
             variant="destructive"

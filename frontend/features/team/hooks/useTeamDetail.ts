@@ -33,6 +33,7 @@ export const useTeamDetail = (
   const [tags, setTags] = useState<Tag[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isCopied, setIsCopied] = useState<boolean>(false);
+  const [isCopiedPassword, setIsCopiedPassword] = useState<boolean>(false);
 
   // フォーム状態
   const [newTagName, setNewTagName] = useState<string>("");
@@ -96,6 +97,19 @@ export const useTeamDetail = (
       setTimeout(() => setIsCopied(false), 2000);
     } catch (err) {
       toast.error(messages["FAILED_TO_UPDATE"]?.replace("{name}", "ID"));
+    }
+  };
+
+  // パスワードのコピー
+  const handleCopyPassword = async () => {
+    if (!team || !team.password) return;
+    try {
+      await navigator.clipboard.writeText(team.password);
+      setIsCopiedPassword(true);
+      toast.success(messages["team.detail.toast.copy-password-success"]);
+      setTimeout(() => setIsCopiedPassword(false), 2000);
+    } catch (err) {
+      toast.error(messages["FAILED_TO_UPDATE"]?.replace("{name}", "Password"));
     }
   };
 
@@ -247,6 +261,7 @@ export const useTeamDetail = (
     tags,
     isLoading,
     isCopied,
+    isCopiedPassword,
     newTagName,
     setNewTagName,
     isSubmittingTag,
@@ -268,6 +283,7 @@ export const useTeamDetail = (
     isSubmittingReject,
     fetchData,
     handleCopyId,
+    handleCopyPassword,
     handleToggleAcceptApps,
     handleApproveApplicant,
     handleConfirmRejectApplicant,

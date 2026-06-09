@@ -4,6 +4,7 @@ import { ErrorContext } from "@/components/features/ErrorProvider";
 import { Button } from "@/components/forms/Button";
 import { InputField } from "@/components/forms/FieldWrapper/components/InputField";
 import { PasswordField } from "@/components/forms/FieldWrapper/components/PasswordField";
+import { PageContainer, PageHeader } from "@/components/Layout";
 import { Card } from "@/components/Layout/Card";
 import {
   Dialog,
@@ -15,7 +16,6 @@ import {
 } from "@/components/Layout/Dialog";
 import { LabelWithIcon } from "@/components/Layout/LabelWithIcon/LabelWithIcon";
 import { Skeleton } from "@/components/Layout/Skeleton";
-import { Heading } from "@/components/typography/Heading";
 import { useTeamForm } from "@/features/teamEdit/hooks/useTeamForm";
 import { TeamEditProps } from "@/features/teamEdit/types";
 import { Circle, CircleCheck, Plus, Settings, TriangleAlert } from "lucide-react";
@@ -104,17 +104,17 @@ export const Content: FC<TeamEditProps> = ({ isNew = false, teamId, messages }) 
   }
 
   return (
-    <div className="w-full pb-28 space-y-6 max-w-2xl mx-auto">
+    <PageContainer>
       {/* タイトルヘッダー */}
-      <section className="space-y-1 py-2">
-        <Heading level={1} className="text-2xl font-bold flex items-center gap-2">
-          {isNew ? <Plus className="w-6 h-6" /> : <Settings className="w-6 h-6" />}
-          {isNew ? messages["team-edit.heading.register"] : messages["team-edit.heading.edit"]}
-        </Heading>
-        <Heading level={2} className="text-muted-foreground text-sm font-medium">
-          {messages["team-edit.description"]}
-        </Heading>
-      </section>
+      <PageHeader
+        title={
+          <>
+            {isNew ? <Plus className="w-6 h-6" /> : <Settings className="w-6 h-6" />}
+            {isNew ? messages["team-edit.heading.register"] : messages["team-edit.heading.edit"]}
+          </>
+        }
+        description={messages["team-edit.description"]}
+      />
 
       {/* メインフォーム */}
       <form onSubmit={handleSubmit} className="space-y-6" noValidate>
@@ -210,7 +210,7 @@ export const Content: FC<TeamEditProps> = ({ isNew = false, teamId, messages }) 
         <Button
           type="submit"
           disabled={isSubmitDisabled || isSubmitting}
-          className="w-full text-white font-bold py-3 px-6 shadow-md flex items-center justify-center gap-2"
+          className="w-full font-bold py-3 px-6 shadow-md flex items-center justify-center gap-2"
         >
           {isNew ? (
             <>
@@ -255,6 +255,6 @@ export const Content: FC<TeamEditProps> = ({ isNew = false, teamId, messages }) 
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+    </PageContainer>
   );
 };

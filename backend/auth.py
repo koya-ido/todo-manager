@@ -5,11 +5,31 @@ from jose import ExpiredSignatureError, JWTError, jwt
 from passlib.context import CryptContext
 from fastapi import Request
 import os
+import base64
+import hashlib
+from cryptography.fernet import Fernet
 
 # 本来は環境変数から取得
 SECRET_KEY = os.getenv("SECRET_KEY", "your-fallback-key")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 360
+
+def get_fernet_key(secret_key: str) -> bytes:
+    """SECRET_KEYから32バイトのURL安全なbase64キーを生成"""
+    h = hashlib.sha256(secret_key.encode()).digest()
+    return base64.urlsafe_b64encode(h)
+
+def encrypt_password(plain_password: str) -> str:
+    """パスワードを対称暗号で暗号化"""
+    key = get_fernet_key(SECRET_KEY)
+    f = Fernet(key)
+    return f.encrypt(plain_password.encode()).decode()
+
+def decrypt_password(encrypted_password: str) -> str:
+    """対称暗号化されたパスワードを復号"""
+    key = get_fernet_key(SECRET_KEY)
+    f = Fernet(key)
+    return f.decrypt(encrypted_password.encode()).decode()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 

@@ -1,12 +1,4 @@
-import { Button } from "@/components/forms/Button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/Layout/Dialog";
+import { ConfirmDialog } from "@/components/Layout/Dialog";
 import { FC } from "react";
 
 type DeleteTeamDialogProps = {
@@ -27,38 +19,19 @@ export const DeleteTeamDialog: FC<DeleteTeamDialogProps> = ({
   messages,
 }) => {
   return (
-    <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>
-            {messages["team.detail.settings.delete-dialog.title"]}
-          </DialogTitle>
-        </DialogHeader>
-        <DialogDescription className="text-slate-500 dark:text-slate-400 my-2">
-          {messages["team.detail.settings.delete-dialog.description"]?.replace(
-            "{name}",
-            teamName
-          )}
-        </DialogDescription>
-        <DialogFooter className="flex w-full gap-2 mt-4">
-          <Button
-            className="flex-1"
-            variant="outline"
-            onClick={() => onOpenChange(false)}
-            disabled={isDeleting}
-          >
-            {messages["common.cancel"]}
-          </Button>
-          <Button
-            className="flex-1"
-            variant="destructive"
-            onClick={onConfirm}
-            disabled={isDeleting}
-          >
-            {messages["common.delete.verb"]}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+    <ConfirmDialog
+      isOpen={isOpen}
+      onOpenChange={onOpenChange}
+      title={messages["team.detail.settings.delete-dialog.title"]}
+      description={messages["team.detail.settings.delete-dialog.description"]?.replace(
+        "{name}",
+        teamName
+      )}
+      confirmText={messages["common.delete.verb"]}
+      cancelText={messages["common.cancel"]}
+      isConfirmDisabled={isDeleting}
+      isSubmitting={isDeleting}
+      onConfirm={onConfirm}
+    />
   );
 };

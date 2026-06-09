@@ -1,17 +1,13 @@
 "use client";
 
-import { Button } from "@/components/forms/Button";
+import { Button, ButtonLink } from "@/components/forms/Button";
 import { Checkbox } from "@/components/forms/Checkbox";
 import { ToggleGroup, ToggleGroupItem } from "@/components/forms/ToggleGroup";
-import { Badge, PriorityBadge, StatusBadge } from "@/components/Layout/Badge";
+import { PageContainer, PageHeader } from "@/components/Layout";
+import { PriorityBadge, StatusBadge, TagBadge } from "@/components/Layout/Badge";
 import { Card } from "@/components/Layout/Card";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+  ConfirmDialog
 } from "@/components/Layout/Dialog";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/Layout/Popover";
 import { Separator } from "@/components/Layout/Separator";
@@ -22,7 +18,6 @@ import { TodoDetailProps } from "@/features/todoDetail/types";
 import { cn } from "@/lib/utils";
 import { Priority, Status } from "@/types/todo";
 import { AlertCircle, MessageSquare, MoreVertical, Pencil, Trash2 } from "lucide-react";
-import Link from "next/link";
 import { FC, useState } from "react";
 
 
@@ -240,16 +235,12 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
   const todoPriorityKey = Priority[todo.priority_id as keyof typeof Priority] || "medium";
 
   return (
-    <div className="w-full pb-20 space-y-6">
+    <PageContainer>
       {/* タイトルヘッダー */}
-      <section className="space-y-1 py-2">
-        <Heading level={1} className="text-2xl font-bold">
-          {messages["todo-detail.heading"]}
-        </Heading>
-        <Heading level={2} className="text-muted-foreground text-sm font-medium">
-          {messages["todo-detail.description"]}
-        </Heading>
-      </section>
+      <PageHeader
+        title={messages["todo-detail.heading"]}
+        description={messages["todo-detail.description"]}
+      />
 
       {/* メインTODO詳細カード */}
       <Card className="p-5 rounded-2xl border bg-card shadow-xs">
@@ -302,9 +293,9 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
             <span className="text-muted-foreground font-semibold">進捗状況</span>
             <span className="font-bold text-foreground">{progress}%</span>
           </div>
-          <div className="w-full bg-gray-100 h-2 rounded-full overflow-hidden">
+          <div className="w-full bg-gray-100 dark:bg-gray-700 h-2 rounded-full overflow-hidden">
             <div
-              className="bg-foreground h-full rounded-full transition-all duration-300 ease-out"
+              className="bg-foreground dark:bg-gray-200 h-full rounded-full transition-all duration-300 ease-out"
               style={{ width: `${progress}%` }}
             />
           </div>
@@ -318,15 +309,15 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
             if (val) handleUpdateStatus(val);
           }}
           spacing={1}
-          className="flex border border-gray-200 rounded-lg bg-gray-50 p-1 w-full"
+          className="flex border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 p-1 w-full"
         >
           {statusItems.map((item) => (
             <ToggleGroupItem
               key={item.value}
               value={item.value}
               className={cn(
-                "flex-1 py-1.5 text-xs font-semibold rounded-md transition-all duration-150 cursor-pointer focus:outline-hidden text-center justify-center h-auto hover:bg-transparent text-gray-500 hover:text-gray-700 bg-transparent shadow-none border-0",
-                "data-[state=on]:bg-white data-[state=on]:text-foreground data-[state=on]:font-bold data-[state=on]:shadow-xs data-[state=on]:border data-[state=on]:border-gray-200/50"
+                "flex-1 py-1.5 text-xs font-semibold rounded-md transition-all duration-150 cursor-pointer focus:outline-hidden text-center justify-center h-auto hover:bg-transparent text-gray-500 dark:text-gray-200 hover:text-gray-700 dark:hover:text-gray-100 bg-transparent shadow-none border-0",
+                "data-[state=on]:bg-white dark:data-[state=on]:bg-gray-600 data-[state=on]:text-foreground data-[state=on]:font-bold data-[state=on]:shadow-xs data-[state=on]:border data-[state=on]:border-gray-200/50"
               )}
             >
               {messages[`common.status.${item.statusKey}`] || item.label}
@@ -337,16 +328,14 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
 
       {/* 編集および削除アクション */}
       <div className="flex gap-3">
-        <Button
+        <ButtonLink
           variant="secondary"
-          asChild
-          className="flex-1 bg-background border border-gray-200 hover:bg-gray-50 text-foreground font-bold py-3 shadow-xs flex items-center justify-center gap-2 text-sm"
+          href={`/todo/edit?mode=${mode}&id=${todoId}`}
+          className="flex-1 bg-background border border-gray-200 hover:bg-gray-50 text-foreground font-bold py-3 shadow-xs flex items-center justify-center gap-2 text-sm w-auto"
         >
-          <Link href={`/todo/edit?mode=${mode}&id=${todoId}`}>
-            <Pencil className="h-4 w-4" />
-            {messages["common.edit.verb"]}
-          </Link>
-        </Button>
+          <Pencil className="h-4 w-4" />
+          {messages["common.edit.verb"]}
+        </ButtonLink>
         <Button
           variant="destructive"
           type="button"
@@ -376,12 +365,10 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
             </p>
           ) : (
             todo.tags.map((tag) => (
-              <Badge
+              <TagBadge
                 key={tag.id}
-                className="bg-[#D9D9D9] text-foreground flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
-              >
-                {tag.name}
-              </Badge>
+                name={tag.name}
+              />
             ))
           )}
         </div>
@@ -458,7 +445,7 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
             disabled={isSubmittingComment}
             maxLength={800}
             rows={3}
-            className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-hidden focus:border-foreground bg-white text-foreground placeholder:text-muted-foreground/50 resize-none font-sans"
+            className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-hidden focus:border-foreground bg-white dark:bg-gray-700 text-foreground placeholder:text-muted-foreground/50 resize-none font-sans"
           />
           <div className="flex justify-end">
             <Button
@@ -599,88 +586,56 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
       </section>
 
       {/* コメント削除確認ダイアログ */}
-      <Dialog open={commentToDeleteId !== null} onOpenChange={(open) => !open && setCommentToDeleteId(null)}>
-        <DialogContent showCloseButton={false}>
-          <DialogHeader>
-            <DialogTitle className="text-destructive flex items-center justify-center gap-2 text-md">
-              <AlertCircle size={20} className="text-destructive" />
-              {messages["common.delete"]}
-            </DialogTitle>
-          </DialogHeader>
-          <DialogDescription className="text-center py-2 text-sm">
-            {messages["todo-detail.comment.confirm-delete"]}
-          </DialogDescription>
-          <DialogFooter>
-            <div className="w-full flex flex-col gap-2">
-              <Button
-                variant="destructive"
-                className="w-full text-sm font-semibold cursor-pointer"
-                onClick={async () => {
-                  if (commentToDeleteId !== null) {
-                    const id = commentToDeleteId;
-                    setCommentToDeleteId(null);
-                    await handleDeleteComment(id);
-                  }
-                }}
-              >
-                {messages["common.delete"]}
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full text-sm font-semibold cursor-pointer"
-                onClick={() => setCommentToDeleteId(null)}
-              >
-                キャンセル
-              </Button>
-            </div>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <ConfirmDialog
+        isOpen={commentToDeleteId !== null}
+        onOpenChange={(open) => !open && setCommentToDeleteId(null)}
+        title={
+          <>
+            <AlertCircle size={20} className="text-destructive" />
+            {messages["common.delete"]}
+          </>
+        }
+        description={messages["todo-detail.comment.confirm-delete"]}
+        confirmText={messages["common.delete"]}
+        cancelText={messages["common.cancel"]}
+        buttonLayout="vertical"
+        onConfirm={async () => {
+          if (commentToDeleteId !== null) {
+            const id = commentToDeleteId;
+            setCommentToDeleteId(null);
+            await handleDeleteComment(id);
+          }
+        }}
+      />
 
       {/* TODO削除確認ダイアログ */}
-      <Dialog open={isDeleteTodoDialogOpen} onOpenChange={(open) => !open && setIsDeleteTodoDialogOpen(false)}>
-        <DialogContent showCloseButton={false} className="w-full">
-          <DialogHeader>
-            <DialogTitle className="text-destructive flex items-center justify-center gap-2 text-md">
-              <AlertCircle size={20} className="text-destructive" />
-              {messages["todo-detail.delete.dialog.title"]}
-            </DialogTitle>
-          </DialogHeader>
-          <DialogDescription className="text-center py-2 text-sm">
-            {messages["todo-detail.delete.dialog.confirm"]}
-          </DialogDescription>
-          <DialogFooter>
-            <div className="w-full flex flex-col gap-2">
-              <Button
-                variant="destructive"
-                className="w-full text-sm font-semibold cursor-pointer"
-                disabled={isDeletingTodo}
-                onClick={async () => {
-                  setIsDeletingTodo(true);
-                  try {
-                    await handleDeleteTodo(mode);
-                  } catch {
-                    // フック内で処理される
-                  } finally {
-                    setIsDeletingTodo(false);
-                    setIsDeleteTodoDialogOpen(false);
-                  }
-                }}
-              >
-                {messages["common.delete.verb"]}
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full text-sm font-semibold cursor-pointer"
-                disabled={isDeletingTodo}
-                onClick={() => setIsDeleteTodoDialogOpen(false)}
-              >
-                {messages["common.cancel"]}
-              </Button>
-            </div>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </div>
+      <ConfirmDialog
+        isOpen={isDeleteTodoDialogOpen}
+        onOpenChange={setIsDeleteTodoDialogOpen}
+        title={
+          <>
+            <AlertCircle size={20} className="text-destructive" />
+            {messages["todo-detail.delete.dialog.title"]}
+          </>
+        }
+        description={messages["todo-detail.delete.dialog.confirm"]}
+        confirmText={messages["common.delete.verb"]}
+        cancelText={messages["common.cancel"]}
+        buttonLayout="vertical"
+        isConfirmDisabled={isDeletingTodo}
+        isSubmitting={isDeletingTodo}
+        onConfirm={async () => {
+          setIsDeletingTodo(true);
+          try {
+            await handleDeleteTodo(mode);
+          } catch {
+            // フック内で処理される
+          } finally {
+            setIsDeletingTodo(false);
+            setIsDeleteTodoDialogOpen(false);
+          }
+        }}
+      />
+    </PageContainer>
   );
 };
