@@ -36,6 +36,7 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
     handleSendComment,
     handleDeleteComment,
     handleDeleteTodo,
+    handleRestoreTodo,
     handleUpdateComment,
   } = useTodoDetail({ todoId, messages });
 
@@ -310,6 +311,7 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
           }}
           spacing={1}
           className="flex border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-700 p-1 w-full"
+          disabled={todo.delete_flag}
         >
           {statusItems.map((item) => (
             <ToggleGroupItem
@@ -327,25 +329,47 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
       </Card>
 
       {/* 編集および削除アクション */}
-      <div className="flex gap-3">
-        <ButtonLink
-          variant="secondary"
-          href={`/todo/edit?mode=${mode}&id=${todoId}`}
-          className="flex-1 bg-background border border-gray-200 hover:bg-gray-50 text-foreground font-bold py-3 shadow-xs flex items-center justify-center gap-2 text-sm w-auto"
-        >
-          <Pencil className="h-4 w-4" />
-          {messages["common.edit.verb"]}
-        </ButtonLink>
-        <Button
-          variant="destructive"
-          type="button"
-          onClick={() => setIsDeleteTodoDialogOpen(true)}
-          className="flex-1 text-sm font-bold py-3 shadow-xs flex items-center justify-center gap-2 cursor-pointer"
-        >
-          <Trash2 className="h-4 w-4" />
-          {messages["common.delete.verb"]}
-        </Button>
-      </div>
+      {todo.delete_flag ? (
+        <div className="flex gap-3">
+          <Button
+            variant="default"
+            type="button"
+            onClick={() => handleRestoreTodo(mode)}
+            className="flex-1 bg-foreground text-background hover:bg-foreground/90 font-bold py-3 shadow-xs flex items-center justify-center gap-2 text-sm cursor-pointer w-auto"
+          >
+            {messages["todo-detail.restore.button"]}
+          </Button>
+          <Button
+            variant="destructive"
+            type="button"
+            onClick={() => setIsDeleteTodoDialogOpen(true)}
+            className="flex-1 text-sm font-bold py-3 shadow-xs flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <Trash2 className="h-4 w-4" />
+            {messages["todo-detail.delete-permanently.button"]}
+          </Button>
+        </div>
+      ) : (
+        <div className="flex gap-3">
+          <ButtonLink
+            variant="secondary"
+            href={`/todo/edit?mode=${mode}&id=${todoId}`}
+            className="flex-1 bg-background border border-gray-200 hover:bg-gray-50 text-foreground font-bold py-3 shadow-xs flex items-center justify-center gap-2 text-sm w-auto"
+          >
+            <Pencil className="h-4 w-4" />
+            {messages["common.edit.verb"]}
+          </ButtonLink>
+          <Button
+            variant="destructive"
+            type="button"
+            onClick={() => setIsDeleteTodoDialogOpen(true)}
+            className="flex-1 text-sm font-bold py-3 shadow-xs flex items-center justify-center gap-2 cursor-pointer"
+          >
+            <Trash2 className="h-4 w-4" />
+            {messages["common.delete.verb"]}
+          </Button>
+        </div>
+      )}
 
       {/* タグセクション */}
       <section className="space-y-3 pt-2">
@@ -402,7 +426,8 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
                     onCheckedChange={(checked) => {
                       handleToggleTask(task.id, checked === true);
                     }}
-                    className="mt-0.5 size-5 border-gray-300 data-[state=checked]:bg-foreground data-[state=checked]:border-foreground data-[state=checked]:text-background cursor-pointer"
+                    disabled={todo.delete_flag}
+                    className="mt-0.5 size-5 border-gray-300 data-[state=checked]:bg-foreground data-[state=checked]:border-foreground data-[state=checked]:text-background cursor-pointer disabled:cursor-not-allowed disabled:opacity-50"
                   />
                   {/* タスク内容 */}
                   <div className="flex-1 min-w-0 space-y-0.5">
@@ -437,26 +462,28 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
         </div>
 
         {/* 新規コメント入力フォーム */}
-        <form onSubmit={handleSendComment} className="space-y-2">
-          <textarea
-            placeholder={messages["todo-detail.comment.placeholder"]}
-            value={commentText}
-            onChange={(e) => setCommentText(e.target.value)}
-            disabled={isSubmittingComment}
-            maxLength={800}
-            rows={3}
-            className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-hidden focus:border-foreground bg-white dark:bg-gray-700 text-foreground placeholder:text-muted-foreground/50 resize-none font-sans"
-          />
-          <div className="flex justify-end">
-            <Button
-              type="submit"
-              disabled={isSubmittingComment || !commentText.trim()}
-              className="bg-foreground text-background hover:bg-foreground/90 font-bold px-5 py-2 text-sm rounded-lg flex items-center justify-center gap-1.5"
-            >
-              {messages["todo-detail.comment.send"]}
-            </Button>
-          </div>
-        </form>
+        {!todo.delete_flag && (
+          <form onSubmit={handleSendComment} className="space-y-2">
+            <textarea
+              placeholder={messages["todo-detail.comment.placeholder"]}
+              value={commentText}
+              onChange={(e) => setCommentText(e.target.value)}
+              disabled={isSubmittingComment}
+              maxLength={800}
+              rows={3}
+              className="w-full border border-gray-200 rounded-xl p-3 text-sm focus:outline-hidden focus:border-foreground bg-white dark:bg-gray-700 text-foreground placeholder:text-muted-foreground/50 resize-none font-sans"
+            />
+            <div className="flex justify-end">
+              <Button
+                type="submit"
+                disabled={isSubmittingComment || !commentText.trim()}
+                className="bg-foreground text-background hover:bg-foreground/90 font-bold px-5 py-2 text-sm rounded-lg flex items-center justify-center gap-1.5"
+              >
+                {messages["todo-detail.comment.send"]}
+              </Button>
+            </div>
+          </form>
+        )}
 
         {/* コメント項目リスト */}
         <div className="space-y-3 pt-2">
@@ -499,7 +526,7 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
                             </span>
                           )}
                         </div>
-                        {isAuthor && (
+                        {isAuthor && !todo.delete_flag && (
                           <Popover>
                             <PopoverTrigger asChild>
                               <Button
@@ -615,11 +642,21 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
         title={
           <>
             <AlertCircle size={20} className="text-destructive" />
-            {messages["todo-detail.delete.dialog.title"]}
+            {todo.delete_flag
+              ? messages["todo-detail.delete-permanently.dialog.title"]
+              : messages["todo-detail.delete.dialog.title"]}
           </>
         }
-        description={messages["todo-detail.delete.dialog.confirm"]}
-        confirmText={messages["common.delete.verb"]}
+        description={
+          todo.delete_flag
+            ? messages["todo-detail.delete-permanently.dialog.confirm"]
+            : messages["todo-detail.delete.dialog.confirm"]
+        }
+        confirmText={
+          todo.delete_flag
+            ? messages["todo-detail.delete-permanently.button"]
+            : messages["common.delete.verb"]
+        }
         cancelText={messages["common.cancel"]}
         buttonLayout="vertical"
         isConfirmDisabled={isDeletingTodo}
@@ -627,7 +664,7 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
         onConfirm={async () => {
           setIsDeletingTodo(true);
           try {
-            await handleDeleteTodo(mode);
+            await handleDeleteTodo(mode, todo.delete_flag);
           } catch {
             // フック内で処理される
           } finally {
