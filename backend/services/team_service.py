@@ -5,7 +5,7 @@ from datetime import datetime, timezone, timedelta
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 
-from auth import verify_password, get_password_hash
+from auth import verify_password, get_password_hash, encrypt_password, decrypt_password
 from exceptions import APIException
 from models import Team, TeamUser, User, TeamApplication, Todo, Tag, Inbox
 
@@ -171,7 +171,14 @@ def apply_to_team(db: Session, team_id: int, user_id: int, password: str) -> Non
         )
 
     # 5. パスワード検証
-    if not verify_password(password, team.password):
+    is_valid_password = False
+    try:
+        decrypted = decrypt_password(team.password)
+        is_valid_password = (password == decrypted)
+    except Exception:
+        is_valid_password = verify_password(password, team.password)
+
+    if not is_valid_password:
         raise APIException(
             status_code=400,
             title="認証エラー",
@@ -392,6 +399,13 @@ def get_team_details(db: Session, team_id: int, current_user_id: int) -> TeamDet
     owner_display_id = owner.display_user_id if owner else "------"
     is_owner = team.created_user_id == current_user_id
 
+    decrypted_password = None
+    if is_owner:
+        try:
+            decrypted_password = decrypt_password(team.password)
+        except Exception:
+            pass
+
     return TeamDetailResponse(
         id=team.id,
         display_teams_id=team.display_teams_id,
@@ -401,6 +415,7 @@ def get_team_details(db: Session, team_id: int, current_user_id: int) -> TeamDet
         created_user_display_id=owner_display_id,
         is_owner=is_owner,
         accepting_applications=team.accepting_applications,
+        password=decrypted_password,
     )
 
 
@@ -546,7 +561,7 @@ def create_team(db: Session, team_in: TeamCreate, creator_id: int) -> TeamDetail
         created_user_id=creator_id,
         display_teams_id=display_teams_id,
         name=team_in.name,
-        password=get_password_hash(team_in.password),
+        password=encrypt_password(team_in.password),
     )
     db.add(team)
     db.flush()
@@ -573,6 +588,7 @@ def create_team(db: Session, team_in: TeamCreate, creator_id: int) -> TeamDetail
         created_user_display_id=owner_display_id,
         is_owner=True,
         accepting_applications=team.accepting_applications,
+        password=team_in.password,
     )
 
 
@@ -597,7 +613,7 @@ def update_team(db: Session, team_id: int, team_in: TeamUpdate, current_user_id:
     # フィールドの更新
     team.name = team_in.name
     if team_in.password:
-        team.password = get_password_hash(team_in.password)
+        team.password = encrypt_password(team_in.password)
 
     db.commit()
     db.refresh(team)
@@ -605,6 +621,12 @@ def update_team(db: Session, team_id: int, team_in: TeamUpdate, current_user_id:
     owner = db.query(User).filter(User.id == team.created_user_id).first()
     owner_name = owner.user_name if owner else "Unknown"
     owner_display_id = owner.display_user_id if owner else "------"
+
+    decrypted_password = None
+    try:
+        decrypted_password = decrypt_password(team.password)
+    except Exception:
+        pass
 
     return TeamDetailResponse(
         id=team.id,
@@ -615,4 +637,5 @@ def update_team(db: Session, team_id: int, team_in: TeamUpdate, current_user_id:
         created_user_display_id=owner_display_id,
         is_owner=True,
         accepting_applications=team.accepting_applications,
+        password=decrypted_password,
     )

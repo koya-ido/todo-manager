@@ -1,13 +1,12 @@
 "use client";
 
-import { Button } from "@/components/forms/Button";
+import { ButtonLink } from "@/components/forms/Button";
+import { PageContainer, PageHeader } from "@/components/Layout";
 import { Skeleton } from "@/components/Layout/Skeleton";
-import { Heading } from "@/components/typography/Heading";
 import { EmptyInbox } from "@/features/inbox/components/EmptyInbox";
 import { InboxCard } from "@/features/inbox/components/InboxCard";
 import { useInbox } from "@/features/inbox/hooks/useInbox";
 import { ArrowLeft } from "lucide-react";
-import Link from "next/link";
 import { FC } from "react";
 
 type ContentProps = {
@@ -34,16 +33,12 @@ export const Content: FC<ContentProps> = ({ messages }) => {
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-6">
+    <PageContainer>
       {/* 画面ヘッダー */}
-      <header className="mb-8 space-y-1">
-        <Heading level={1} className="text-2xl font-bold flex items-center gap-2">
-          {messages["inbox.heading"]}
-        </Heading>
-        <Heading level={2} className="text-muted-foreground text-sm font-medium">
-          {messages["inbox.description"]}
-        </Heading>
-      </header>
+      <PageHeader
+        title={messages["inbox.heading"]}
+        description={messages["inbox.description"]}
+      />
 
       {inboxes.length === 0 ? (
         /* お知らせ無し状態 */
@@ -51,7 +46,7 @@ export const Content: FC<ContentProps> = ({ messages }) => {
       ) : (
         /* お知らせリスト表示 */
         <div className="space-y-4">
-          <div className="space-y-3.5">
+          <div className="space-y-2">
             {inboxes.map((item) => (
               <InboxCard
                 key={item.id}
@@ -65,18 +60,13 @@ export const Content: FC<ContentProps> = ({ messages }) => {
 
           {/* 下部ホームへ戻るボタン */}
           <div className="flex justify-center pt-6">
-            <Link href="/home" passHref>
-              <Button
-                variant="outline"
-                className="flex items-center gap-2 bg-white hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-850 shadow-xs px-6 py-2.5 font-semibold text-sm border border-slate-200 dark:border-slate-800 rounded-xl transition-all"
-              >
-                <ArrowLeft className="w-4 h-4" />
-                {messages["common.back-home"]}
-              </Button>
-            </Link>
+            <ButtonLink href="/home" variant="link" className="w-auto">
+              <ArrowLeft className="w-4 h-4" />
+              {messages["common.back-home"]}
+            </ButtonLink>
           </div>
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 };

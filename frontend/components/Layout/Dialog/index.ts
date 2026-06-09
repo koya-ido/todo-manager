@@ -1,3 +1,4 @@
+import { ConfirmDialog } from "@/components/Layout/Dialog/ConfirmDialog";
 import {
   Dialog,
   DialogClose,
@@ -12,6 +13,7 @@ import {
 } from "@/components/Layout/Dialog/Dialog";
 
 export {
+  ConfirmDialog,
   Dialog,
   DialogClose,
   DialogContent,

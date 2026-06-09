@@ -10,6 +10,8 @@ import {
 import { BreadCrumbs } from "@/components/Layout/Breadcrumb/BreadCrumbs";
 import { Footer } from "@/components/Layout/Footer";
 import { Header } from "@/components/Layout/Header";
+import { PageContainer } from "@/components/Layout/PageContainer";
+import { PageHeader } from "@/components/Layout/PageHeader";
 
 export {
   Breadcrumb,
@@ -18,8 +20,10 @@ export {
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
-  BreadcrumbSeparator,
   BreadCrumbs,
+  BreadcrumbSeparator,
   Footer,
   Header,
+  PageContainer,
+  PageHeader,
 };

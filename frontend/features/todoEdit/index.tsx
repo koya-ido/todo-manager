@@ -14,26 +14,22 @@ import {
 import { DateField } from "@/components/forms/FieldWrapper/components/DateField";
 import { InputField } from "@/components/forms/FieldWrapper/components/InputField";
 import { SelectField } from "@/components/forms/FieldWrapper/components/SelectField";
-import { Badge } from "@/components/Layout/Badge";
+import { PageContainer, PageHeader } from "@/components/Layout";
+import { TagBadge } from "@/components/Layout/Badge";
 import { Card } from "@/components/Layout/Card";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
+  ConfirmDialog
 } from "@/components/Layout/Dialog";
 import { Skeleton } from "@/components/Layout/Skeleton";
 import { Heading } from "@/components/typography/Heading";
+import { SortableTaskItem } from "@/features/todoEdit/components/SortableTaskItem";
+import { useTodoForm } from "@/features/todoEdit/hooks/useTodoForm";
 import { TodoEditProps } from "@/features/todoEdit/types";
 import { cn } from "@/lib/utils";
 import { DragDropProvider } from "@dnd-kit/react";
 import { isSortable } from "@dnd-kit/react/sortable";
-import { Check, Plus, TriangleAlert, X } from "lucide-react";
+import { Check, Plus, TriangleAlert } from "lucide-react";
 import { FC, useContext, useRef } from "react";
-import { SortableTaskItem } from "./components/SortableTaskItem";
-import { useTodoForm } from "./hooks/useTodoForm";
 
 export const Content: FC<TodoEditProps> = ({ mode = "private", isNew = false, todoId, teamId, messages }) => {
   const tagTriggerRef = useRef<HTMLButtonElement | null>(null);
@@ -193,16 +189,12 @@ export const Content: FC<TodoEditProps> = ({ mode = "private", isNew = false, to
   }
 
   return (
-    <div className="w-full pb-28 space-y-6">
+    <PageContainer>
       {/* タイトルヘッダー */}
-      <section className="space-y-1 py-2">
-        <Heading level={1} className="text-2xl font-bold">
-          {isNew ? messages["todo-edit.heading.register"] : messages["common.edit"]}
-        </Heading>
-        <Heading level={2} className="text-muted-foreground text-sm font-medium">
-          {messages["todo-edit.description"]}
-        </Heading>
-      </section>
+      <PageHeader
+        title={isNew ? messages["todo-edit.heading.register"] : messages["common.edit"]}
+        description={messages["todo-edit.description"]}
+      />
 
       {/* メインフォーム */}
       <form onSubmit={handleSubmit} className="space-y-6" noValidate>
@@ -364,20 +356,11 @@ export const Content: FC<TodoEditProps> = ({ mode = "private", isNew = false, to
               </p>
             ) : (
               selectedTags.map((tag) => (
-                <Badge
+                <TagBadge
                   key={tag.id}
-                  variant="secondary"
-                  className="bg-[#D9D9D9] text-foreground flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold"
-                >
-                  {tag.name}
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveTag(tag.id)}
-                    className="hover:text-destructive focus:outline-hidden"
-                  >
-                    <X className="h-3.5 w-3.5" />
-                  </button>
-                </Badge>
+                  name={tag.name}
+                  onRemove={() => handleRemoveTag(tag.id)}
+                />
               ))
             )}
           </div>
@@ -453,37 +436,22 @@ export const Content: FC<TodoEditProps> = ({ mode = "private", isNew = false, to
         </Button>
       </form>
 
-      <Dialog open={showDiscardDialog} onOpenChange={setShowDiscardDialog}>
-        <DialogContent showCloseButton={false}>
-          <DialogHeader>
-            <DialogTitle className="text-destructive flex items-center justify-center gap-2">
-              <TriangleAlert size={24} color="var(--destructive)" />
-              {messages["todo-edit.confirm-discard.title"]}
-            </DialogTitle>
-          </DialogHeader>
-          <DialogDescription className="text-center py-2">
-            {messages["todo-edit.confirm-discard.description"]}
-          </DialogDescription>
-          <DialogFooter>
-            <div className="w-full flex flex-col gap-2">
-              <Button
-                variant="destructive"
-                className="w-full"
-                onClick={handleConfirmDiscard}
-              >
-                {messages["todo-edit.confirm-discard.confirm"]}
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full"
-                onClick={handleCancelDiscard}
-              >
-                {messages["todo-edit.confirm-discard.cancel"]}
-              </Button>
-            </div>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </div>
+      <ConfirmDialog
+        isOpen={showDiscardDialog}
+        onOpenChange={setShowDiscardDialog}
+        title={
+          <>
+            <TriangleAlert size={24} className="text-destructive" />
+            {messages["todo-edit.confirm-discard.title"]}
+          </>
+        }
+        description={messages["todo-edit.confirm-discard.description"]}
+        confirmText={messages["todo-edit.confirm-discard.confirm"]}
+        cancelText={messages["todo-edit.confirm-discard.cancel"]}
+        buttonLayout="vertical"
+        onConfirm={handleConfirmDiscard}
+        onCancel={handleCancelDiscard}
+      />
+    </PageContainer>
   );
 };

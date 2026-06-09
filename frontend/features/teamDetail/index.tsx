@@ -1,7 +1,7 @@
 "use client";
 
+import { PageContainer, PageHeader } from "@/components/Layout";
 import { Skeleton } from "@/components/Layout/Skeleton";
-import { Heading } from "@/components/typography/Heading";
 import { DeleteTeamDialog } from "@/features/team/components/DeleteTeamDialog";
 import { KickMemberDialog } from "@/features/team/components/KickMemberDialog";
 import { RejectApplicantDialog } from "@/features/team/components/RejectApplicantDialog";
@@ -30,6 +30,7 @@ export const Content: FC<ContentProps> = ({
     tags,
     isLoading,
     isCopied,
+    isCopiedPassword,
     newTagName,
     setNewTagName,
     isSubmittingTag,
@@ -50,6 +51,7 @@ export const Content: FC<ContentProps> = ({
     setRejectTarget,
     isSubmittingReject,
     handleCopyId,
+    handleCopyPassword,
     handleToggleAcceptApps,
     handleApproveApplicant,
     handleConfirmRejectApplicant,
@@ -79,14 +81,12 @@ export const Content: FC<ContentProps> = ({
   if (!team) return null;
 
   return (
-    <div className="w-full mx-auto space-y-6 animate-in fade-in duration-300">
+    <PageContainer className="animate-in fade-in duration-300">
       {/* メインタイトルと説明 */}
-      <div className="space-y-6">
-        <Heading level={1}>{team.name}</Heading>
-        <Heading level={2} className="text-muted-foreground text-sm font-medium">
-          {messages["team.detail.description"]}
-        </Heading>
-      </div>
+      <PageHeader
+        title={team.name}
+        description={messages["team.detail.description"]}
+      />
 
       {/* レイアウトグリッド */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -124,10 +124,12 @@ export const Content: FC<ContentProps> = ({
             applicants={applicants}
             messages={messages}
             isTogglingAccept={isTogglingAccept}
+            isCopiedPassword={isCopiedPassword}
             onToggleAcceptApps={(checked) => void handleToggleAcceptApps(checked)}
             onApproveApplicant={(userId) => void handleApproveApplicant(userId)}
             onRejectClick={(app) => setRejectTarget(app)}
             onDeleteTeamClick={() => setShowDeleteDialog(true)}
+            onCopyPassword={() => void handleCopyPassword()}
           />
         )}
       </div>
@@ -175,6 +177,6 @@ export const Content: FC<ContentProps> = ({
         onConfirm={() => void handleConfirmRejectApplicant()}
         messages={messages}
       />
-    </div>
+    </PageContainer>
   );
 };

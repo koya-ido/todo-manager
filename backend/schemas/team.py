@@ -64,6 +64,7 @@ class TeamDetailResponse(BaseModel):
     created_user_display_id: str
     is_owner: bool
     accepting_applications: bool
+    password: Optional[str] = None
 
 
 class TeamAcceptingApplicationsUpdate(BaseModel):

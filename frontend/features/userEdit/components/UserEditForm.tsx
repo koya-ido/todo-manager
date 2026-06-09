@@ -1,9 +1,9 @@
 import { Button } from "@/components/forms/Button";
 import { InputField } from "@/components/forms/FieldWrapper/components/InputField";
 import { PasswordField } from "@/components/forms/FieldWrapper/components/PasswordField";
+import { PageContainer, PageHeader } from "@/components/Layout";
 import { Card } from "@/components/Layout/Card";
 import { LabelWithIcon } from "@/components/Layout/LabelWithIcon/LabelWithIcon";
-import { Heading } from "@/components/typography/Heading";
 import { Circle, CircleCheck } from "lucide-react";
 import { FC, FormEvent } from "react";
 
@@ -65,7 +65,7 @@ export const UserEditForm: FC<UserEditFormProps> = ({
     },
     {
       isValid: isAvailable && !isCheckingUsername,
-      message: messages["common.username.checklist-3"] || "使用可能",
+      message: messages["common.username.checklist-3"],
     },
   ];
 
@@ -104,15 +104,11 @@ export const UserEditForm: FC<UserEditFormProps> = ({
   ];
 
   return (
-    <div className="w-full max-w-2xl mx-auto space-y-6">
-      <div className="space-y-1 py-2">
-        <Heading level={1} className="text-2xl font-bold">
-          {messages["user-edit.heading"]}
-        </Heading>
-        <Heading level={2} className="text-muted-foreground text-sm font-medium">
-          {messages["user-edit.description"]}
-        </Heading>
-      </div>
+    <PageContainer>
+      <PageHeader
+        title={messages["user-edit.heading"]}
+        description={messages["user-edit.description"]}
+      />
 
       <Card>
         <form
@@ -220,6 +216,6 @@ export const UserEditForm: FC<UserEditFormProps> = ({
           </Button>
         </form>
       </Card>
-    </div>
+    </PageContainer>
   );
 };

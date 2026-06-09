@@ -1,13 +1,13 @@
 "use client";
 
-import { Button } from "@/components/forms/Button";
+import { Button, ButtonLink } from "@/components/forms/Button";
 import { ComboboxField } from "@/components/forms/FieldWrapper/components/ComboboxField";
 import { InputGroupField } from "@/components/forms/FieldWrapper/components/InputGroupField";
 import { SelectField } from "@/components/forms/FieldWrapper/components/SelectField";
 import { IconTodo } from "@/components/icons/IconTodo";
+import { PageContainer, PageHeader } from "@/components/Layout";
 import { Badge } from "@/components/Layout/Badge";
 import { Card } from "@/components/Layout/Card";
-import { Heading } from "@/components/typography/Heading";
 import { TodoItemCard } from "@/features/todos/components/TodoItemCard";
 import { TodoSkeletonList } from "@/features/todos/components/TodoSkeletonList";
 import { useTodoFilter } from "@/features/todos/hooks/useTodoFilter";
@@ -16,7 +16,6 @@ import { TodosProps } from "@/features/todos/types";
 import { apiGet } from "@/hooks/useFetchApi";
 import { User } from "@/types/user";
 import { ArrowUp, Plus, Search } from "lucide-react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FC, useEffect, useRef, useState } from "react";
 
@@ -150,13 +149,14 @@ export const Content: FC<TodosProps> = ({ mode = "private", isDeleteOnly = false
   const activePriorities = priority.filter(Boolean);
 
   return (
-    <div className="w-full space-y-6">
-      <Heading level={1}>
-        {mode === "team" && teamName
-          ? `${teamName} ${messages["todo-list.heading"]}`
-          : messages["todo-list.heading"]}
-      </Heading>
-      <Heading level={2} className="text-muted-foreground text-sm font-medium">{messages["todo-list.description"]}</Heading>
+    <PageContainer>
+      <PageHeader
+        title={
+          mode === "team" && teamName
+            ? `${teamName} ${messages["todo-list.heading"]}`
+            : messages["todo-list.heading"]}
+        description={messages["todo-list.description"]}
+      />
       <Card>
         <form className="w-full flex flex-col gap-4" onSubmit={handleClickSearch}>
           <div className="flex gap-3 items-end">
@@ -239,16 +239,13 @@ export const Content: FC<TodosProps> = ({ mode = "private", isDeleteOnly = false
             <p className="text-3xl">{filteredCount}</p>
           </div>
         </div>
-        <Button
+        <ButtonLink
           variant="secondary"
-          asChild
-          className="w-full bg-background text-foreground"
+          href={`/todo/edit?mode=${mode}&isNew=true`}
         >
-          <Link href={`/todo/edit?mode=${mode}&isNew=true`}>
-            <Plus />
-            {messages["todo-list.create-todo"]}
-          </Link>
-        </Button>
+          <Plus />
+          {messages["todo-list.create-todo"]}
+        </ButtonLink>
       </section>
       <section className="space-y-2">
         {isLoading ? (
@@ -304,6 +301,6 @@ export const Content: FC<TodosProps> = ({ mode = "private", isDeleteOnly = false
       >
         <ArrowUp className="h-5 w-5" />
       </Button>
-    </div>
+    </PageContainer>
   );
 };

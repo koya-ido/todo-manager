@@ -45,6 +45,7 @@ export type TeamDetailResponse = {
   created_user_display_id: string;
   is_owner: boolean;
   accepting_applications: boolean;
+  password?: string;
 };
 
 export type TeamMemberResponse = {
@@ -53,4 +54,3 @@ export type TeamMemberResponse = {
   user_name: string;
   is_owner: boolean;
 };
-
