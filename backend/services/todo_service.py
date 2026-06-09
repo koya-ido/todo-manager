@@ -164,7 +164,7 @@ def validate_manager_scope(
     return manager_id
 
 
-def accessible_todo_query(db: Session, current_user_id: int, delete_flag: bool = False):
+def accessible_todo_query(db: Session, current_user_id: int, delete_flag: bool | None = False):
     member_team_ids = get_member_team_ids(db, current_user_id)
 
     private_condition = and_(
@@ -176,7 +176,9 @@ def accessible_todo_query(db: Session, current_user_id: int, delete_flag: bool =
         ),
     )
 
-    query = db.query(Todo).filter(Todo.delete_flag.is_(delete_flag))
+    query = db.query(Todo)
+    if delete_flag is not None:
+        query = query.filter(Todo.delete_flag.is_(delete_flag))
     if member_team_ids:
         return query.filter(
             or_(
@@ -262,7 +264,7 @@ def get_todos(
 
 
 def get_todo(db: Session, todo_id: int, current_user_id: int) -> Todo:
-    todo = accessible_todo_query(db, current_user_id).filter(Todo.id == todo_id).first()
+    todo = accessible_todo_query(db, current_user_id, delete_flag=None).filter(Todo.id == todo_id).first()
     if not todo:
         raise APIException(
             status_code=404,
@@ -338,6 +340,15 @@ def update_todo(
     current_user_id: int,
 ) -> Todo:
     todo = get_todo(db, todo_id, current_user_id)
+    if todo.delete_flag:
+        # 削除済みのTODOは、delete_flagをFalseにする（復元する）更新のみ許可する
+        if request.delete_flag is not False:
+            raise APIException(
+                status_code=400,
+                title="更新エラー",
+                detail="削除済みのTODOは編集できません",
+                code="TODO_DELETED_CANNOT_UPDATE",
+            )
     update_data = request.model_dump(exclude_unset=True)
     task_requests = update_data.pop("tasks", None)
     tasks = None
@@ -415,6 +426,13 @@ def update_todo(
 def create_comment(db: Session, todo_id: int, comment_text: str, user_id: int) -> Comment:
     # TODOへのアクセス権限を検証
     todo = get_todo(db, todo_id, user_id)
+    if todo.delete_flag:
+        raise APIException(
+            status_code=400,
+            title="登録エラー",
+            detail="削除済みのTODOにはコメントできません",
+            code="TODO_DELETED_CANNOT_COMMENT",
+        )
 
     if not comment_text.strip():
         raise APIException(
@@ -466,6 +484,15 @@ def create_comment(db: Session, todo_id: int, comment_text: str, user_id: int) -
 
 def delete_comment(db: Session, comment_id: int, user_id: int) -> None:
     comment = db.query(Comment).filter(Comment.id == comment_id).first()
+    if comment:
+        todo = db.query(Todo).filter(Todo.id == comment.todo_id).first()
+        if todo and todo.delete_flag:
+            raise APIException(
+                status_code=400,
+                title="削除エラー",
+                detail="削除済みのTODOのコメントは削除できません",
+                code="TODO_DELETED_CANNOT_DELETE_COMMENT",
+            )
     if not comment:
         raise APIException(
             status_code=404,
@@ -503,6 +530,13 @@ def update_task_completion(
     user_id: int,
 ) -> Todo:
     todo = get_todo(db, todo_id, user_id)
+    if todo.delete_flag:
+        raise APIException(
+            status_code=400,
+            title="更新エラー",
+            detail="削除済みのTODOのタスクは操作できません",
+            code="TODO_DELETED_CANNOT_UPDATE_TASK",
+        )
 
     task = db.query(Task).filter(Task.id == task_id, Task.todo_id == todo_id).first()
     if not task:
@@ -535,11 +569,24 @@ def update_task_completion(
 
 def delete_todo(db: Session, todo_id: int, current_user_id: int) -> Todo:
     todo = get_todo(db, todo_id, current_user_id)
-    todo.delete_flag = True
-    todo.updated_by = current_user_id
+    
+    # タスクやコメントの情報を取得した直後に削除処理を行うため、ここでEagerly loadを行っている
+    _ = todo.tasks
+    _ = todo.comments
+    _ = todo.todo_tags
+    
+    is_physical = todo.delete_flag
+    
+    if is_physical:
+        db.delete(todo)
+    else:
+        todo.delete_flag = True
+        todo.updated_by = current_user_id
+        
     try:
         db.commit()
-        db.refresh(todo)
+        if not is_physical:
+            db.refresh(todo)
         return todo
     except Exception:
         db.rollback()
@@ -558,6 +605,15 @@ def update_comment(
     user_id: int,
 ) -> Comment:
     comment = db.query(Comment).filter(Comment.id == comment_id).first()
+    if comment:
+        todo = db.query(Todo).filter(Todo.id == comment.todo_id).first()
+        if todo and todo.delete_flag:
+            raise APIException(
+                status_code=400,
+                title="更新エラー",
+                detail="削除済みのTODOのコメントは編集できません",
+                code="TODO_DELETED_CANNOT_UPDATE_COMMENT",
+            )
     if not comment:
         raise APIException(
             status_code=404,
