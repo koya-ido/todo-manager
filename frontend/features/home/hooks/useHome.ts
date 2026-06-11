@@ -2,7 +2,7 @@ import { ErrorContext } from "@/components/features/ErrorProvider";
 import { getLocalDateString } from "@/features/home/utils";
 import { useUser } from "@/features/user/hooks/useUser";
 import { apiGet } from "@/hooks/useFetchApi";
-import { ApiTodo, ApiTodosResponse } from "@/types/todo";
+import { ApiTodo, ApiTodosResponse, TodoStatus } from "@/types/todo";
 import { useContext, useEffect, useState } from "react";
 
 export const useHome = () => {
@@ -42,16 +42,17 @@ export const useHome = () => {
 
   const isDataLoading = isLoading || !userName;
 
-  // 統計情報の算出
-  const totalTodosCount = todos.length;
-  const completedTodosCount = todos.filter(
-    (todo) => todo.status_id === 3,
+  // 統計情報の算出（論理削除されたTODOは除外）
+  const activeTodos = todos.filter((todo) => !todo.delete_flag);
+  const totalTodosCount = activeTodos.length;
+  const completedTodosCount = activeTodos.filter(
+    (todo) => todo.status_id === TodoStatus.DONE,
   ).length;
 
-  // 本日締め切りの未完了TODOをフィルタリング（status_id !== 3 かつ due_date === todayString）
+  // 本日締め切りの未完了TODOをフィルタリング（status_id !== TodoStatus.DONE かつ due_date === todayString）
   const todayString = getLocalDateString(new Date());
-  const todayIncompleteTodos = todos.filter(
-    (todo) => todo.status_id !== 3 && todo.due_date === todayString,
+  const todayIncompleteTodos = activeTodos.filter(
+    (todo) => todo.status_id !== TodoStatus.DONE && todo.due_date === todayString,
   );
 
   return {

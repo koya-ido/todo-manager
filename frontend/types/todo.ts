@@ -5,17 +5,30 @@ import { User } from "@/types/user";
 
 export type TodoMode = "private" | "team";
 
+export const TodoStatus = {
+  NOT_STARTED: 1,
+  IN_PROGRESS: 2,
+  DONE: 3,
+  PENDING: 4,
+} as const;
+
 export const Status = {
-  1: "not-started",
-  2: "in-progress",
-  3: "done",
-  4: "pending",
+  [TodoStatus.NOT_STARTED]: "not-started",
+  [TodoStatus.IN_PROGRESS]: "in-progress",
+  [TodoStatus.DONE]: "done",
+  [TodoStatus.PENDING]: "pending",
+} as const;
+
+export const TodoPriority = {
+  HIGH: 1,
+  MEDIUM: 2,
+  LOW: 3,
 } as const;
 
 export const Priority = {
-  1: "high",
-  2: "medium",
-  3: "low",
+  [TodoPriority.HIGH]: "high",
+  [TodoPriority.MEDIUM]: "medium",
+  [TodoPriority.LOW]: "low",
 } as const;
 
 export type StatusType = (typeof Status)[keyof typeof Status];

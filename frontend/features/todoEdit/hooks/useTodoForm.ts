@@ -11,7 +11,7 @@ import {
 import { isStateDirty } from "@/features/todoEdit/utils";
 import { isErrorResponse } from "@/hooks/useError/errorUtils";
 import { apiGet, apiPost, apiPut } from "@/hooks/useFetchApi";
-import { TodoMode } from "@/types/todo";
+import { TodoMode, TodoPriority, TodoStatus } from "@/types/todo";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -41,8 +41,12 @@ export const useTodoForm = ({
 
   // フォーム状態
   const [name, setName] = useState<string>("");
-  const [statusId, setStatusId] = useState<string>("1");
-  const [priorityId, setPriorityId] = useState<string>("3");
+  const [statusId, setStatusId] = useState<string>(
+    String(TodoStatus.NOT_STARTED),
+  );
+  const [priorityId, setPriorityId] = useState<string>(
+    String(TodoPriority.LOW),
+  );
   const [startDate, setStartDate] = useState<string>("");
   const [dueDate, setDueDate] = useState<string>("");
   const [managerId, setManagerId] = useState<string>("");
@@ -215,8 +219,8 @@ export const useTodoForm = ({
     if (isNew) {
       setInitialState({
         name: "",
-        statusId: "1",
-        priorityId: "3",
+        statusId: String(TodoStatus.NOT_STARTED),
+        priorityId: String(TodoPriority.LOW),
         startDate: "",
         dueDate: "",
         managerId: "",
