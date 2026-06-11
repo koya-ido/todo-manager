@@ -47,7 +47,7 @@ export const Content: FC<UserSettingProps> = ({ messages }) => {
   } = useTags();
 
   return (
-    <PageContainer>
+    <PageContainer className="max-w-3xl mx-auto">
       <PageHeader
         title={messages["user-setting.heading"]}
         description={messages["user-setting.description"]}

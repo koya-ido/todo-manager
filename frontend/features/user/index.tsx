@@ -50,7 +50,7 @@ export const Content: FC<ContentProps> = ({ messages }) => {
   };
 
   return (
-    <PageContainer>
+    <PageContainer className="max-w-3xl mx-auto">
       <PageHeader
         title={userName}
         description={messages["user.description"]}

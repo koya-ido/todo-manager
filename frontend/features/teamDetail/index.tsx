@@ -81,7 +81,7 @@ export const Content: FC<ContentProps> = ({
   if (!team) return null;
 
   return (
-    <PageContainer className="animate-in fade-in duration-300">
+    <PageContainer className="max-w-4xl mx-auto animate-in fade-in duration-300">
       {/* メインタイトルと説明 */}
       <PageHeader
         title={team.name}

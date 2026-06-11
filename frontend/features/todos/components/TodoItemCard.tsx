@@ -21,7 +21,7 @@ export const TodoItemCard: FC<TodoItemCardProps> = ({ todo, messages, onClick, m
 
   return (
     <Card
-      className="p-0 rounded-none flex flex-row gap-0"
+      className="p-0 rounded-none flex flex-row gap-0 cursor-pointer hover:opacity-80 transition duration-300 ease-in-out hover:scale-101"
       onClick={onClick}
     >
       <div className={`${statusColorClass} w-2`} />

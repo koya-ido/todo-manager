@@ -104,7 +104,7 @@ export const Content: FC<TeamEditProps> = ({ isNew = false, teamId, messages }) 
   }
 
   return (
-    <PageContainer>
+    <PageContainer className="max-w-3xl mx-auto">
       {/* タイトルヘッダー */}
       <PageHeader
         title={

@@ -16,6 +16,5 @@ export const Header: FC = () => {
     return <MobileHeader />;
   }
 
-  // TODO: PCレイアウトの実装
-  return <MobileHeader />;
+  return null;
 };

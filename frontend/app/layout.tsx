@@ -34,11 +34,9 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-main`}
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <main className="px-6 pt-20 pb-16 mb-5 min-h-screen flex justify-center items-start">
-            <ClientLayout locale={locale} messages={messages}>
-              {children}
-            </ClientLayout>
-          </main>
+          <ClientLayout locale={locale} messages={messages}>
+            {children}
+          </ClientLayout>
         </ThemeProvider>
       </body>
     </html>

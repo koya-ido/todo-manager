@@ -104,7 +104,7 @@ export const UserEditForm: FC<UserEditFormProps> = ({
   ];
 
   return (
-    <PageContainer>
+    <PageContainer className="max-w-3xl mx-auto">
       <PageHeader
         title={messages["user-edit.heading"]}
         description={messages["user-edit.description"]}
