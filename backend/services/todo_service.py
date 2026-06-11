@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from exceptions import APIException
 from models import Comment, Priority, Status, Task, Team, TeamUser, Todo, User, TodoTag, Inbox
 
-from schemas import TaskCreate, TodoCreate, TodoUpdate
+from schemas import TaskCreate, TodoCreate, TodoResponse, TodoUpdate
 
 
 def validate_todo_name(name: str) -> str:
@@ -311,7 +311,7 @@ def create_todo(db: Session, request: TodoCreate, current_user_id: int) -> Todo:
     
     # 担当者設定時のお知らせ
     if todo.team_id is not None and todo.manager_id is not None:
-        inbox = models.Inbox(
+        inbox = Inbox(
             target_user_id=todo.manager_id,
             todo_id=todo.id,
             type="team_todo_assigned",
@@ -404,7 +404,7 @@ def update_todo(
 
     # 担当者変更時のお知らせ
     if todo.team_id is not None and todo.manager_id is not None and todo.manager_id != old_manager_id:
-        inbox = models.Inbox(
+        inbox = Inbox(
             target_user_id=todo.manager_id,
             todo_id=todo.id,
             type="team_todo_assigned",
@@ -571,17 +571,14 @@ def update_task_completion(
         )
 
 
-def delete_todo(db: Session, todo_id: int, current_user_id: int) -> Todo:
+def delete_todo(db: Session, todo_id: int, current_user_id: int) -> TodoResponse:
     todo = get_todo(db, todo_id, current_user_id)
-    
-    # タスクやコメントの情報を取得した直後に削除処理を行うため、ここでEagerly loadを行っている
-    _ = todo.tasks
-    _ = todo.comments
-    _ = todo.todo_tags
     
     is_physical = todo.delete_flag
     
     if is_physical:
+        # 物理削除の前に必要な関連属性をロードし、Pydanticモデルにシリアライズする
+        todo_response = TodoResponse.model_validate(todo)
         db.delete(todo)
     else:
         todo.delete_flag = True
@@ -591,7 +588,8 @@ def delete_todo(db: Session, todo_id: int, current_user_id: int) -> Todo:
         db.commit()
         if not is_physical:
             db.refresh(todo)
-        return todo
+            todo_response = TodoResponse.model_validate(todo)
+        return todo_response
     except Exception:
         db.rollback()
         raise APIException(
