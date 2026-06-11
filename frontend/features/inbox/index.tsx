@@ -33,7 +33,7 @@ export const Content: FC<ContentProps> = ({ messages }) => {
   }
 
   return (
-    <PageContainer>
+    <PageContainer className="max-w-3xl mx-auto">
       {/* 画面ヘッダー */}
       <PageHeader
         title={messages["inbox.heading"]}

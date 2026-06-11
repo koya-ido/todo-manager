@@ -236,7 +236,7 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
   const todoPriorityKey = Priority[todo.priority_id as keyof typeof Priority] || "medium";
 
   return (
-    <PageContainer>
+    <PageContainer className="max-w-3xl mx-auto">
       {/* タイトルヘッダー */}
       <PageHeader
         title={messages["todo-detail.heading"]}
@@ -335,7 +335,7 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
             variant="default"
             type="button"
             onClick={() => handleRestoreTodo(mode)}
-            className="flex-1 bg-foreground text-background hover:bg-foreground/90 font-bold py-3 shadow-xs flex items-center justify-center gap-2 text-sm cursor-pointer w-auto"
+            className="flex-1 bg-foreground text-background hover:bg-foreground/90 dark:hover:bg-foreground/60 font-bold py-3 shadow-xs flex items-center justify-center gap-2 text-sm cursor-pointer w-auto"
           >
             {messages["todo-detail.restore.button"]}
           </Button>
@@ -354,7 +354,7 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
           <ButtonLink
             variant="secondary"
             href={`/todo/edit?mode=${mode}&id=${todoId}`}
-            className="flex-1 bg-background border border-gray-200 hover:bg-gray-50 text-foreground font-bold py-3 shadow-xs flex items-center justify-center gap-2 text-sm w-auto"
+            className="flex-1 bg-background border border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 text-foreground font-bold py-3 shadow-xs flex items-center justify-center gap-2 text-sm w-auto"
           >
             <Pencil className="h-4 w-4" />
             {messages["common.edit.verb"]}

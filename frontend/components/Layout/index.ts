@@ -12,6 +12,7 @@ import { Footer } from "@/components/Layout/Footer";
 import { Header } from "@/components/Layout/Header";
 import { PageContainer } from "@/components/Layout/PageContainer";
 import { PageHeader } from "@/components/Layout/PageHeader";
+import { DesktopSidebar } from "@/components/Layout/Sidebar/DesktopSidebar";
 
 export {
   Breadcrumb,
@@ -22,6 +23,7 @@ export {
   BreadcrumbPage,
   BreadCrumbs,
   BreadcrumbSeparator,
+  DesktopSidebar,
   Footer,
   Header,
   PageContainer,

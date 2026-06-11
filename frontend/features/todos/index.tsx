@@ -166,7 +166,7 @@ export const Content: FC<TodosProps> = ({ mode = "private", isDeleteOnly = false
   const activePriorities = priority.filter(Boolean);
 
   return (
-    <PageContainer>
+    <PageContainer className="max-w-5xl mx-auto">
       <PageHeader
         title={
           mode === "team" && teamName
@@ -175,7 +175,7 @@ export const Content: FC<TodosProps> = ({ mode = "private", isDeleteOnly = false
         description={messages["todo-list.description"]}
       />
       <Card>
-        <form className="w-full flex flex-col gap-4" onSubmit={handleClickSearch}>
+        <form className="w-full flex flex-col gap-4 md:grid md:grid-cols-2 md:gap-4 md:items-end" onSubmit={handleClickSearch}>
           <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-900/30 p-3 rounded-xl border border-slate-100 dark:border-slate-900/50">
             <label
               htmlFor="delete-only-toggle"
@@ -323,7 +323,7 @@ export const Content: FC<TodosProps> = ({ mode = "private", isDeleteOnly = false
         onClick={scrollToTop}
         variant="default"
         size="icon"
-        className={`fixed bottom-20 right-6 z-50 rounded-full shadow-lg transition-all duration-300 ease-in-out ${showScrollButton
+        className={`fixed bottom-20 md:bottom-6 right-6 z-50 rounded-full shadow-lg transition-all duration-300 ease-in-out ${showScrollButton
           ? "opacity-100 translate-y-0 scale-100"
           : "opacity-0 translate-y-4 scale-75 pointer-events-none"
           }`}

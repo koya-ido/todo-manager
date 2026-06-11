@@ -28,7 +28,7 @@ export const Content: FC<ContentProps> = ({ messages }) => {
   }
 
   return (
-    <PageContainer>
+    <PageContainer className="max-w-4xl mx-auto">
       {/* タイトルと挨拶 */}
       <PageHeader
         title={messages["home.heading"]}

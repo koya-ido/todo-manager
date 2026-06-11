@@ -189,7 +189,7 @@ export const Content: FC<TodoEditProps> = ({ mode = "private", isNew = false, to
   }
 
   return (
-    <PageContainer>
+    <PageContainer className="max-w-3xl mx-auto">
       {/* タイトルヘッダー */}
       <PageHeader
         title={isNew ? messages["todo-edit.heading.register"] : messages["common.edit"]}
