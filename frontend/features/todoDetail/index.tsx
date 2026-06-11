@@ -16,7 +16,7 @@ import { Heading } from "@/components/typography/Heading";
 import { useTodoDetail } from "@/features/todoDetail/hooks/useTodoDetail";
 import { TodoDetailProps } from "@/features/todoDetail/types";
 import { cn } from "@/lib/utils";
-import { Priority, Status } from "@/types/todo";
+import { Priority, Status, TodoStatus } from "@/types/todo";
 import { AlertCircle, MessageSquare, MoreVertical, Pencil, Trash2 } from "lucide-react";
 import { FC, useState } from "react";
 
@@ -41,10 +41,10 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
   } = useTodoDetail({ todoId, messages });
 
   const statusItems = [
-    { value: "1", label: messages["common.status.not-started"], statusKey: "not-started" },
-    { value: "2", label: messages["common.status.in-progress"], statusKey: "in-progress" },
-    { value: "3", label: messages["common.status.done"], statusKey: "done" },
-    { value: "4", label: messages["common.status.pending"], statusKey: "pending" },
+    { value: String(TodoStatus.NOT_STARTED), label: messages["common.status.not-started"], statusKey: "not-started" },
+    { value: String(TodoStatus.IN_PROGRESS), label: messages["common.status.in-progress"], statusKey: "in-progress" },
+    { value: String(TodoStatus.DONE), label: messages["common.status.done"], statusKey: "done" },
+    { value: String(TodoStatus.PENDING), label: messages["common.status.pending"], statusKey: "pending" },
   ];
 
   // コメント削除ダイアログの状態
@@ -230,7 +230,7 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
   const isOverdue =
     todo.due_date &&
     new Date(todo.due_date).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0) &&
-    todo.status_id !== 3; // 「完了」以外
+    todo.status_id !== TodoStatus.DONE; // 「完了」以外
 
   const todoStatusKey = Status[todo.status_id as keyof typeof Status] || "not-started";
   const todoPriorityKey = Priority[todo.priority_id as keyof typeof Priority] || "medium";
