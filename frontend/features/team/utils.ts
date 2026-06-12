@@ -1,18 +1,5 @@
-/**
- * チーム機能のユーティリティ関数
- */
-
-/**
- * 申請日をローカル形式の文字列にフォーマットする。
- */
-export const formatAppliedDate = (
-  appliedAt: string,
-  locale?: string,
-): string => {
-  return new Date(appliedAt).toLocaleDateString(
-    locale === "en" ? "en-US" : "ja-JP",
-  );
-};
+import { formatAppliedDate } from "@/utils/DateUtils";
+export { formatAppliedDate };
 
 /**
  * "{id}"を含むメッセージテンプレートを実際のチームIDでフォーマットする。

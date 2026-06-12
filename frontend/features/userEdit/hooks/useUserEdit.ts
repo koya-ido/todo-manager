@@ -1,6 +1,7 @@
 import { MeResponse } from "@/components/features/AuthSessionProvider/types";
 import { ErrorContext } from "@/components/features/ErrorProvider";
 import { apiGet, apiPut } from "@/hooks/useFetchApi";
+import { useUserValidation } from "@/hooks/useUserValidation";
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
@@ -84,7 +85,7 @@ export const useUserEdit = ({ messages }: UseUserEditProps) => {
           `/user/check-username?username=${encodeURIComponent(userName)}`,
         );
         setIsAvailable(res.available);
-      } catch (err) {
+      } catch {
         setIsAvailable(false);
       } finally {
         setIsCheckingUsername(false);
@@ -94,41 +95,17 @@ export const useUserEdit = ({ messages }: UseUserEditProps) => {
     return () => clearTimeout(timer);
   }, [userName, originalUserName, isLoading]);
 
-  const isUserName5CharactersOrMoreAnd30CharactersOrLess = useMemo(() => {
-    return userName.length >= 5 && userName.length <= 30;
-  }, [userName]);
-
-  const isUserNameOnlyHalfWidthAlphanumericAndUnderscore = useMemo(() => {
-    return /^[a-zA-Z0-9_]+$/.test(userName);
-  }, [userName]);
-
-  const isPassword8CharactersOrMore = useMemo(() => {
-    return password.length >= 8;
-  }, [password]);
-
-  const isPasswordOnlyHalfWidth = useMemo(() => {
-    return /^[\x20-\x7E]+$/.test(password);
-  }, [password]);
-
-  const isPasswordIncludesUppercaseLetter = useMemo(() => {
-    return /[A-Z]/.test(password);
-  }, [password]);
-
-  const isPasswordIncludesLowercaseLetter = useMemo(() => {
-    return /[a-z]/.test(password);
-  }, [password]);
-
-  const isPasswordIncludesNumber = useMemo(() => {
-    return /[0-9]/.test(password);
-  }, [password]);
-
-  const isPasswordIncludesSymbol = useMemo(() => {
-    return /[/*\-+.,!#$%&()|_]/.test(password) && !/\s/.test(password);
-  }, [password]);
-
-  const isConfirmPasswordMatchesPassword = useMemo(() => {
-    return confirmPassword.length > 0 && password === confirmPassword;
-  }, [password, confirmPassword]);
+  const {
+    isUserName5CharactersOrMoreAnd30CharactersOrLess,
+    isUserNameOnlyHalfWidthAlphanumericAndUnderscore,
+    isPassword8CharactersOrMore,
+    isPasswordOnlyHalfWidth,
+    isPasswordIncludesUppercaseLetter,
+    isPasswordIncludesLowercaseLetter,
+    isPasswordIncludesNumber,
+    isPasswordIncludesSymbol,
+    isConfirmPasswordMatchesPassword,
+  } = useUserValidation(userName, password, confirmPassword);
 
   const isSubmitDisabled = useMemo(() => {
     return (

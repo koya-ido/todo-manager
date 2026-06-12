@@ -1,19 +1,6 @@
-import { InboxItem } from "./hooks/useInbox";
-
-export const toDisplayDateTime = (value: string | null) => {
-  if (!value) return "-";
-  try {
-    return new Intl.DateTimeFormat("ja-JP", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(new Date(value));
-  } catch {
-    return value;
-  }
-};
+import { InboxItem } from "@/features/inbox/hooks/useInbox";
+import { toDisplayDateTime } from "@/utils/DateUtils";
+export { toDisplayDateTime };
 
 export const getCardDetails = (
   item: InboxItem,

@@ -172,7 +172,7 @@ export const DesktopSidebar: FC<DesktopSidebarProps> = ({ className }) => {
             <span
               className={`text-xs px-2 py-0.5 rounded-full font-bold ${isActive("/inbox")
                 ? "bg-background text-foreground"
-                : "bg-destructive text-destructive-foreground"
+                : "bg-destructive text-background"
                 }`}
             >
               {unreadCount}

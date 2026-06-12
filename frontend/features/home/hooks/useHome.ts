@@ -1,5 +1,5 @@
 import { ErrorContext } from "@/components/features/ErrorProvider";
-import { getLocalDateString } from "@/features/home/utils";
+import { getTodayLocalDateString } from "@/utils/DateUtils";
 import { useUser } from "@/features/user/hooks/useUser";
 import { apiGet } from "@/hooks/useFetchApi";
 import { ApiTodo, ApiTodosResponse, TodoStatus } from "@/types/todo";
@@ -50,7 +50,7 @@ export const useHome = () => {
   ).length;
 
   // 本日締め切りの未完了TODOをフィルタリング（status_id !== TodoStatus.DONE かつ due_date === todayString）
-  const todayString = getLocalDateString(new Date());
+  const todayString = getTodayLocalDateString();
   const todayIncompleteTodos = activeTodos.filter(
     (todo) => todo.status_id !== TodoStatus.DONE && todo.due_date === todayString,
   );
