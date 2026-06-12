@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/Layout/Ca
 import { Heading } from "@/components/typography/Heading";
 import { TeamApplicantResponse, TeamDetailResponse } from "@/features/team/types";
 import { Check, Copy, Edit, Eye, EyeOff, Settings, Trash2 } from "lucide-react";
+import { toLocalDateTimeString } from "@/utils/DateUtils";
 import { FC, useState } from "react";
 
 type TeamDetailAdminSettingsCardProps = {
@@ -128,8 +129,8 @@ export const TeamDetailAdminSettingsCard: FC<TeamDetailAdminSettingsCardProps> =
                       <span className="text-slate-400 text-xs block mt-1">
                         {messages["team.detail.applicants.applied-at"]?.replace(
                           "{date}",
-                          new Date(app.applied_at).toLocaleString()
-                        ) || `Applied: ${new Date(app.applied_at).toLocaleString()}`}
+                          toLocalDateTimeString(app.applied_at)
+                        ) || `Applied: ${toLocalDateTimeString(app.applied_at)}`}
                       </span>
                     </div>
 

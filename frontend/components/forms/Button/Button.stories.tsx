@@ -1,5 +1,7 @@
 import { Button } from "@/components/forms/Button";
 import { Meta, StoryObj } from "@storybook/nextjs-vite";
+import { expect, vi } from "vitest";
+import { userEvent } from "@vitest/browser/context";
 
 const meta = {
   title: "Forms/Button",
@@ -49,3 +51,19 @@ export const Default: Story = {
     },
   },
 };
+
+export const Clickable: Story = {
+  args: {
+    children: "Clickable Button",
+    onClick: vi.fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const button = canvasElement.querySelector("button") as HTMLButtonElement | null;
+    if (!button) {
+      throw new Error("ボタン要素（button）が見つかりませんでした。");
+    }
+    await userEvent.click(button);
+    expect(args.onClick).toHaveBeenCalled();
+  },
+};
+

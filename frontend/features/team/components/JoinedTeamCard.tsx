@@ -24,7 +24,7 @@ export const JoinedTeamCard: FC<JoinedTeamCardProps> = ({ team, messages }) => {
       <div className="space-y-2">
         <CardHeader className="p-0 flex flex-row items-start justify-between space-y-0">
           <div className="space-y-1">
-            <CardTitle className="text-lg font-bold group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+            <CardTitle className="text-lg font-bold transition-colors">
               {team.name}
             </CardTitle>
           </div>

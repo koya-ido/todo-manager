@@ -24,15 +24,6 @@ export const Content: FC<ContentProps> = ({ messages }) => {
       setConfirmPassword={userEditState.setConfirmPassword}
       isCheckingUsername={userEditState.isCheckingUsername}
       isAvailable={userEditState.isAvailable}
-      isUserName5CharactersOrMoreAnd30CharactersOrLess={userEditState.isUserName5CharactersOrMoreAnd30CharactersOrLess}
-      isUserNameOnlyHalfWidthAlphanumericAndUnderscore={userEditState.isUserNameOnlyHalfWidthAlphanumericAndUnderscore}
-      isPassword8CharactersOrMore={userEditState.isPassword8CharactersOrMore}
-      isPasswordOnlyHalfWidth={userEditState.isPasswordOnlyHalfWidth}
-      isPasswordIncludesUppercaseLetter={userEditState.isPasswordIncludesUppercaseLetter}
-      isPasswordIncludesLowercaseLetter={userEditState.isPasswordIncludesLowercaseLetter}
-      isPasswordIncludesNumber={userEditState.isPasswordIncludesNumber}
-      isPasswordIncludesSymbol={userEditState.isPasswordIncludesSymbol}
-      isConfirmPasswordMatchesPassword={userEditState.isConfirmPasswordMatchesPassword}
       isSubmitDisabled={userEditState.isSubmitDisabled}
       handleSubmit={userEditState.handleSubmit}
       getInlineError={userEditState.getInlineError}

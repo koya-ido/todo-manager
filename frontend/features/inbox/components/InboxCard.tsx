@@ -3,7 +3,8 @@
 import { Button } from "@/components/forms/Button";
 import { Card } from "@/components/Layout/Card";
 import { InboxItem } from "@/features/inbox/hooks/useInbox";
-import { getCardDetails, toDisplayDateTime } from "@/features/inbox/utils";
+import { getCardDetails } from "@/features/inbox/utils";
+import { toDisplayDateTime } from "@/utils/DateUtils";
 import { ArrowRight, X } from "lucide-react";
 import Link from "next/link";
 import { FC } from "react";

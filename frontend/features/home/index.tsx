@@ -6,7 +6,7 @@ import { HomeSkeleton } from "@/features/home/components/HomeSkeleton";
 import { MetricCard } from "@/features/home/components/MetricCard";
 import { TodayTodoCard } from "@/features/home/components/TodayTodoCard";
 import { useHome } from "@/features/home/hooks/useHome";
-import { getTodayDisplayString } from "@/features/home/utils";
+import { getTodayDisplayString } from "@/utils/DateUtils";
 import { Check, Plus } from "lucide-react";
 import { FC } from "react";
 

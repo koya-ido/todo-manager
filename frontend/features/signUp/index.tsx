@@ -2,8 +2,6 @@
 
 import { ErrorContext } from "@/components/features/ErrorProvider";
 import { Button } from "@/components/forms/Button";
-import { InputField } from "@/components/forms/FieldWrapper/components/InputField";
-import { PasswordField } from "@/components/forms/FieldWrapper/components/PasswordField";
 import { Card } from "@/components/Layout/Card";
 import {
   Dialog,
@@ -11,12 +9,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/Layout/Dialog";
-import { LabelWithIcon } from "@/components/Layout/LabelWithIcon/LabelWithIcon";
 import { Heading } from "@/components/typography/Heading";
 import { useSignUp } from "@/features/signUp/hooks/useSignUp";
 import { SignUpResponse } from "@/features/signUp/types";
+import { UserFormFields } from "@/features/user/components/UserFormFields";
+import { useUserValidation } from "@/hooks/useUserValidation";
 import { ContentProps } from "@/types/contentTypes";
-import { Circle, CircleCheck, Copy } from "lucide-react";
+import { Copy } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { FC, SubmitEvent, useContext, useEffect, useMemo, useState } from "react";
@@ -37,81 +36,17 @@ export const Content: FC<ContentProps> = ({ messages }) => {
     return () => clearInlineErrors();
   }, [clearInlineErrors]);
 
-  const isUserName5CharactersOrMoreAnd30CharactersOrLess: boolean =
-    useMemo(() => {
-      return userName.length >= 5 && userName.length <= 30;
-    }, [userName]);
-  const isUserNameOnlyHalfWidthAlphanumericAndUnderscore: boolean =
-    useMemo(() => {
-      return /^[a-zA-Z0-9_]+$/.test(userName);
-    }, [userName]);
-  const isPassword8CharactersOrMore: boolean = useMemo(() => {
-    return password.length >= 8;
-  }, [password]);
-  const isPasswordOnlyHalfWidth: boolean = useMemo(() => {
-    return /^[\x20-\x7E]+$/.test(password);
-  }, [password]);
-  const isPasswordIncludesUppercaseLetter: boolean = useMemo(() => {
-    return /[A-Z]/.test(password);
-  }, [password]);
-  const isPasswordIncludesLowercaseLetter: boolean = useMemo(() => {
-    return /[a-z]/.test(password);
-  }, [password]);
-  const isPasswordIncludesNumber: boolean = useMemo(() => {
-    return /[0-9]/.test(password);
-  }, [password]);
-  const isPasswordIncludesSymbol: boolean = useMemo(() => {
-    // スペースを含まず、/*-+.,!#$%&()|_のいずれかを含む
-    return /[/*\-+.,!#$%&()|_]/.test(password) && !/\s/.test(password);
-  }, [password]);
-  const isConfirmPasswordMatchesPassword: boolean = useMemo(() => {
-    return confirmPassword.length > 0 && password === confirmPassword;
-  }, [password, confirmPassword]);
-
-  const userNameChecklist = [
-    {
-      isValid: isUserName5CharactersOrMoreAnd30CharactersOrLess,
-      message: messages["common.username.checklist-1"],
-    },
-    {
-      isValid: isUserNameOnlyHalfWidthAlphanumericAndUnderscore,
-      message: messages["common.username.checklist-2"],
-    },
-  ];
-
-  const passwordChecklist = [
-    {
-      isValid: isPassword8CharactersOrMore,
-      message: messages["common.password.checklist-1"],
-    },
-    {
-      isValid: isPasswordOnlyHalfWidth,
-      message: messages["common.password.checklist-2"],
-    },
-    {
-      isValid: isPasswordIncludesUppercaseLetter,
-      message: messages["common.password.checklist-3"],
-    },
-    {
-      isValid: isPasswordIncludesLowercaseLetter,
-      message: messages["common.password.checklist-4"],
-    },
-    {
-      isValid: isPasswordIncludesNumber,
-      message: messages["common.password.checklist-5"],
-    },
-    {
-      isValid: isPasswordIncludesSymbol,
-      message: messages["common.password.checklist-6"],
-    },
-  ];
-
-  const confirmPasswordChecklist = [
-    {
-      isValid: isConfirmPasswordMatchesPassword,
-      message: messages["common.confirm-password.checklist-1"],
-    },
-  ];
+  const {
+    isUserName5CharactersOrMoreAnd30CharactersOrLess,
+    isUserNameOnlyHalfWidthAlphanumericAndUnderscore,
+    isPassword8CharactersOrMore,
+    isPasswordOnlyHalfWidth,
+    isPasswordIncludesUppercaseLetter,
+    isPasswordIncludesLowercaseLetter,
+    isPasswordIncludesNumber,
+    isPasswordIncludesSymbol,
+    isConfirmPasswordMatchesPassword,
+  } = useUserValidation(userName, password, confirmPassword);
 
   const isSubmitDisabled: boolean = useMemo(() => {
     return !(
@@ -186,89 +121,16 @@ export const Content: FC<ContentProps> = ({ messages }) => {
           noValidate
         >
           <div className="flex flex-col w-full gap-2 justify-center items-center">
-            <InputField
-              label={messages["common.label.username"]}
-              placeholder={messages["common.label.username"]}
-              type="text"
-              required
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              errorText={getInlineError("/username") || undefined}
+            <UserFormFields
+              messages={messages}
+              userName={userName}
+              setUserName={setUserName}
+              password={password}
+              setPassword={setPassword}
+              confirmPassword={confirmPassword}
+              setConfirmPassword={setConfirmPassword}
+              getInlineError={getInlineError}
             />
-            <div className="w-full flex flex-col gap-2">
-              {userNameChecklist.map((check, index) => (
-                <LabelWithIcon
-                  key={index}
-                  icon={
-                    check.isValid ? (
-                      <CircleCheck size={12} color="#35B820" />
-                    ) : (
-                      <Circle size={12} color="#888888" />
-                    )
-                  }
-                  label={check.message}
-                  className={
-                    check.isValid ? "text-[#35B820]" : "text-[#888888]"
-                  }
-                />
-              ))}
-            </div>
-            <PasswordField
-              label={messages["common.label.password"]}
-              placeholder={messages["common.label.password"]}
-              type="password"
-              required
-              className="h-6.25 bg-background"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              errorText={getInlineError("/password") || undefined}
-            />
-            <div className="w-full flex flex-col gap-2">
-              {passwordChecklist.map((check, index) => (
-                <LabelWithIcon
-                  key={index}
-                  icon={
-                    check.isValid ? (
-                      <CircleCheck size={12} color="#35B820" />
-                    ) : (
-                      <Circle size={12} color="#888888" />
-                    )
-                  }
-                  label={check.message}
-                  className={
-                    check.isValid ? "text-[#35B820]" : "text-[#888888]"
-                  }
-                />
-              ))}
-            </div>
-
-            <PasswordField
-              label={messages["common.label.confirm-password"]}
-              placeholder={messages["common.label.confirm-password"]}
-              type="password"
-              required
-              className="h-6.25 bg-background"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-            />
-            <div className="w-full">
-              {confirmPasswordChecklist.map((check, index) => (
-                <LabelWithIcon
-                  key={index}
-                  icon={
-                    check.isValid ? (
-                      <CircleCheck size={12} color="#35B820" />
-                    ) : (
-                      <Circle size={12} color="#888888" />
-                    )
-                  }
-                  label={check.message}
-                  className={
-                    check.isValid ? "text-[#35B820]" : "text-[#888888]"
-                  }
-                />
-              ))}
-            </div>
           </div>
           <Button type="submit" disabled={isSubmitDisabled} className="w-full">
             {messages["sign-up.register"]}

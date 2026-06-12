@@ -1,6 +1,7 @@
 "use client";
 
 import { ErrorContext } from "@/components/features/ErrorProvider";
+import { toDisplayDate } from "@/utils/DateUtils";
 import { apiGet } from "@/hooks/useFetchApi";
 import { Task } from "@/types/task";
 import {
@@ -43,16 +44,6 @@ export type Todo = {
   searchableText: string;
   managerId: number;
   managerName?: string;
-};
-
-const toDisplayDate = (value: string | null) => {
-  if (!value) return "-";
-
-  return new Intl.DateTimeFormat("ja-JP", {
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(new Date(value));
 };
 
 const toTodo = (todo: ApiTodo): Todo => {

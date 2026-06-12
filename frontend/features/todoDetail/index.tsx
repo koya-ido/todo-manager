@@ -15,6 +15,7 @@ import { Skeleton } from "@/components/Layout/Skeleton";
 import { Heading } from "@/components/typography/Heading";
 import { useTodoDetail } from "@/features/todoDetail/hooks/useTodoDetail";
 import { TodoDetailProps } from "@/features/todoDetail/types";
+import { formatDate, formatDateTime, isDateOverdue, compareDates, isAfterDate } from "@/utils/DateUtils";
 import { cn } from "@/lib/utils";
 import { Priority, Status, TodoStatus } from "@/types/todo";
 import { AlertCircle, MessageSquare, MoreVertical, Pencil, Trash2 } from "lucide-react";
@@ -206,31 +207,13 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
 
   if (!todo) return null;
 
-  // 日付のフォーマット
-  const formatDate = (dateStr: string | null) => {
-    if (!dateStr) return "yyyy/MM/dd";
-    const d = new Date(dateStr);
-    const pad = (num: number) => String(num).padStart(2, "0");
-    return `${d.getFullYear()}/${pad(d.getMonth() + 1)}/${pad(d.getDate())}`;
-  };
-
-  const formatDateTime = (dateStr: string) => {
-    if (!dateStr) return "";
-    const d = new Date(dateStr);
-    const pad = (num: number) => String(num).padStart(2, "0");
-    return `${d.getFullYear()}/${pad(d.getMonth() + 1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-  };
-
   // 進捗の計算
   const totalTasksCount = todo.tasks.length;
   const completedTasksCount = todo.tasks.filter((t) => t.completion_flag).length;
   const progress = totalTasksCount > 0 ? Math.round((completedTasksCount / totalTasksCount) * 100) : 0;
 
   // 期限超過のチェック
-  const isOverdue =
-    todo.due_date &&
-    new Date(todo.due_date).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0) &&
-    todo.status_id !== TodoStatus.DONE; // 「完了」以外
+  const isOverdue = isDateOverdue(todo.due_date) && todo.status_id !== TodoStatus.DONE; // 「完了」以外
 
   const todoStatusKey = Status[todo.status_id as keyof typeof Status] || "not-started";
   const todoPriorityKey = Priority[todo.priority_id as keyof typeof Priority] || "medium";
@@ -497,14 +480,14 @@ export const Content: FC<TodoDetailProps> = ({ todoId, mode = "private", message
           ) : (
             [...todo.comments]
               .filter((comment) => !comment.delete_flag)
-              .sort((a, b) => new Date(a.created_at).getTime() - new Date(b.created_at).getTime())
+              .sort((a, b) => compareDates(a.created_at, b.created_at))
               .map((comment) => {
                 const commentUser = comment.user;
                 const authorDisplay = commentUser ? commentUser.user_name : `user_${comment.user_id}`;
                 const authorDisplayId = commentUser ? commentUser.display_user_id : undefined;
                 const isAuthor =
                   currentUser && commentUser && currentUser.display_user_id === commentUser.display_user_id;
-                const isEdited = new Date(comment.updated_at).getTime() > new Date(comment.created_at).getTime();
+                const isEdited = isAfterDate(comment.updated_at, comment.created_at);
 
                 return (
                   <div
